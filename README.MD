@@ -1,3 +1,26 @@
+# Bussiness Management — Cadastro de Produtos (MVP)
+
+Instruções para executar localmente (Windows):
+
+1. Instalar dependências:
+
+```powershell
+npm install
+```
+
+2. Build e iniciar o app:
+
+```powershell
+npm run start
+```
+
+Arquivos importantes:
+- Código TypeScript: `electron/`, `renderer/`, `shared/`
+- Banco de dados SQLite: `data/app.db`
+
+Observações:
+- A interface é simples: formulário em `renderer/index.html` para criar produtos.
+- A API exposta no preload traz `window.api.createProduct` e `window.api.listProducts`.
 # Business Management
 
 Aplicação desktop para gerenciamento de um pequeno negócio de venda de móveis, construída com Electron + React e pensada para operar 100% offline com persistência local em SQLite.
