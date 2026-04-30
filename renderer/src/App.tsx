@@ -18,24 +18,41 @@ function formatDate(value?: string): string {
     : parsedDate.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-function Sidebar() {
+function Sidebar({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <aside className="sidebar">
-      <div>
-        <p className="brand-kicker">Bussiness Management</p>
-        <h1>Menu</h1>
-      </div>
+    <aside className={`sidebar ${open ? 'expanded' : 'collapsed'}`}>
+      <button
+        className="sidebar-toggle"
+        type="button"
+        onClick={onToggle}
+        aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+        aria-expanded={open}
+      >
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+      </button>
 
-      <nav className="sidebar-nav" aria-label="Menu lateral">
-        <button className="sidebar-item active" type="button">
-          Produtos
-        </button>
-      </nav>
+      {open ? (
+        <div className="sidebar-content">
+          <div>
+            <p className="brand-kicker">Bussiness Management</p>
+            <h1>Menu</h1>
+          </div>
 
-      <div className="sidebar-note">
-        <strong>Offline</strong>
-        <span>Persistência local com SQLite no processo principal.</span>
-      </div>
+          <nav className="sidebar-nav" aria-label="Menu lateral">
+            <button className="sidebar-item active" type="button">
+              Produtos
+            </button>
+          </nav>
+        </div>
+      ) : null}
     </aside>
   );
 }
@@ -154,6 +171,7 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   async function loadProducts() {
     setLoading(true);
@@ -192,8 +210,8 @@ export function App() {
   }
 
   return (
-    <div className="app-shell">
-      <Sidebar />
+    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((currentState) => !currentState)} />
 
       <main className="content">
         <section className="page-header">
