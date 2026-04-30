@@ -33,7 +33,7 @@ function createWindow() {
     }
   });
 
-  const indexPath = join(process.cwd(), 'dist', 'renderer', 'index.html');
+  const indexPath = join(__dirname, '../renderer/index.html');
   win.loadFile(indexPath);
 }
 
