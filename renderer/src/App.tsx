@@ -248,8 +248,8 @@ export function App() {
                 ) : (
                   paginatedProducts.map((product) => (
                     <tr key={product.id}>
-                      <td>{product.name}</td>
-                      <td>{product.description || '-'}</td>
+                      <td style={{ maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={product.name}>{product.name}</td>
+                      <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={product.description || '-'}>{product.description || '-'}</td>
                       <td>{formatCurrency(product.price)}</td>
                       <td>{formatDate(product.created_at)}</td>
                     </tr>
