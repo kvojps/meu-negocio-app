@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Product } from '../../shared/product';
 
 type CreateProductPayload = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
@@ -191,13 +191,6 @@ export function App() {
     void loadProducts();
   }, []);
 
-  const metrics = useMemo(() => {
-    return {
-      total: products.length,
-      latest: products[0]?.name ?? '-',
-    };
-  }, [products]);
-
   async function handleSave(product: CreateProductPayload) {
     const response = await window.api.createProduct(product);
 
@@ -214,37 +207,14 @@ export function App() {
       <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((currentState) => !currentState)} />
 
       <main className="content">
-        <section className="page-header">
-          <div>
-            <p className="section-label">Produtos</p>
-            <h2>Lista de produtos</h2>
-            <p className="page-description">Cadastre novos itens pelo modal e veja o resultado imediatamente na tabela.</p>
-          </div>
-
-          <button className="primary-button" type="button" onClick={() => setModalOpen(true)}>
-            Cadastrar produto
-          </button>
-        </section>
-
-        <section className="metrics">
-          <article className="metric-card">
-            <span>Total de produtos</span>
-            <strong>{metrics.total}</strong>
-          </article>
-          <article className="metric-card">
-            <span>Último cadastro</span>
-            <strong>{metrics.latest}</strong>
-          </article>
-        </section>
-
         <section className="table-card">
           <div className="table-card-header">
             <div>
               <h3>Produtos cadastrados</h3>
               <p>{loading ? 'Carregando...' : `${products.length} item(ns) na lista`}</p>
             </div>
-            <button className="ghost-button" type="button" onClick={loadProducts}>
-              Atualizar
+            <button className="primary-button" type="button" onClick={() => setModalOpen(true)}>
+              Cadastrar produto
             </button>
           </div>
 
