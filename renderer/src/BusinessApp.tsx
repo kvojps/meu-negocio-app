@@ -840,30 +840,6 @@ export function App() {
       />
 
       <main className="content">
-        <section className="page-header">
-          <div>
-            <p className="section-label">{activeSection === 'products' ? 'Gestão de produtos' : 'Gestão de receitas'}</p>
-            <h2>{activeSection === 'products' ? 'Produtos cadastrados' : 'Receitas registradas'}</h2>
-            <p className="page-description">
-              {activeSection === 'products'
-                ? 'Cadastre, edite e remova produtos com a mesma fluidez do fluxo atual.'
-                : 'Registre vendas com múltiplos itens, acompanhe o valor total e visualize cada receita em detalhe.'}
-            </p>
-          </div>
-
-          <div>
-            {activeSection === 'products' ? (
-              <button className="primary-button" type="button" onClick={openCreateProductModal}>
-                Cadastrar produto
-              </button>
-            ) : (
-              <button className="primary-button" type="button" onClick={openSaleModal} disabled={products.length === 0} title={products.length === 0 ? 'Cadastre produtos primeiro' : 'Registrar receita'}>
-                Registrar receita
-              </button>
-            )}
-          </div>
-        </section>
-
         {activeSection === 'products' ? (
           <>
             <section className="metrics">
