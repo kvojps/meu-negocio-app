@@ -56,24 +56,29 @@ O sistema inicialmente deve:
 ### Produto
 
 - id;
+- created_at;
+- updated_at;
 - name;
 - description;
 - price;
-- created_at;
 
 ### Venda (Receita)
 
 - id;
+- created_at;
+- updated_at;
 - date;
-- price;
+- total_price;
 
 ### Itens da Venda
 
 - id;
+- created_at;
+- updated_at;
 - sale_id;
 - product_id;
-- amount;
-- price;
+- quantity;
+- unit_price;
 
 ## 9. Experiência do Usuário
 
