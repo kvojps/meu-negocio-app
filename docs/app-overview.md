@@ -13,6 +13,12 @@ O foco inicial é substituir controles manuais ou desorganizados por um sistema 
 
 ## 3. Funcionalidades Principais
 
+### 📊 Dashboard Financeiro
+
+- Visualizar receitas por semana, mês ou período personalizado;
+- Acompanhar faturamento, custo e lucro bruto;
+- Observar a distribuição das receitas em uma visão consolidada;
+
 ### 📦 Gestão de Produtos
 
 - Cadastrar novos produtos;

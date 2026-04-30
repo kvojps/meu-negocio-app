@@ -1,4 +1,4 @@
-# Bussiness Management — Cadastro de Produtos e Receitas (MVP)
+# Bussiness Management — Cadastro de Produtos, Receitas e Dashboard (MVP)
 
 Instruções para executar localmente (Windows):
 
@@ -21,7 +21,7 @@ Arquivos importantes:
 
 Observações:
 
-- A interface cobre o cadastro de produtos com preço e custo, além do registro de receitas com itens, custo histórico e lucro bruto.
+- A interface cobre o cadastro de produtos com preço e custo, o registro de receitas com itens, custo histórico e lucro bruto, e um dashboard para análise por período.
 - A API exposta no preload traz métodos para produtos e receitas em `window.api`.
 
 Aplicação desktop para gerenciamento de um pequeno negócio de venda de móveis, construída com Electron + React e pensada para operar 100% offline com persistência local em SQLite.
