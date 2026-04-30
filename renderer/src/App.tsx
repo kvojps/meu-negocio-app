@@ -166,12 +166,15 @@ function ProductModal({
   );
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function loadProducts() {
     setLoading(true);
@@ -199,8 +202,13 @@ export function App() {
     }
 
     setProducts((currentProducts) => [response.product as Product, ...currentProducts]);
+    setCurrentPage(1);
     setModalOpen(false);
   }
+
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
@@ -211,7 +219,7 @@ export function App() {
           <div className="table-card-header">
             <div>
               <h3>Produtos cadastrados</h3>
-              <p>{loading ? 'Carregando...' : `${products.length} item(ns) na lista`}</p>
+              <p>{loading ? 'Carregando...' : `${products.length} item(ns) no total`}</p>
             </div>
             <button className="primary-button" type="button" onClick={() => setModalOpen(true)}>
               Cadastrar produto
@@ -231,14 +239,14 @@ export function App() {
                 </tr>
               </thead>
               <tbody>
-                {products.length === 0 ? (
+                {paginatedProducts.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="empty-state">
-                      Nenhum produto cadastrado ainda.
+                      {products.length === 0 ? 'Nenhum produto cadastrado ainda.' : 'Nenhum produto nesta página.'}
                     </td>
                   </tr>
                 ) : (
-                  products.map((product) => (
+                  paginatedProducts.map((product) => (
                     <tr key={product.id}>
                       <td>{product.name}</td>
                       <td>{product.description || '-'}</td>
@@ -249,6 +257,30 @@ export function App() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
+            <span style={{ fontSize: '14px', color: '#666' }}>
+              Página {currentPage} de {totalPages || 1}
+            </span>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                className="ghost-button"
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <button
+                className="ghost-button"
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                Próxima
+              </button>
+            </div>
           </div>
         </section>
       </main>
