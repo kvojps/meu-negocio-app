@@ -259,6 +259,17 @@ td {
   vertical-align: top;
 }
 
+.table-cell-truncate {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-cell-description {
+  max-width: 220px;
+}
+
 th {
   font-size: 0.82rem;
   text-transform: uppercase;
@@ -332,6 +343,37 @@ th {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.row-action-button {
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.icon-action-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-action-button svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.danger-button {
+  background: rgba(171, 71, 54, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(171, 71, 54, 0.18);
 }
 
 .form-status {

@@ -1,7 +1,17 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { initializeDatabase } from './database/sqlite';
-import { createProduct, listProducts } from './repository/productRepository';
+import { createProduct, deleteProduct, listProducts, updateProduct } from './repository/productRepository';
+
+type ProductInput = {
+  name: string;
+  description?: string;
+  price: number;
+};
+
+type ProductUpdatePayload = ProductInput & {
+  id: number;
+};
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -32,6 +42,24 @@ app.whenReady().then(async () => {
     try {
       const items = listProducts();
       return { success: true, products: items };
+    } catch (err) {
+      return { success: false, error: String(err) };
+    }
+  });
+
+  ipcMain.handle('products:update', async (_event, product: ProductUpdatePayload) => {
+    try {
+      const updatedAt = updateProduct(product.id, product);
+      return { success: true, updated_at: updatedAt };
+    } catch (err) {
+      return { success: false, error: String(err) };
+    }
+  });
+
+  ipcMain.handle('products:delete', async (_event, payload: { id: number }) => {
+    try {
+      deleteProduct(payload.id);
+      return { success: true };
     } catch (err) {
       return { success: false, error: String(err) };
     }

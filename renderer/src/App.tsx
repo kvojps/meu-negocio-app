@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Product } from '../../shared/product';
 
 type CreateProductPayload = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
+type UpdateProductPayload = CreateProductPayload & { id: number };
 
 function formatCurrency(value: number): string {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -57,14 +58,32 @@ function Sidebar({
   );
 }
 
+function PencilIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm2.92 2.33H5v-.92l8.06-8.06.92.92-8.06 8.06Zm13.79-11.58a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.41 0l-1.82 1.82 3.75 3.75 1.81-1.83Z" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 3.75h6a2.25 2.25 0 0 1 2.25 2.25V7.5H21v1.5h-1.28l-.8 10.05A2.25 2.25 0 0 1 16.67 21H7.33a2.25 2.25 0 0 1-2.25-1.95L4.28 9H3V7.5h3.75V6A2.25 2.25 0 0 1 9 3.75Zm0 3.75h6V6A.75.75 0 0 0 14.25 5.25h-4.5A.75.75 0 0 0 9 6v1.5Zm-1.24 1.5.72 9h8.04l.72-9H7.76Zm2.99 1.5h1.5v6h-1.5v-6Zm3 0h1.5v6h-1.5v-6Z" />
+    </svg>
+  );
+}
+
 function ProductModal({
   open,
+  product,
   onClose,
   onSave,
 }: {
   open: boolean;
+  product: Product | null;
   onClose: () => void;
-  onSave: (product: CreateProductPayload) => Promise<void>;
+  onSave: (product: CreateProductPayload, productId?: number) => Promise<void>;
 }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -79,8 +98,15 @@ function ProductModal({
       setPrice('');
       setStatus('');
       setSaving(false);
+      return;
     }
-  }, [open]);
+
+    setName(product?.name ?? '');
+    setDescription(product?.description ?? '');
+    setPrice(product ? String(product.price) : '');
+    setStatus('');
+    setSaving(false);
+  }, [open, product]);
 
   if (!open) {
     return null;
@@ -92,7 +118,7 @@ function ProductModal({
         <div className="modal-header">
           <div>
             <p className="section-label">Produtos</p>
-            <h2 id="modal-title">Cadastrar produto</h2>
+            <h2 id="modal-title">{product ? 'Editar produto' : 'Cadastrar produto'}</h2>
           </div>
           <button className="ghost-button" type="button" onClick={onClose} aria-label="Fechar modal">
             Fechar
@@ -119,17 +145,20 @@ function ProductModal({
             }
 
             setSaving(true);
-            setStatus('Salvando produto...');
+            setStatus(product ? 'Atualizando produto...' : 'Salvando produto...');
 
             try {
-              await onSave({
-                name: normalizedName,
-                description: normalizedDescription,
-                price: normalizedPrice,
-              });
-              setStatus('Produto salvo com sucesso.');
+              await onSave(
+                {
+                  name: normalizedName,
+                  description: normalizedDescription,
+                  price: normalizedPrice,
+                },
+                product?.id
+              );
+              setStatus(product ? 'Produto atualizado com sucesso.' : 'Produto salvo com sucesso.');
             } catch (error) {
-              setStatus(error instanceof Error ? error.message : 'Erro ao salvar produto.');
+              setStatus(error instanceof Error ? error.message : product ? 'Erro ao atualizar produto.' : 'Erro ao salvar produto.');
             } finally {
               setSaving(false);
             }
@@ -152,7 +181,7 @@ function ProductModal({
 
           <div className="modal-actions">
             <button className="primary-button" type="submit" disabled={saving}>
-              {saving ? 'Salvando...' : 'Salvar produto'}
+              {saving ? 'Salvando...' : product ? 'Atualizar produto' : 'Salvar produto'}
             </button>
             <button className="secondary-button" type="button" onClick={onClose}>
               Cancelar
@@ -173,6 +202,7 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -183,6 +213,8 @@ export function App() {
     const response = await window.api.listProducts();
     if (response.success && response.products) {
       setProducts(response.products);
+      const nextTotalPages = Math.max(1, Math.ceil(response.products.length / ITEMS_PER_PAGE));
+      setCurrentPage((currentPageValue) => Math.min(currentPageValue, nextTotalPages));
     } else {
       setError(response.error ?? 'Erro ao carregar produtos.');
     }
@@ -194,7 +226,41 @@ export function App() {
     void loadProducts();
   }, []);
 
-  async function handleSave(product: CreateProductPayload) {
+  function openCreateModal() {
+    setEditingProduct(null);
+    setModalOpen(true);
+  }
+
+  function openEditModal(product: Product) {
+    setEditingProduct(product);
+    setModalOpen(true);
+  }
+
+  function closeModal() {
+    setModalOpen(false);
+    setEditingProduct(null);
+  }
+
+  async function handleSave(product: CreateProductPayload, productId?: number) {
+    if (productId) {
+      const response = await window.api.updateProduct({ id: productId, ...product });
+
+      if (!response.success || !response.updated_at) {
+        throw new Error(response.error ?? 'Erro ao atualizar produto.');
+      }
+
+      setProducts((currentProducts) =>
+        currentProducts.map((currentProduct) =>
+          currentProduct.id === productId
+            ? { ...currentProduct, ...product, updated_at: response.updated_at }
+            : currentProduct
+        )
+      );
+      setError('');
+      closeModal();
+      return;
+    }
+
     const response = await window.api.createProduct(product);
 
     if (!response.success || !response.product) {
@@ -202,8 +268,30 @@ export function App() {
     }
 
     setProducts((currentProducts) => [response.product as Product, ...currentProducts]);
+    setError('');
     setCurrentPage(1);
-    setModalOpen(false);
+    closeModal();
+  }
+
+  async function handleDelete(product: Product) {
+    if (!product.id) {
+      return;
+    }
+
+    const confirmed = window.confirm(`Excluir o produto \"${product.name}\"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    setError('');
+    const response = await window.api.deleteProduct({ id: product.id });
+
+    if (!response.success) {
+      setError(response.error ?? 'Erro ao excluir produto.');
+      return;
+    }
+
+    await loadProducts();
   }
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
@@ -221,7 +309,7 @@ export function App() {
               <h3>Produtos cadastrados</h3>
               <p>{loading ? 'Carregando...' : `${products.length} item(ns) no total`}</p>
             </div>
-            <button className="primary-button" type="button" onClick={() => setModalOpen(true)}>
+            <button className="primary-button" type="button" onClick={openCreateModal}>
               Cadastrar produto
             </button>
           </div>
@@ -236,22 +324,45 @@ export function App() {
                   <th>Descrição</th>
                   <th>Preço</th>
                   <th>Criado em</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="empty-state">
+                    <td colSpan={5} className="empty-state">
                       {products.length === 0 ? 'Nenhum produto cadastrado ainda.' : 'Nenhum produto nesta página.'}
                     </td>
                   </tr>
                 ) : (
                   paginatedProducts.map((product) => (
                     <tr key={product.id}>
-                      <td style={{ maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={product.name}>{product.name}</td>
-                      <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={product.description || '-'}>{product.description || '-'}</td>
+                      <td className="table-cell-truncate" title={product.name}>{product.name}</td>
+                      <td className="table-cell-truncate table-cell-description" title={product.description || '-'}>{product.description || '-'}</td>
                       <td>{formatCurrency(product.price)}</td>
                       <td>{formatDate(product.created_at)}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button
+                            className="ghost-button row-action-button icon-action-button"
+                            type="button"
+                            onClick={() => openEditModal(product)}
+                            aria-label={`Editar produto ${product.name}`}
+                            title="Editar"
+                          >
+                            <PencilIcon />
+                          </button>
+                          <button
+                            className="danger-button row-action-button icon-action-button"
+                            type="button"
+                            onClick={() => void handleDelete(product)}
+                            aria-label={`Excluir produto ${product.name}`}
+                            title="Excluir"
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -285,7 +396,7 @@ export function App() {
         </section>
       </main>
 
-      <ProductModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} />
+      <ProductModal open={modalOpen} product={editingProduct} onClose={closeModal} onSave={handleSave} />
     </div>
   );
 }
