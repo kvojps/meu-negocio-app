@@ -166,7 +166,7 @@ function ProductModal({
   );
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 8;
 
 export function App() {
   const [products, setProducts] = useState<Product[]>([]);
