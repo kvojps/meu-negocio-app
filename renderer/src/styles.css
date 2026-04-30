@@ -302,11 +302,11 @@ button:disabled {
 }
 
 .revenue-swatch {
-  background: var(--accent);
+  background: #2563eb;
 }
 
 .profit-swatch {
-  background: var(--danger);
+  background: #16a34a;
 }
 
 .dashboard-line-chart {
@@ -343,11 +343,11 @@ button:disabled {
 }
 
 .revenue-line {
-  stroke: var(--accent);
+  stroke: #2563eb;
 }
 
 .profit-line {
-  stroke: var(--danger);
+  stroke: #16a34a;
   stroke-dasharray: 8 6;
 }
 
@@ -357,11 +357,11 @@ button:disabled {
 }
 
 .revenue-point {
-  fill: var(--accent);
+  fill: #2563eb;
 }
 
 .profit-point {
-  fill: var(--danger);
+  fill: #16a34a;
 }
 
 .dashboard-point-hit-area {
