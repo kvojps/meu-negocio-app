@@ -1,0 +1,83 @@
+# 📘 Visão geral da aplicação
+
+## 1. Objetivo
+
+Este aplicativo desktop tem como objetivo auxiliar no gerenciamento de um pequeno negócio de venda de móveis, permitindo o controle de produtos e receitas de forma simples, local e eficiente.
+
+O foco inicial é substituir controles manuais ou desorganizados por um sistema centralizado.
+
+## 2. Público-Alvo
+
+- Pequeno empreendedor (vendedor de móveis);
+- Uso individual;
+
+## 3. Funcionalidades Principais
+
+### 📦 Gestão de Produtos
+
+- Cadastrar novos produtos;
+- Editar produtos existentes;
+- Remover produtos;
+- Listar todos os produtos;
+- Informações básicas:
+  - Nome;
+  - Descrição;
+  - Preço;
+  - Data de cadastro;
+
+### 💰 Gestão de Receitas (Vendas)
+
+- Registrar vendas realizadas;
+- Associar venda a um ou mais produtos;
+- Informar valor total;
+- Registrar data da venda;
+- Listar receitas;
+- Visualizar histórico de vendas;
+
+## 4. Regras de Negócio (Inicial)
+
+- Um produto pode existir sem estar vinculado a uma venda;
+- Uma venda pode conter múltiplos produtos;
+- O valor da venda pode ser:
+  - calculado automaticamente (soma dos produtos);
+  - ou informado manualmente (flexível);
+
+## 5. Escopo Inicial (MVP)
+
+O sistema inicialmente deve:
+
+- Funcionar 100% offline;
+- Armazenar dados localmente (SQLite);
+- Ter interface simples e direta;
+- Não possuir autenticação;
+
+## 6. Tipos de Dados Principais
+
+### Produto
+
+- id;
+- name;
+- description;
+- price;
+- created_at;
+
+### Venda (Receita)
+
+- id;
+- date;
+- price;
+
+### Itens da Venda
+
+- id;
+- sale_id;
+- product_id;
+- amount;
+- price;
+
+## 9. Experiência do Usuário
+
+- Interface simples e intuitiva;
+- Fluxo rápido para registrar vendas;
+- Poucos cliques para operações comuns;
+- Foco em clareza e agilidade;
