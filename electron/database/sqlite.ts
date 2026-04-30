@@ -12,6 +12,26 @@ CREATE TABLE IF NOT EXISTS products (
   description TEXT,
   price REAL NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS sales (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  date TEXT NOT NULL,
+  total_price REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sale_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  sale_id INTEGER NOT NULL,
+  product_id INTEGER NOT NULL,
+  quantity INTEGER NOT NULL,
+  unit_price REAL NOT NULL,
+  FOREIGN KEY (sale_id) REFERENCES sales(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
 `;
 
 let sqlJs: SqlJsStatic | null = null;
@@ -53,6 +73,7 @@ export async function initializeDatabase(): Promise<void> {
     database = new sqlJs.Database();
   }
 
+  database.run('PRAGMA foreign_keys = ON;');
   database!.run(schema);
   saveDatabase();
 }
