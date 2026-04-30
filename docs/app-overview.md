@@ -23,6 +23,7 @@ O foco inicial é substituir controles manuais ou desorganizados por um sistema 
   - Nome;
   - Descrição;
   - Preço;
+  - Custo;
   - Data de cadastro;
 
 ### 💰 Gestão de Receitas (Vendas)
@@ -30,6 +31,8 @@ O foco inicial é substituir controles manuais ou desorganizados por um sistema 
 - Registrar vendas realizadas;
 - Associar venda a um ou mais produtos;
 - Informar valor total;
+- Registrar custo histórico dos itens da venda;
+- Visualizar lucro bruto por venda;
 - Registrar data da venda;
 - Listar receitas;
 - Visualizar histórico de vendas;
@@ -61,6 +64,7 @@ O sistema inicialmente deve:
 - name;
 - description;
 - price;
+- cost_price;
 
 ### Venda (Receita)
 
@@ -69,6 +73,8 @@ O sistema inicialmente deve:
 - updated_at;
 - date;
 - total_price;
+- cost_total;
+- gross_profit;
 
 ### Itens da Venda
 
@@ -79,6 +85,7 @@ O sistema inicialmente deve:
 - product_id;
 - quantity;
 - unit_price;
+- unit_cost;
 
 ## 9. Experiência do Usuário
 

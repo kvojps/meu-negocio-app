@@ -4,6 +4,8 @@ export interface Sale {
   updated_at?: string;
   date: string;
   total_price: number;
+  cost_total?: number;
+  gross_profit?: number;
 }
 
 export interface SaleItem {
@@ -14,6 +16,7 @@ export interface SaleItem {
   product_id: number;
   quantity: number;
   unit_price: number;
+  unit_cost: number;
 }
 
 export interface SaleWithItems extends Sale {

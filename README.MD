@@ -1,4 +1,4 @@
-# Bussiness Management — Cadastro de Produtos (MVP)
+# Bussiness Management — Cadastro de Produtos e Receitas (MVP)
 
 Instruções para executar localmente (Windows):
 
@@ -21,8 +21,8 @@ Arquivos importantes:
 
 Observações:
 
-- A interface é simples: formulário em `renderer/index.html` para criar produtos.
-- A API exposta no preload traz `window.api.createProduct` e `window.api.listProducts`.
+- A interface cobre o cadastro de produtos com preço e custo, além do registro de receitas com itens, custo histórico e lucro bruto.
+- A API exposta no preload traz métodos para produtos e receitas em `window.api`.
 
 Aplicação desktop para gerenciamento de um pequeno negócio de venda de móveis, construída com Electron + React e pensada para operar 100% offline com persistência local em SQLite.
 

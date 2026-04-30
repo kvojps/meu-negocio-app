@@ -85,6 +85,16 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 * Flexibilidade para evoluções futuras;
 * Normalização dos dados;
 
+### 4.4. Custo Histórico e Lucro
+
+**Decisão:** Persistir custo do produto e custo unitário do item da venda, calculando o lucro bruto a partir desses valores.
+
+**Motivo:**
+
+* Preserva o histórico financeiro das vendas;
+* Evita distorção do lucro quando o custo do produto muda depois da venda;
+* Permite exibir custo total e lucro bruto por venda e no consolidado;
+
 ## 5. Controle de Timestamps
 
 **Decisão:** Utilizar campos:

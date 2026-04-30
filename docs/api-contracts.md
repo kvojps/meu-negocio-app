@@ -14,7 +14,8 @@ Cria um novo produto.
 {
   "name": "string",
   "description": "string",
-  "price": "number"
+  "price": "number",
+  "cost_price": "number"
 }
 ```
 
@@ -32,7 +33,8 @@ Cria um novo produto.
 
 ### 📄 products:list
 
-Lista todos os produtos.
+  "price": "number",
+  "cost_price": "number"
 
 **request:**
 
@@ -44,7 +46,8 @@ Lista todos os produtos.
 
 ```json
 {
-  "products": [
+  "price": "number",
+  "cost_price": "number"
     {
       "id": "number",
       "created_at": "string",
@@ -99,7 +102,8 @@ Atualiza um produto existente.
   "id": "number",
   "name": "string",
   "description": "string",
-  "price": "number"
+  "price": "number",
+  "cost_price": "number"
 }
 ```
 
@@ -151,7 +155,8 @@ Cria uma nova venda.
     {
       "product_id": "number",
       "quantity": "number",
-      "unit_price": "number"
+      "unit_price": "number",
+      "unit_cost": "number"
     }
   ],
   "total_price": "number"
@@ -194,7 +199,9 @@ Lista todas as vendas.
       "created_at": "string",
       "updated_at": "string",
       "date": "string",
-      "total_price": "number"
+      "total_price": "number",
+      "cost_total": "number",
+      "gross_profit": "number"
     }
   ]
 }
@@ -224,6 +231,8 @@ Busca uma venda com seus itens.
     "updated_at": "string",
     "date": "string",
     "total_price": "number",
+    "cost_total": "number",
+    "gross_profit": "number",
     "items": [
       {
         "id": "number",
@@ -232,7 +241,8 @@ Busca uma venda com seus itens.
         "sale_id": "number",
         "product_id": "number",
         "quantity": "number",
-        "unit_price": "number"
+        "unit_price": "number",
+        "unit_cost": "number"
       }
     ]
   }

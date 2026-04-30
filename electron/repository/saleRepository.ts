@@ -1,8 +1,8 @@
 import type { CreateSaleInput, Sale, SaleItem, SaleWithItems } from '../../shared/sale';
 import { getDatabase, persistDatabase } from '../database/sqlite';
 
-type SaleRow = [number, string, string, string, number];
-type SaleItemRow = [number, string, string, number, number, number, number];
+type SaleRow = [number, string, string, string, number, number, number];
+type SaleItemRow = [number, string, string, number, number, number, number, number];
 
 function mapSaleRow(row: SaleRow): Sale {
   return {
@@ -10,7 +10,9 @@ function mapSaleRow(row: SaleRow): Sale {
     created_at: String(row[1]),
     updated_at: String(row[2]),
     date: String(row[3]),
-    total_price: Number(row[4])
+    total_price: Number(row[4]),
+    cost_total: Number(row[5]),
+    gross_profit: Number(row[6])
   };
 }
 
@@ -22,7 +24,8 @@ function mapSaleItemRow(row: SaleItemRow): SaleItem {
     sale_id: Number(row[3]),
     product_id: Number(row[4]),
     quantity: Number(row[5]),
-    unit_price: Number(row[6])
+    unit_price: Number(row[6]),
+    unit_cost: Number(row[7])
   };
 }
 
@@ -52,6 +55,10 @@ function assertValidItems(items: CreateSaleInput['items']): void {
       throw new Error('Preço unitário inválido na venda.');
     }
 
+    if (!Number.isFinite(item.unit_cost) || item.unit_cost < 0) {
+      throw new Error('Custo unitário inválido na venda.');
+    }
+
     const product = db.exec(`SELECT id FROM products WHERE id = ${item.product_id}`);
     if (product.length === 0 || product[0].values.length === 0) {
       throw new Error(`Produto ${item.product_id} não encontrado.`);
@@ -65,22 +72,24 @@ export function createSale(input: CreateSaleInput): Sale {
 
   const now = new Date().toISOString();
   const db = getDatabase();
+  const costTotal = input.items.reduce((sum, item) => sum + item.quantity * item.unit_cost, 0);
+  const grossProfit = input.total_price - costTotal;
 
   db.run('BEGIN TRANSACTION');
 
   try {
-    const saleStmt = db.prepare(`INSERT INTO sales (created_at, updated_at, date, total_price) VALUES (?, ?, ?, ?)`);
-    saleStmt.run([now, now, input.date, input.total_price]);
+    const saleStmt = db.prepare(`INSERT INTO sales (created_at, updated_at, date, total_price, cost_total, gross_profit) VALUES (?, ?, ?, ?, ?, ?)`);
+    saleStmt.run([now, now, input.date, input.total_price, costTotal, grossProfit]);
     saleStmt.free();
 
     const insertedRow = db.exec('SELECT last_insert_rowid() AS id');
     const saleId = Number(insertedRow[0]?.values[0]?.[0] ?? 0);
 
-    const itemStmt = db.prepare(`INSERT INTO sale_items (created_at, updated_at, sale_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)`);
+    const itemStmt = db.prepare(`INSERT INTO sale_items (created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost) VALUES (?, ?, ?, ?, ?, ?, ?)`);
 
     try {
       for (const item of input.items) {
-        itemStmt.run([now, now, saleId, item.product_id, item.quantity, item.unit_price]);
+        itemStmt.run([now, now, saleId, item.product_id, item.quantity, item.unit_price, item.unit_cost]);
       }
     } finally {
       itemStmt.free();
@@ -94,7 +103,9 @@ export function createSale(input: CreateSaleInput): Sale {
       created_at: now,
       updated_at: now,
       date: input.date,
-      total_price: input.total_price
+      total_price: input.total_price,
+      cost_total: costTotal,
+      gross_profit: grossProfit
     };
   } catch (error) {
     db.run('ROLLBACK');
@@ -104,7 +115,7 @@ export function createSale(input: CreateSaleInput): Sale {
 
 export function listSales(): Sale[] {
   const db = getDatabase();
-  const result = db.exec(`SELECT id, created_at, updated_at, date, total_price FROM sales ORDER BY date DESC, id DESC`);
+  const result = db.exec(`SELECT id, created_at, updated_at, date, total_price, cost_total, gross_profit FROM sales ORDER BY date DESC, id DESC`);
 
   if (result.length === 0) {
     return [];
@@ -116,13 +127,13 @@ export function listSales(): Sale[] {
 
 export function getSaleById(id: number): SaleWithItems {
   const db = getDatabase();
-  const saleResult = db.exec(`SELECT id, created_at, updated_at, date, total_price FROM sales WHERE id = ${id}`);
+  const saleResult = db.exec(`SELECT id, created_at, updated_at, date, total_price, cost_total, gross_profit FROM sales WHERE id = ${id}`);
 
   if (saleResult.length === 0 || saleResult[0].values.length === 0) {
     throw new Error('Venda não encontrada.');
   }
 
-  const itemResult = db.exec(`SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price FROM sale_items WHERE sale_id = ${id} ORDER BY id ASC`);
+  const itemResult = db.exec(`SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items WHERE sale_id = ${id} ORDER BY id ASC`);
   const sale = mapSaleRow(saleResult[0].values[0] as SaleRow);
   const items = itemResult.length === 0 ? [] : itemResult[0].values.map((row: unknown[]) => mapSaleItemRow(row as SaleItemRow));
 

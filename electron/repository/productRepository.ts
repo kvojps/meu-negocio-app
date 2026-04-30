@@ -10,15 +10,16 @@ function mapProductRow(row: unknown[]): Product {
     updated_at: String(row[2]),
     name: String(row[3]),
     description: row[4] === null ? undefined : String(row[4]),
-    price: Number(row[5])
+    price: Number(row[5]),
+    cost_price: Number(row[6])
   };
 }
 
 export function createProduct(p: Product): Product {
   const now = new Date().toISOString();
   const db = getDatabase();
-  const stmt = db.prepare(`INSERT INTO products (created_at, updated_at, name, description, price) VALUES (?, ?, ?, ?, ?)`);
-  stmt.run([now, now, p.name, p.description ?? null, p.price]);
+  const stmt = db.prepare(`INSERT INTO products (created_at, updated_at, name, description, price, cost_price) VALUES (?, ?, ?, ?, ?, ?)`);
+  stmt.run([now, now, p.name, p.description ?? null, p.price, p.cost_price]);
   stmt.free();
 
   const insertedRow = db.exec('SELECT last_insert_rowid() AS id');
@@ -30,7 +31,7 @@ export function createProduct(p: Product): Product {
 
 export function listProducts(): Product[] {
   const db = getDatabase();
-  const result = db.exec(`SELECT id, created_at, updated_at, name, description, price FROM products ORDER BY id DESC`);
+  const result = db.exec(`SELECT id, created_at, updated_at, name, description, price, cost_price FROM products ORDER BY id DESC`);
 
   if (result.length === 0) {
     return [];
@@ -43,10 +44,10 @@ export function listProducts(): Product[] {
 export function updateProduct(id: number, product: ProductInput): string {
   const now = new Date().toISOString();
   const db = getDatabase();
-  const stmt = db.prepare(`UPDATE products SET updated_at = ?, name = ?, description = ?, price = ? WHERE id = ?`);
+  const stmt = db.prepare(`UPDATE products SET updated_at = ?, name = ?, description = ?, price = ?, cost_price = ? WHERE id = ?`);
 
   try {
-    stmt.run([now, product.name, product.description ?? null, product.price, id]);
+    stmt.run([now, product.name, product.description ?? null, product.price, product.cost_price, id]);
   } finally {
     stmt.free();
   }

@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS products (
   updated_at TEXT NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
-  price REAL NOT NULL
+  price REAL NOT NULL,
+  cost_price REAL NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS sales (
@@ -18,7 +19,9 @@ CREATE TABLE IF NOT EXISTS sales (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   date TEXT NOT NULL,
-  total_price REAL NOT NULL
+  total_price REAL NOT NULL,
+  cost_total REAL NOT NULL DEFAULT 0,
+  gross_profit REAL NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS sale_items (
@@ -29,6 +32,7 @@ CREATE TABLE IF NOT EXISTS sale_items (
   product_id INTEGER NOT NULL,
   quantity INTEGER NOT NULL,
   unit_price REAL NOT NULL,
+  unit_cost REAL NOT NULL DEFAULT 0,
   FOREIGN KEY (sale_id) REFERENCES sales(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
@@ -55,6 +59,20 @@ function saveDatabase(): void {
   writeFileSync(dbPath, Buffer.from(database.export()));
 }
 
+function ensureColumn(tableName: string, columnName: string, definition: string): void {
+  if (!database) {
+    throw new Error('Database not initialized');
+  }
+
+  const result = database.exec(`PRAGMA table_info(${tableName})`);
+  const table = result[0];
+  const hasColumn = table?.values.some((row: unknown[]) => String(row[1]) === columnName) ?? false;
+
+  if (!hasColumn) {
+    database.run(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
+  }
+}
+
 export async function initializeDatabase(): Promise<void> {
   if (database) {
     return;
@@ -75,6 +93,10 @@ export async function initializeDatabase(): Promise<void> {
 
   database.run('PRAGMA foreign_keys = ON;');
   database!.run(schema);
+  ensureColumn('products', 'cost_price', 'REAL NOT NULL DEFAULT 0');
+  ensureColumn('sales', 'cost_total', 'REAL NOT NULL DEFAULT 0');
+  ensureColumn('sales', 'gross_profit', 'REAL NOT NULL DEFAULT 0');
+  ensureColumn('sale_items', 'unit_cost', 'REAL NOT NULL DEFAULT 0');
   saveDatabase();
 }
 

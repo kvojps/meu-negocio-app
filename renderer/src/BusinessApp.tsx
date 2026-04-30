@@ -8,6 +8,7 @@ type SaleFormItemState = {
   productId: string;
   quantity: string;
   unitPrice: string;
+  unitCost: string;
 };
 
 function formatCurrency(value: number): string {
@@ -41,7 +42,8 @@ function buildSaleFormItem(products: Product[]): SaleFormItemState {
   return {
     productId: firstProduct?.id ? String(firstProduct.id) : '',
     quantity: '1',
-    unitPrice: firstProduct ? String(firstProduct.price) : '0'
+    unitPrice: firstProduct ? String(firstProduct.price) : '0',
+    unitCost: firstProduct ? String(firstProduct.cost_price) : '0'
   };
 }
 
@@ -147,6 +149,7 @@ function ProductModal({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [costPrice, setCostPrice] = useState('');
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -155,6 +158,7 @@ function ProductModal({
       setName('');
       setDescription('');
       setPrice('');
+      setCostPrice('');
       setStatus('');
       setSaving(false);
       return;
@@ -163,6 +167,7 @@ function ProductModal({
     setName(product?.name ?? '');
     setDescription(product?.description ?? '');
     setPrice(product ? String(product.price) : '');
+    setCostPrice(product ? String(product.cost_price) : '');
     setStatus('');
     setSaving(false);
   }, [open, product]);
@@ -192,6 +197,7 @@ function ProductModal({
             const normalizedName = name.trim();
             const normalizedDescription = description.trim();
             const normalizedPrice = Number(price);
+            const normalizedCostPrice = Number(costPrice);
 
             if (!normalizedName) {
               setStatus('Informe o nome do produto.');
@@ -203,6 +209,11 @@ function ProductModal({
               return;
             }
 
+            if (!Number.isFinite(normalizedCostPrice) || normalizedCostPrice < 0) {
+              setStatus('Informe um custo válido.');
+              return;
+            }
+
             setSaving(true);
             setStatus(product ? 'Atualizando produto...' : 'Salvando produto...');
 
@@ -211,7 +222,8 @@ function ProductModal({
                 {
                   name: normalizedName,
                   description: normalizedDescription,
-                  price: normalizedPrice
+                  price: normalizedPrice,
+                  cost_price: normalizedCostPrice
                 },
                 product?.id
               );
@@ -236,6 +248,11 @@ function ProductModal({
           <label>
             Preço
             <input value={price} onChange={(event) => setPrice(event.target.value)} placeholder="0,00" type="number" min="0" step="0.01" />
+          </label>
+
+          <label>
+            Custo
+            <input value={costPrice} onChange={(event) => setCostPrice(event.target.value)} placeholder="0,00" type="number" min="0" step="0.01" />
           </label>
 
           <div className="modal-actions">
@@ -314,7 +331,8 @@ function SaleModal({
         return {
           productId: value,
           quantity: item.quantity,
-          unitPrice: selectedProduct ? String(selectedProduct.price) : item.unitPrice
+          unitPrice: selectedProduct ? String(selectedProduct.price) : item.unitPrice,
+          unitCost: selectedProduct ? String(selectedProduct.cost_price) : item.unitCost
         };
       }
 
@@ -381,6 +399,7 @@ function SaleModal({
               const productId = Number(item.productId);
               const quantity = Number(item.quantity);
               const unitPrice = Number(item.unitPrice);
+              const unitCost = Number(item.unitCost);
 
               if (!Number.isInteger(productId) || productId <= 0) {
                 setStatus('Selecione um produto válido em todos os itens.');
@@ -402,10 +421,16 @@ function SaleModal({
                 return;
               }
 
+              if (!Number.isFinite(unitCost) || unitCost < 0) {
+                setStatus('Informe custos unitários válidos em todos os itens.');
+                return;
+              }
+
               normalizedItems.push({
                 product_id: productId,
                 quantity,
-                unit_price: unitPrice
+                unit_price: unitPrice,
+                unit_cost: unitCost
               });
             }
 
@@ -551,6 +576,14 @@ function SaleDetailsModal({
                 <strong>{formatCurrency(sale.total_price)}</strong>
               </div>
               <div>
+                <span>Custo total</span>
+                <strong>{formatCurrency(sale.cost_total ?? 0)}</strong>
+              </div>
+              <div>
+                <span>Lucro bruto</span>
+                <strong>{formatCurrency(sale.gross_profit ?? 0)}</strong>
+              </div>
+              <div>
                 <span>Criado em</span>
                 <strong>{formatDate(sale.created_at)}</strong>
               </div>
@@ -581,8 +614,12 @@ function SaleDetailsModal({
                         <strong>{formatCurrency(item.unit_price)}</strong>
                       </div>
                       <div>
-                        <span>Total do item</span>
-                        <strong>{formatCurrency(item.unit_price * item.quantity)}</strong>
+                        <span>Custo unitário</span>
+                        <strong>{formatCurrency(item.unit_cost)}</strong>
+                      </div>
+                      <div>
+                        <span>Lucro do item</span>
+                        <strong>{formatCurrency((item.unit_price - item.unit_cost) * item.quantity)}</strong>
                       </div>
                     </div>
                   ))
@@ -930,7 +967,7 @@ export function App() {
           </>
         ) : (
           <>
-            <section className="metrics">
+            <section className="metrics sales-metrics">
               <div className="metric-card">
                 <span>Total de receitas</span>
                 <strong>{loadingSales ? '...' : sales.length}</strong>
@@ -938,6 +975,14 @@ export function App() {
               <div className="metric-card">
                 <span>Faturamento acumulado</span>
                 <strong>{loadingSales ? '...' : formatCurrency(totalRevenue)}</strong>
+              </div>
+              <div className="metric-card">
+                <span>Custo acumulado</span>
+                <strong>{loadingSales ? '...' : formatCurrency(sales.reduce((sum, sale) => sum + (sale.cost_total ?? 0), 0))}</strong>
+              </div>
+              <div className="metric-card">
+                <span>Lucro bruto</span>
+                <strong>{loadingSales ? '...' : formatCurrency(sales.reduce((sum, sale) => sum + (sale.gross_profit ?? 0), 0))}</strong>
               </div>
             </section>
 
@@ -961,6 +1006,7 @@ export function App() {
                       <th>Código</th>
                       <th>Data</th>
                       <th>Total</th>
+                      <th>Lucro</th>
                       <th>Criado em</th>
                       <th>Ações</th>
                     </tr>
@@ -968,7 +1014,7 @@ export function App() {
                   <tbody>
                     {paginatedSales.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="empty-state">
+                        <td colSpan={6} className="empty-state">
                           {sales.length === 0 ? 'Nenhuma receita registrada ainda.' : 'Nenhuma receita nesta página.'}
                         </td>
                       </tr>
@@ -978,6 +1024,7 @@ export function App() {
                           <td>{sale.id}</td>
                           <td>{formatDate(sale.date)}</td>
                           <td>{formatCurrency(sale.total_price)}</td>
+                          <td>{formatCurrency(sale.gross_profit ?? 0)}</td>
                           <td>{formatDate(sale.created_at)}</td>
                           <td>
                             <div className="row-actions">

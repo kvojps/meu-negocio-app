@@ -13,6 +13,7 @@ type ProductInput = {
 
 type ProductUpdatePayload = ProductInput & {
   id: number;
+  cost_price: number;
 };
 
 type SaleDeletePayload = {
