@@ -1,32 +1,35 @@
-# Bussiness Management — Cadastro de Produtos, Receitas e Dashboard (MVP)
+# Meu Negócio v.0.4.0
 
-Instruções para executar localmente (Windows):
+Este é um aplicativo desktop Windows desenvolvido para auxiliar pequenos empreendedores no gerenciamento de produtos e vendas. A aplicação permite cadastrar produtos, registrar vendas e acompanhar o histórico de receitas de forma simples e organizada.
+O sistema funciona totalmente offline e utiliza armazenamento local, sendo ideal para uso individual sem dependência de internet.
 
-1. Instalar dependências:
+## Guia de início rápido
+
+### > Execução local
+
+- Instalar dependências:
 
 ```powershell
 npm install
 ```
 
-1. Build e iniciar o app:
+- Build e iniciar o app:
 
 ```powershell
 npm run start
 ```
 
-Arquivos importantes:
+### > Instalar aplicativo
 
-- Código TypeScript: `electron/`, `renderer/`, `shared/`
-- Banco de dados SQLite: `data/app.db`
+- Gerar instalador:
 
-Observações:
+```powershell
+npm run dist
+```
 
-- A interface cobre o cadastro de produtos com preço e custo, o registro de receitas com itens, custo histórico e lucro bruto, e um dashboard para análise por período.
-- A API exposta no preload traz métodos para produtos e receitas em `window.api`.
+- Executar arquivo .exe gerado na pasta release (Instalador);
 
-Aplicação desktop para gerenciamento de um pequeno negócio de venda de móveis, construída com Electron + React e pensada para operar 100% offline com persistência local em SQLite.
-
-O projeto organiza a interface no Renderer, a lógica sensível no Main Process e a comunicação entre as camadas via IPC com contratos bem definidos. A documentação abaixo descreve a visão geral, a arquitetura e as decisões técnicas que orientam a implementação.
+- Após instalação, executar aplicativo;
 
 ## Documentação
 
@@ -34,17 +37,3 @@ O projeto organiza a interface no Renderer, a lógica sensível no Main Process 
 - [Arquitetura do sistema](docs/architecture.md);
 - [Contratos de API IPC](docs/api-contracts.md);
 - [Decisões técnicas](docs/decisions.md);
-
-## Objetivos do projeto
-
-- Centralizar o cadastro de produtos e vendas em uma única aplicação local;
-- Manter a interface simples e rápida para uso diário;
-- Garantir separação clara entre UI, comunicação e persistência;
-- Padronizar os fluxos de dados por meio de contratos compartilhados;
-
-## Estrutura inicial
-
-- docs/: documentação funcional e técnica do projeto;
-- shared/: tipos e contratos compartilhados entre as camadas;
-- electron/: código do Main Process, preload e acesso ao banco;
-- renderer/: interface construída com React;
