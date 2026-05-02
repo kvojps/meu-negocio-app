@@ -1,169 +1,218 @@
-# 🏗️ Documentação da arquitetura
+# 🏗️ Arquitetura do sistema
 
-## 1. Visão Geral
+## 1. Visão geral
 
-Este projeto é um aplicativo desktop construído com **Electron + React**, dividido em três camadas principais:
+Este projeto é um aplicativo desktop construído com **Electron + React + TypeScript**, organizado em três camadas com responsabilidades bem delimitadas:
 
-- **Backend (Electron / Node.js)** → Camada lógica/persistência;
-- **Renderer Process (React)** → Interface do usuário;
-- **Preload + IPC** → Comunicação segura entre Frontend e Backend;
+| Camada           | Tecnologia             | Responsabilidade principal                    |
+| ---------------- | ---------------------- | --------------------------------------------- |
+| **Main Process** | Electron / Node.js     | Lógica de negócio, persistência, acesso ao SO |
+| **Preload**      | Electron contextBridge | Ponte segura entre renderer e main            |
+| **Renderer**     | React + TypeScript     | Interface do usuário e estado de UI           |
 
-O sistema utiliza **SQLite** como banco de dados local para persistência.
+A persistência é feita exclusivamente com **SQLite** via **SqlJs**, operando 100% offline.
 
-### 1.1. Estrutura de Alto Nível
+> [!IMPORTANT]
+> O renderer **nunca** acessa Node.js, o sistema de arquivos ou o banco de dados diretamente. Toda comunicação deve passar pelo canal IPC definido em [`api-contracts.md`](api-contracts.md).
 
-```id="arch1"
-[ Renderer (React UI) ]
-            ↓ IPC
-[ Preload (Bridge segura) ]
-            ↓ IPC
-[ Backend (Node/Electron) ]
-            ↓
-[ SQLite Database (local) ]
-            ↓
-[ Sistema Operacional ]
+---
+
+## 2. Diagrama de camadas
+
+```mermaid
+graph TD
+    A["Renderer Process<br/>(React UI)"]
+    B["Preload Script<br/>(contextBridge)"]
+    C["Main Process<br/>(Electron / Node.js)"]
+    D["Repositories<br/>(productRepository, saleRepository)"]
+    E["SQLite<br/>(better-sqlite3)"]
+
+    A -- "window.api.*" --> B
+    B -- "ipcRenderer.invoke" --> C
+    C -- "ipcMain.handle" --> D
+    D --> E
 ```
 
-## 2. Responsabilidades por Camada
+---
 
-### 2.1 Backend
+## 3. Estrutura de pastas
 
-**> Responsável por**:
+```txt
+bussiness_management/
+├── electronApp.ts            # Ponto de entrada do Electron (main process)
+├── backend/
+│   ├── controllers/          # Handlers IPC — registram ipcMain.handle
+│   ├── database/
+│   │   ├── sqlite.ts         # Configuração e conexão com o banco
+│   │   ├── schema.ts         # Criação de tabelas (DDL)
+│   │   ├── helpers.ts        # Utilitários de banco (timestamps, etc.)
+│   │   └── paths.ts          # Resolução de caminho do arquivo .db
+│   ├── repository/
+│   │   ├── productRepository.ts
+│   │   └── saleRepository.ts
+│   └── preload.ts            # Ponte contextBridge
+├── renderer/                 # Aplicação React (UI)
+├── shared/
+│   ├── types/                # Tipos TypeScript compartilhados
+│   ├── product.ts            # Contrato de produto
+│   └── sale.ts               # Contrato de venda
+└── docs/                     # Documentação do projeto
+```
 
-- Registrar handlers de IPC;
-- Executar lógica de negócio;
-- Gerenciar configuração e conexão com SQLite;
-- Executar queries e regras de persistência;
-- Acessar sistema de arquivos;
+---
 
-**> Regras:**
+## 4. Responsabilidades por camada
 
-- Toda operação sensível deve acontecer aqui;
-- Toda persistência deve passar por esta camada;
-- Não expor APIs diretamente ao renderer;
-- Utilizar repositories para acesso ao banco;
+### 4.1 Main Process (`electronApp.ts` + `backend/controllers/`)
 
-#### 2.1.1 Camada de Persistência (SQLite)
+**Responsável por:**
 
-O sistema utiliza **SQLite** como banco de dados local, executado exclusivamente no **Backend**.
+- Criar e gerenciar a janela do Electron;
+- Gerenciar o ciclo de vida da aplicação e do banco;
+- Registrar handlers `ipcMain.handle` para cada canal;
+- Orquestrar chamadas aos repositories;
 
-**> Organização:**
+**Regras:**
 
-```id="arch2"
+- Nunca expor APIs internas diretamente ao renderer;
+- Toda operação sensível (banco, SO, arquivos) deve ocorrer aqui;
+- Handlers devem delegar persistência aos repositories, nunca executar SQL diretamente;
+
+---
+
+### 4.2 Camada de persistência (`backend/database/` + `backend/repository/`)
+
+O banco é acessado exclusivamente pelo Main Process através da seguinte organização:
+
+```txt
 backend/database/
-  ├── db.ts
-  ├── migrations.ts
-  └── repositories/
+  ├── sqlite.ts     → abre/fecha conexão, exporta instância db
+  ├── schema.ts     → executa CREATE TABLE (rodado na inicialização)
+  ├── helpers.ts    → funções auxiliares (ex: gerar timestamps)
+  └── paths.ts      → resolve o caminho do arquivo .db em dev e produção
+
+backend/repository/
+  ├── productRepository.ts   → CRUD de produtos
+  └── saleRepository.ts      → CRUD de vendas e itens de venda
 ```
 
-**> Componentes:**
+**Regras:**
 
-- **sqlite.ts** → lógica de configuração e conexão com banco;
-- **repositories/** → encapsula queries SQL;
+- Todo SQL deve estar centralizado nos repositories;
+- `created_at` e `updated_at` são gerenciados automaticamente pelos helpers;
+- Nunca acessar `db` diretamente fora dos repositories;
 
-**> Regras:**
+---
 
-- Não acessar banco via IPC diretamente;
-- Nunca executar SQL fora de repositories;
-- Toda query deve estar centralizada;
-- Utilizar prepared statements sempre que possível;
+### 4.3 Preload Script (`backend/preload.ts`)
 
-**> Repositories:**
+**Responsável por:**
 
-Repositories são responsáveis por:
+- Expor uma API controlada ao renderer via `contextBridge.exposeInMainWorld`;
+- Encaminhar chamadas usando `ipcRenderer.invoke(canal, payload)`;
 
-- Encapsular queries SQL;
-- Isolar lógica de persistência;
-- Facilitar manutenção e testes;
+**Regras:**
 
-Exemplo de responsabilidades:
+- Usar `contextIsolation: true` e `nodeIntegration: false` sempre;
+- Expor **apenas** as funções listadas nos contratos de [`api-contracts.md`](api-contracts.md);
+- Nunca expor referências diretas a módulos Node.js ou ao banco;
 
-- Criar registros;
-- Buscar dados;
-- Atualizar informações;
-- Remover dados;
+Exemplo de estrutura exposta:
 
-### 2.2 Renderer Process
-
-**> Responsável por:**
-
-- Interações do usuário;
-- Interface do usuário (UI);
-- Gerenciamento de estado (React);
-
-**> Regras:**
-
-- Toda comunicação com o sistema deve ocorrer via IPC;
-- Não acessar diretamente APIs do Node.js ou banco de dados;
-- Manter lógica de UI separada da lógica de negócio;
-
-### 2.3 Preload Script
-
-**> Responsável por:**
-
-- Servir como camada de segurança entre renderer e backend;
-- Expor uma API controlada ao renderer;
-
-**> Regras:**
-
-- Usar `contextBridge`;
-- Expor apenas funções necessárias;
-- Nunca expor acesso direto ao banco ou módulos do Node;
-
-#### 2.3.1 Comunicação (IPC)
-
-A comunicação entre renderer e backend ocorre via IPC:
-
-- `ipcRenderer` → envia mensagens;
-- `ipcMain` → escuta e responde;
-
-1. Renderer dispara ação;
-2. Preload encaminha chamada;
-3. Backend executa lógica;
-4. Backend acessa SQLite se necessário;
-5. Retorna resposta ao renderer;
-
-### 2.4 Camada compartilhada
-
-A pasta `shared/` contém:
-
-- Tipos TypeScript;
-- Interfaces de dados;
-- Contratos de comunicação (IPC);
-
-**Objetivo**:
-
-- Evitar duplicação;
-- Garantir consistência entre camadas;
-
-## 3. Segurança
-
-Medidas adotadas:
-
-- `contextIsolation: true`;
-- `nodeIntegration: false`;
-- Comunicação apenas via preload;
-- Validação de dados recebidos via IPC;
-- Banco acessível somente pelo backend;
-
-## 4. Convenções do Projeto
-
-- Separação clara entre UI, lógica e persistência;
-- IPC sempre tipado;
-- Nomeação padronizada de canais IPC;
-- Funções assíncronas para operações externas (quando necessário);
-- Queries centralizadas em repositories;
-
-## 5. Fluxo de Dados
-
-```id="arch3"
-UI (React)
-  → chama API (preload)
-    → envia IPC
-      → handler (backend)
-        → repository
-          → SQLite
-        ← resultado
-      ← resposta IPC
-  ← UI atualiza estado
+```typescript
+// backend/preload.ts
+contextBridge.exposeInMainWorld("api", {
+  products: {
+    create: (data) => ipcRenderer.invoke("products:create", data),
+    list: () => ipcRenderer.invoke("products:list"),
+    // ...
+  },
+  sales: {
+    /* ... */
+  },
+});
 ```
+
+---
+
+### 4.4 Renderer Process (`renderer/`)
+
+**Responsável por:**
+
+- Renderizar a interface (React);
+- Gerenciar estado de UI;
+- Chamar `window.api.*` para qualquer operação de dados;
+
+**Regras:**
+
+- Não importar nem usar APIs de Node.js, `fs`, `path`, ou `better-sqlite3`;
+- Não acessar banco ou sistema de arquivos de forma direta;
+- Lógica de negócio e validações de domínio devem estar no Main Process;
+
+---
+
+### 4.5 Camada compartilhada (`shared/`)
+
+Contém tipos e contratos TypeScript usados por **ambas** as camadas:
+
+| Arquivo             | Conteúdo                                                    |
+| ------------------- | ----------------------------------------------------------- |
+| `shared/types/`     | Interfaces e tipos base (ex: `Product`, `Sale`, `SaleItem`) |
+| `shared/product.ts` | Contrato tipado de produto para IPC                         |
+| `shared/sale.ts`    | Contrato tipado de venda e itens para IPC                   |
+
+**Objetivo:** eliminar duplicação e garantir consistência de tipos entre renderer e main.
+
+---
+
+## 5. Fluxo de dados (ponta a ponta)
+
+```mermaid
+sequenceDiagram
+    participant UI as Renderer (React)
+    participant Pre as Preload
+    participant Main as Main Process
+    participant Repo as Repository
+    participant DB as SQLite
+
+    UI->>Pre: window.api.products.create(data)
+    Pre->>Main: ipcRenderer.invoke("products:create", data)
+    Main->>Repo: productRepository.create(data)
+    Repo->>DB: INSERT (prepared statement)
+    DB-->>Repo: { id, created_at, updated_at }
+    Repo-->>Main: resultado
+    Main-->>Pre: resposta IPC
+    Pre-->>UI: Promise resolvida
+    UI->>UI: atualiza estado React
+```
+
+---
+
+## 6. Segurança
+
+| Medida                   | Detalhe                                                    |
+| ------------------------ | ---------------------------------------------------------- |
+| `contextIsolation: true` | Renderer isolado do contexto Node.js                       |
+| `nodeIntegration: false` | Renderer não tem acesso a APIs Node                        |
+| `contextBridge`          | Único ponto de exposição controlada ao renderer            |
+| Validação de dados       | Dados recebidos via IPC são validados antes de persistir   |
+| SQL isolado              | Banco acessível somente pelos repositories no Main Process |
+
+---
+
+## 7. Convenções do projeto
+
+- **Canais IPC:** formato `entidade:acao` (ex: `products:create`, `sales:list`);
+- **Entidades:** sempre no plural nos canais e nos repositórios;
+- **Timestamps:** `created_at` e `updated_at` em todas as entidades, formato ISO 8601;
+- **Tipagem:** todos os payloads IPC tipados via `shared/`;
+- **SQL:** sempre via prepared statements, centralizado nos repositories;
+- **Async:** operações externas usam `async/await`; better-sqlite3 é síncrono por design;
+
+---
+
+## 8. Referências
+
+- [app-overview.md](app-overview.md) — objetivo, escopo e funcionalidades;
+- [api-contracts.md](api-contracts.md) — contratos IPC detalhados (request/response);
+- [decisions.md](decisions.md) — decisões técnicas e justificativas;
