@@ -100,8 +100,7 @@ electron/main/database/
 
 **2.6.2 Componentes:**
 
-- **db.ts** → inicializa conexão com banco;
-- **migrations.ts** → cria/atualiza estrutura do banco;
+- **sqlite.ts** → lógica de configuração e conexão com banco;
 - **repositories/** → encapsula queries SQL;
 
 **2.6.3 Regras:**
