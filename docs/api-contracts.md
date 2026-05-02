@@ -1,4 +1,4 @@
-# 🔗 IPC API Contracts
+# 🔗 Contratos da API IPC
 
 Este documento define os contratos de comunicação entre o **Renderer (React)** e o **Main Process (Electron)** via IPC. Todos os dados devem seguir exatamente estas estruturas.
 
