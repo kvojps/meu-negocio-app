@@ -4,35 +4,33 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ## 1. Plataforma Desktop
 
-**Decisão:** Utilizar Electron para desenvolvimento do aplicativo desktop.
+**> Decisão:** Utilizar Electron para desenvolvimento do aplicativo desktop.
 
-**Motivo:**
+**> Motivo:**
 
-* Uso de tecnologias web (JavaScript/TypeScript + React);
+* Uso de tecnologias web (TypeScript + React);
 * Facilidade de desenvolvimento e manutenção;
 * Grande ecossistema e documentação;
-* Integração simples com Node.js;
 
 ## 2. Arquitetura
 
-**Decisão:** Separação em três camadas:
+**> Decisão:** Separação em três camadas:
 
 * Main Process;
 * Renderer Process;
 * Preload + IPC;
 
-**Motivo:**
+**> Motivo:**
 
 * Segurança no acesso ao sistema;
 * Organização do código;
 * Escalabilidade;
-* Alinhamento com boas práticas do Electron;
 
 ## 3. Comunicação entre camadas
 
-**Decisão:** Utilizar IPC (Inter-Process Communication).
+**> Decisão:** Utilizar IPC (Inter-Process Communication).
 
-**Motivo:**
+**> Motivo:**
 
 * Comunicação segura entre frontend e backend;
 * Controle de acesso a recursos sensíveis;
@@ -40,9 +38,9 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ## 4. Banco de Dados
 
-**Decisão:** Utilizar SQLite como banco de dados local;
+**> Decisão:** Utilizar SQLite como banco de dados local;
 
-**Motivo:**
+**> Motivo:**
 
 * Não requer servidor;
 * Leve e rápido;
@@ -51,58 +49,32 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ### 4.1. Biblioteca de acesso ao banco
 
-**Decisão:** Utilizar better-sqlite3
+**> Decisão:** Utilizar better-sqlite3
 
-**Motivo:**
+**> Motivo:**
 
 * API simples e síncrona;
 * Boa performance;
-* Baixa complexidade comparada a alternativas;
 * Adequado para aplicações desktop;
 
 ### 4.2. Persistência de Dados
 
-**Decisão:** Centralizar acesso ao banco via camada de repositories
+**> Decisão:** Centralizar acesso ao banco via camada de repositories
 
-**Motivo:**
+**> Motivo:**
 
 * Separação de responsabilidades;
 * Facilidade de manutenção;
 * Evita duplicação de queries;
-* Melhor organização para uso com IA;
-
-### 4.3. Modelagem de Dados
-
-**Decisão:** Utilizar estrutura relacional com três entidades:
-
-* Products;
-* Sales;
-* Sale Items;
-
-**Motivo:**
-
-* Representação clara do domínio;
-* Flexibilidade para evoluções futuras;
-* Normalização dos dados;
-
-### 4.4. Custo Histórico e Lucro
-
-**Decisão:** Persistir custo do produto e custo unitário do item da venda, calculando o lucro bruto a partir desses valores.
-
-**Motivo:**
-
-* Preserva o histórico financeiro das vendas;
-* Evita distorção do lucro quando o custo do produto muda depois da venda;
-* Permite exibir custo total e lucro bruto por venda e no consolidado;
 
 ## 5. Controle de Timestamps
 
-**Decisão:** Utilizar campos:
+**> Decisão:** Utilizar campos:
 
 * `created_at`;
 * `updated_at`;
 
-**Motivo:**
+**> Motivo:**
 
 * Rastreabilidade de dados;
 * Facilidade para auditoria futura;
@@ -110,14 +82,14 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ## 6. Estrutura de Projeto
 
-**Decisão:** Separar código em:
+**> Decisão:** Separar código em:
 
 * electron/ (main, preload, database);
 * renderer/ (React);
 * shared/ (tipos e contratos);
 * docs/ (documentação);
 
-**Motivo:**
+**> Motivo:**
 
 * Organização clara;
 * Evita acoplamento;
@@ -125,20 +97,19 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ## 7. Uso de TypeScript
 
-**Decisão:** Utilizar TypeScript em todo o projeto.
+**> Decisão:** Utilizar TypeScript em todo o projeto.
 
-**Motivo:**
+**> Motivo:**
 
 * Tipagem forte;
-* Melhor integração com IA;
 * Redução de bugs;
 * Melhor legibilidade e manutenção;
 
 ## 8. Estratégia de Desenvolvimento
 
-**Decisão:** Desenvolvimento orientado por contratos (api-contracts).
+**> Decisão:** Desenvolvimento orientado por contratos (api-contracts).
 
-**Motivo:**
+**> Motivo:**
 
 * Clareza na comunicação entre camadas;
 * Facilita uso de IA;
@@ -147,9 +118,9 @@ Este documento registra as principais decisões técnicas do projeto, junto com 
 
 ## 9. Escopo Inicial
 
-**Decisão:** Aplicação offline e single-user.
+**> Decisão:** Aplicação offline e single-user.
 
-**Motivo:**
+**> Motivo:**
 
 * Reduz complexidade inicial;
 * Entrega mais rápida;
