@@ -1,127 +1,139 @@
-# 🧾 Decisões técnicas
+# Decisões Técnicas
 
-Este documento registra as principais decisões técnicas do projeto, junto com seus motivos. O objetivo é manter consistência ao longo do desenvolvimento e evitar mudanças desnecessárias.
+Este documento registra as principais decisões técnicas do projeto e seus motivos. O objetivo é manter consistência ao longo do desenvolvimento e evitar mudanças desnecessárias.
+
+---
 
 ## 1. Plataforma Desktop
 
-**> Decisão:** Utilizar Electron para desenvolvimento do aplicativo desktop.
+**Decisão:** Utilizar Electron para desenvolvimento do aplicativo desktop.
 
-**> Motivo:**
+**Motivo:**
 
-* Uso de tecnologias web (TypeScript + React);
-* Facilidade de desenvolvimento e manutenção;
-* Grande ecossistema e documentação;
+- Permite o uso de tecnologias web já dominadas pela equipe (TypeScript + React);
+- Facilidade de desenvolvimento, debugging e manutenção;
+- Grande ecossistema e documentação consolidada;
 
-## 2. Arquitetura
+---
 
-**> Decisão:** Separação em três camadas:
+## 2. Arquitetura em Camadas
 
-* Main Process;
-* Renderer Process;
-* Preload + IPC;
+**Decisão:** Separar o sistema em três camadas com responsabilidades distintas: Main Process, Renderer Process e Preload + IPC.
 
-**> Motivo:**
+**Motivo:**
 
-* Segurança no acesso ao sistema;
-* Organização do código;
-* Escalabilidade;
+- Segurança no acesso ao sistema de arquivos e ao banco de dados;
+- Organização e clareza do código;
+- Facilita escalabilidade e manutenção;
 
-## 3. Comunicação entre camadas
+> Detalhes de cada camada estão em [`architecture.md`](architecture.md).
 
-**> Decisão:** Utilizar IPC (Inter-Process Communication).
+---
 
-**> Motivo:**
+## 3. Comunicação entre Camadas via IPC
 
-* Comunicação segura entre frontend e backend;
-* Controle de acesso a recursos sensíveis;
-* Padronização via `api-contracts.md`;
+**Decisão:** Utilizar IPC (Inter-Process Communication) com canais tipados para toda comunicação entre renderer e main process.
+
+**Motivo:**
+
+- Comunicação segura e controlada entre frontend e backend;
+- Controle de acesso a recursos sensíveis do sistema;
+- Padronização via contratos documentados em [`api-contracts.md`](api-contracts.md);
+
+---
 
 ## 4. Banco de Dados
 
-**> Decisão:** Utilizar SQLite como banco de dados local;
+### 4.1 Motor: SQLite
 
-**> Motivo:**
+**Decisão:** Utilizar SQLite como banco de dados local.
 
-* Não requer servidor;
-* Leve e rápido;
-* Ideal para aplicações offline;
-* Simplicidade de setup e distribuição;
+**Motivo:**
 
-### 4.1. Biblioteca de acesso ao banco
+- Não requer servidor — adequado para operação 100% offline;
+- Leve, rápido e com baixo consumo de recursos;
+- Simplicidade de setup e distribuição junto ao executável;
 
-**> Decisão:** Utilizar better-sqlite3
+---
 
-**> Motivo:**
+### 4.2 Biblioteca de Acesso: sql.js
 
-* API simples e síncrona;
-* Boa performance;
-* Adequado para aplicações desktop;
+**Decisão:** Utilizar `sql.js` para acessar o banco SQLite.
 
-### 4.2. Persistência de Dados
+**Motivo:**
 
-**> Decisão:** Centralizar acesso ao banco via camada de repositories
+- Compatível com o ambiente Electron sem necessidade de compilação nativa;
+- API simples e adequada para aplicações desktop;
+- Boa performance para o volume de dados esperado;
 
-**> Motivo:**
+---
 
-* Separação de responsabilidades;
-* Facilidade de manutenção;
-* Evita duplicação de queries;
+### 4.3 Camada de Repositories
+
+**Decisão:** Centralizar todo acesso ao banco em repositories (`backend/repository/`).
+
+**Motivo:**
+
+- Separação de responsabilidades — controllers não executam SQL diretamente;
+- Facilita manutenção e evita duplicação de queries;
+- Ponto único para validações de domínio antes de persistir;
+
+---
 
 ## 5. Controle de Timestamps
 
-**> Decisão:** Utilizar campos:
+**Decisão:** Adicionar os campos `created_at` e `updated_at` em todas as entidades persistidas.
 
-* `created_at`;
-* `updated_at`;
+**Motivo:**
 
-**> Motivo:**
+- Rastreabilidade e consistência entre todas as entidades;
+- Facilita auditoria futura sem alteração de esquema;
 
-* Rastreabilidade de dados;
-* Facilidade para auditoria futura;
-* Consistência entre entidades;
+---
 
-## 6. Estrutura de Projeto
+## 6. Estrutura de Pastas
 
-**> Decisão:** Separar código em:
+**Decisão:** Organizar o código nas pastas `backend/`, `renderer/`, `shared/` e `docs/`.
 
-* electron/ (main, preload, database);
-* renderer/ (React);
-* shared/ (tipos e contratos);
-* docs/ (documentação);
+**Motivo:**
 
-**> Motivo:**
+- Separação clara entre camadas, evitando acoplamento indevido;
+- Facilita a localização de código e onboarding de novos desenvolvedores;
 
-* Organização clara;
-* Evita acoplamento;
-* Facilita manutenção e escalabilidade;
+> Detalhes da estrutura em [`architecture.md`](architecture.md).
 
-## 7. Uso de TypeScript
+---
 
-**> Decisão:** Utilizar TypeScript em todo o projeto.
+## 7. TypeScript em Todo o Projeto
 
-**> Motivo:**
+**Decisão:** Utilizar TypeScript em todo o projeto, incluindo main process, renderer e camada compartilhada.
 
-* Tipagem forte;
-* Redução de bugs;
-* Melhor legibilidade e manutenção;
+**Motivo:**
 
-## 8. Estratégia de Desenvolvimento
+- Tipagem forte reduz bugs em tempo de desenvolvimento;
+- Contratos IPC tipados via `shared/` eliminam inconsistências entre camadas;
+- Melhor legibilidade e manutenção a longo prazo;
 
-**> Decisão:** Desenvolvimento orientado por contratos (api-contracts).
+---
 
-**> Motivo:**
+## 8. Desenvolvimento Orientado por Contratos
 
-* Clareza na comunicação entre camadas;
-* Facilita uso de IA;
-* Reduz inconsistências;
-* Permite desenvolvimento incremental;
+**Decisão:** Documentar e seguir contratos IPC explícitos antes de implementar cada funcionalidade.
 
-## 9. Escopo Inicial
+**Motivo:**
 
-**> Decisão:** Aplicação offline e single-user.
+- Clareza na comunicação entre camadas, especialmente com suporte de ferramentas de IA;
+- Reduz inconsistências entre o que o renderer envia e o que o main process espera;
+- Permite desenvolvimento incremental e paralelo;
 
-**> Motivo:**
+---
 
-* Reduz complexidade inicial;
-* Entrega mais rápida;
-* Foco no problema principal do usuário;
+## 9. Escopo Inicial: Offline e Single-User
+
+**Decisão:** Desenvolver a aplicação como offline-first e single-user, sem autenticação ou sincronização remota.
+
+**Motivo:**
+
+- Reduz complexidade inicial e tempo de entrega;
+- Foco no problema principal do usuário (gestão local do negócio);
+- Permite evolução futura incremental sem reescritas;
