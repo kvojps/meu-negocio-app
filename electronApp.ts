@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
-import { initializeDatabase } from './database/sqlite';
-import { registerProductHandlers } from './controllers/productsController';
-import { registerSaleHandlers } from './controllers/salesController';
+import { initializeDatabase } from './backend/database/sqlite';
+import { registerProductHandlers } from './backend/controllers/productsController';
+import { registerSaleHandlers } from './backend/controllers/salesController';
 
 
 function createWindow() {
@@ -10,11 +10,11 @@ function createWindow() {
     width: 900,
     height: 700,
     webPreferences: {
-      preload: join(__dirname, 'preload.js')
+      preload: join(__dirname, 'backend', 'preload.js')
     }
   });
 
-  const indexPath = join(__dirname, '../renderer/index.html');
+  const indexPath = join(__dirname, 'renderer', 'index.html');
   win.loadFile(indexPath);
 }
 

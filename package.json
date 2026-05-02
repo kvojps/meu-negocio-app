@@ -2,7 +2,7 @@
   "name": "bussiness_management",
   "version": "0.4.0",
   "private": true,
-  "main": "dist/electron/main.js",
+  "main": "dist/electronApp.js",
   "scripts": {
     "build": "npm run build:renderer && npm run build:main",
     "build:main": "tsc -p tsconfig.json",

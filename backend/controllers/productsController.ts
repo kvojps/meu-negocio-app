@@ -11,14 +11,17 @@ import {
 } from "../repository/productRepository";
 
 export function registerProductHandlers() {
-  ipcMain.handle("products:create", async (_e, product: CreateProductInput) => {
-    try {
-      const created = createProduct(product);
-      return { success: true, product: created };
-    } catch (err) {
-      return { success: false, error: String(err) };
-    }
-  });
+  ipcMain.handle(
+    "products:create",
+    async (_event, product: CreateProductInput) => {
+      try {
+        const created = createProduct(product);
+        return { success: true, product: created };
+      } catch (err) {
+        return { success: false, error: String(err) };
+      }
+    },
+  );
 
   ipcMain.handle("products:list", async () => {
     try {
