@@ -1,39 +1,33 @@
-# Meu Negócio v.0.4.0
+# Meu Negócio — v0.4.0
 
-Este é um aplicativo desktop Windows desenvolvido para auxiliar pequenos empreendedores no gerenciamento de produtos e vendas. A aplicação permite cadastrar produtos, registrar vendas e acompanhar o histórico de receitas de forma simples e organizada.
-O sistema funciona totalmente offline e utiliza armazenamento local, sendo ideal para uso individual sem dependência de internet.
+Aplicativo desktop Windows para auxiliar pequenos empreendedores no gerenciamento de produtos e vendas. Permite cadastrar produtos, registrar vendas e acompanhar o histórico de receitas de forma simples e organizada. Opera 100% offline, sem dependência de internet ou servidores externos.
 
-## Guia de início rápido
+---
 
-### > Execução local
+## Início Rápido
 
-- Instalar dependências:
+### Execução em modo desenvolvimento
 
 ```powershell
 npm install
-```
-
-- Build e iniciar o app:
-
-```powershell
 npm run start
 ```
 
-### > Instalar aplicativo
-
-- Gerar instalador:
+### Gerar instalador
 
 ```powershell
 npm run dist
 ```
 
-- Executar arquivo .exe gerado na pasta release (Instalador);
+O instalador `.exe` será gerado na pasta `release/`. Execute-o para instalar o aplicativo.
 
-- Após instalação, executar aplicativo;
+---
 
 ## Documentação
 
-- [Visão geral da aplicação](docs/app-overview.md);
-- [Arquitetura do sistema](docs/architecture.md);
-- [Contratos de API IPC](docs/api-contracts.md);
-- [Decisões técnicas](docs/decisions.md);
+| Documento                                     | Descrição                                           |
+| --------------------------------------------- | --------------------------------------------------- |
+| [Visão geral](docs/app-overview.md)           | Objetivo, escopo, funcionalidades e modelo de dados |
+| [Arquitetura](docs/architecture.md)           | Camadas, estrutura de pastas e fluxo de dados       |
+| [Contratos de API IPC](docs/api-contracts.md) | Contratos de comunicação IPC (request/response)     |
+| [Decisões técnicas](docs/decisions.md)        | Decisões de design e suas justificativas            |
