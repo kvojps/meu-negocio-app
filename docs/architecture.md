@@ -43,6 +43,46 @@ O sistema utiliza **SQLite** como banco de dados local para persistência.
 - Não expor APIs diretamente ao renderer;
 - Utilizar repositories para acesso ao banco;
 
+#### 2.1.1 Camada de Persistência (SQLite)
+
+O sistema utiliza **SQLite** como banco de dados local, executado exclusivamente no **Backend**.
+
+**> Organização:**
+
+```id="arch2"
+backend/database/
+  ├── db.ts
+  ├── migrations.ts
+  └── repositories/
+```
+
+**> Componentes:**
+
+- **sqlite.ts** → lógica de configuração e conexão com banco;
+- **repositories/** → encapsula queries SQL;
+
+**> Regras:**
+
+- Não acessar banco via IPC diretamente;
+- Nunca executar SQL fora de repositories;
+- Toda query deve estar centralizada;
+- Utilizar prepared statements sempre que possível;
+
+**> Repositories:**
+
+Repositories são responsáveis por:
+
+- Encapsular queries SQL;
+- Isolar lógica de persistência;
+- Facilitar manutenção e testes;
+
+Exemplo de responsabilidades:
+
+- Criar registros;
+- Buscar dados;
+- Atualizar informações;
+- Remover dados;
+
 ### 2.2 Renderer Process
 
 **> Responsável por:**
@@ -70,14 +110,12 @@ O sistema utiliza **SQLite** como banco de dados local para persistência.
 - Expor apenas funções necessárias;
 - Nunca expor acesso direto ao banco ou módulos do Node;
 
-### 2.4. Comunicação (IPC)
+#### 2.3.1 Comunicação (IPC)
 
-A comunicação entre renderer e main ocorre via IPC:
+A comunicação entre renderer e backend ocorre via IPC:
 
 - `ipcRenderer` → envia mensagens;
 - `ipcMain` → escuta e responde;
-
-### 2.5 Fluxo padrão
 
 1. Renderer dispara ação;
 2. Preload encaminha chamada;
@@ -85,47 +123,7 @@ A comunicação entre renderer e main ocorre via IPC:
 4. Backend acessa SQLite se necessário;
 5. Retorna resposta ao renderer;
 
-### 2.6. Camada de Persistência (SQLite)
-
-O sistema utiliza **SQLite** como banco de dados local, executado exclusivamente no **Backend**.
-
-**2.6.1 Organização:**
-
-```id="arch2"
-electron/main/database/
-  ├── db.ts
-  ├── migrations.ts
-  └── repositories/
-```
-
-**2.6.2 Componentes:**
-
-- **sqlite.ts** → lógica de configuração e conexão com banco;
-- **repositories/** → encapsula queries SQL;
-
-**2.6.3 Regras:**
-
-- Não acessar banco via IPC diretamente;
-- Nunca executar SQL fora de repositories;
-- Toda query deve estar centralizada;
-- Utilizar prepared statements sempre que possível;
-
-**2.6.4 Repositories:**
-
-Repositories são responsáveis por:
-
-- Encapsular queries SQL;
-- Isolar lógica de persistência;
-- Facilitar manutenção e testes;
-
-Exemplo de responsabilidades:
-
-- Criar registros;
-- Buscar dados;
-- Atualizar informações;
-- Remover dados;
-
-### 2.7 Camada compartilhada
+### 2.4 Camada compartilhada
 
 A pasta `shared/` contém:
 
@@ -162,7 +160,7 @@ Medidas adotadas:
 UI (React)
   → chama API (preload)
     → envia IPC
-      → handler (main)
+      → handler (backend)
         → repository
           → SQLite
         ← resultado
