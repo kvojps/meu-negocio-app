@@ -10,13 +10,13 @@ Este documento define os contratos de comunicação entre o **Renderer (React)**
 
 Todas as respostas seguem o mesmo envelope:
 
-**Sucesso**
+**Sucesso:**
 
 ```ts
 { success: true, [chave]: payload }
 ```
 
-**Erro**
+**Erro:**
 
 ```ts
 { success: false, error: string }
