@@ -1,273 +1,270 @@
-# 🔗 Contratos da API IPC
+# Contratos da API IPC
 
 Este documento define os contratos de comunicação entre o **Renderer (React)** e o **Main Process (Electron)** via IPC. Todos os dados devem seguir exatamente estas estruturas.
 
-## 📦 PRODUCTS
+> Tipos compartilhados estão em `shared/product.ts` e `shared/sale.ts`.
 
-### ➕ products:create
+---
+
+## Padrão de Resposta
+
+Todas as respostas seguem o mesmo envelope:
+
+**Sucesso**
+
+```ts
+{ success: true, [chave]: payload }
+```
+
+**Erro**
+
+```ts
+{ success: false, error: string }
+```
+
+O campo `error` é uma string com a mensagem da exceção lançada.
+
+---
+
+## PRODUCTS
+
+### `products:create`
 
 Cria um novo produto.
 
-**> request:**
+**Request:** `CreateProductInput`
 
-```json
+```ts
 {
-  "name": "string",
-  "description": "string",
-  "price": "number",
-  "cost_price": "number"
+  name: string;           // obrigatório
+  description?: string;  // opcional
+  price: number;         // >= 0
+  cost_price: number;    // >= 0
 }
 ```
 
-**> response:**
+**Response (sucesso):**
 
-```json
+```ts
 {
-  "id": "number",
-  "created_at": "string",
-  "updated_at": "string"
+  success: true;
+  product: Product; // objeto completo com id, created_at, updated_at e todos os campos
 }
 ```
 
-### 📄 products:list
+---
 
-**> request:**
+### `products:list`
 
-```json
-{}
-```
+Lista todos os produtos, ordenados por `id DESC`.
 
-**> response:**
+**Request:** sem payload
 
-```json
-[
-    {
-      "id": "number",
-      "created_at": "string",
-      "updated_at": "string",
-      "name": "string",
-      "description": "string",
-      "price": "number",
-      "cost_price": "number"
-    }
-]
-```
+**Response (sucesso):**
 
-### 🔍 products:getById
-
-Busca um produto específico.
-
-**> request:**
-
-```json
+```ts
 {
-  "id": "number"
+  success: true;
+  products: Product[];
 }
 ```
 
-**> response:**
+---
 
-```json
-{
-  "id": "number",
-  "created_at": "string",
-  "updated_at": "string",
-  "name": "string",
-  "description": "string",
-  "price": "number",
-  "cost_price": "number"
-}
-```
-
-### ✏️ products:update
+### `products:update`
 
 Atualiza um produto existente.
 
-**> request:**
+**Request:** `UpdateProductInput`
 
-```json
+```ts
 {
-  "id": "number",
-  "name": "string",
-  "description": "string",
-  "price": "number",
-  "cost_price": "number"
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  cost_price: number;
 }
 ```
 
-**> response:**
+**Response (sucesso):**
 
-```json
-{}
-```
-
-### ❌ products:delete
-
-Remove um produto.
-
-**> request:**
-
-```json
+```ts
 {
-  "id": "number"
+  success: true;
+  updated_at: string; // ISO timestamp do momento da atualização
 }
 ```
 
-**> response:**
+---
 
-```json
-{}
-```
+### `products:delete`
 
-## 💰 SALES (RECEITAS)
+Remove um produto pelo `id`.
 
-### ➕ sales:create
+**Request:**
 
-Cria uma nova venda.
-
-**> request:**
-
-```json
+```ts
 {
-  "date": "string",
-  "items": [
-    {
-      "product_id": "number",
-      "quantity": "number",
-      "unit_price": "number",
-      "unit_cost": "number"
-    }
-  ],
-  "total_price": "number"
+  id: number;
 }
 ```
 
-**observação:**
+**Response (sucesso):**
 
-* `total_price` pode ser calculado automaticamente ou informado manualmente
-
-**> response:**
-
-```json
+```ts
 {
-  "id": "number",
-  "created_at": "string",
-  "updated_at": "string"
+  success: true;
 }
 ```
 
-### 📄 sales:list
+---
 
-Lista todas as vendas.
+## SALES
 
-**> request:**
+### `sales:create`
 
-```json
-{}
-```
+Cria uma nova venda com seus itens. `cost_total` e `gross_profit` são **calculados internamente** — não devem ser enviados no request.
 
-**> response:**
+**Request:** `CreateSaleInput`
 
-```json
-[
-    {
-      "id": "number",
-      "created_at": "string",
-      "updated_at": "string",
-      "date": "string",
-      "total_price": "number",
-      "cost_total": "number",
-      "gross_profit": "number"
-    }
-]
-
-```
-
-### 🔍 sales:getById
-
-Busca uma venda com seus itens.
-
-**> request:**
-
-```json
+```ts
 {
-  "id": "number"
+  date: string; // ISO 8601, ex: "2026-04-30T10:00:00Z"
+  total_price: number; // >= 0
+  items: Array<{
+    product_id: number; // deve existir na tabela products
+    quantity: number; // inteiro > 0
+    unit_price: number; // >= 0
+    unit_cost: number; // >= 0
+  }>;
 }
 ```
 
-**> response:**
+**Response (sucesso):**
 
-```json
+```ts
 {
-  "id": "number",
-  "created_at": "string",
-  "updated_at": "string",
-  "date": "string",
-  "total_price": "number",
-  "cost_total": "number",
-  "gross_profit": "number",
-  "items": [
-    {
-      "id": "number",
-      "created_at": "string",
-      "updated_at": "string",
-      "sale_id": "number",
-      "product_id": "number",
-      "quantity": "number",
-      "unit_price": "number",
-      "unit_cost": "number"
-    }
-  ]
+  success: true;
+  sale: Sale; // inclui id, created_at, updated_at, date, total_price, cost_total, gross_profit
 }
 ```
 
-### ❌ sales:delete
+---
 
-Remove uma venda.
+### `sales:list`
 
-**> request:**
+Lista todas as vendas, ordenadas por `date DESC, id DESC`.
 
-```json
+**Request:** sem payload
+
+**Response (sucesso):**
+
+```ts
 {
-  "id": "number"
+  success: true;
+  sales: Sale[];
 }
 ```
 
-**> response:**
+Cada item de `Sale`:
 
-```json
-{}
-```
-
-## ⚠️ REGRAS GERAIS
-
-* Todos os handlers devem ser implementados no **Main Process**;
-* O Renderer nunca acessa banco diretamente;
-* Dados devem ser validados antes de persistir;
-* IDs são sempre numéricos;
-* Datas devem ser strings no formato ISO (`2026-04-30T10:00:00Z`);
-* Campos `created_at` e `updated_at` são gerados automaticamente pelo sistema;
-* Toda persistência deve passar por repositories;
-
-## 🔒 PADRÕES DE RESPOSTA
-
-### Sucesso
-
-```json
-{}
-```
-
-### Erro
-
-```json
+```ts
 {
-  "error": "mensagem de erro"
+  id: number;
+  created_at: string;
+  updated_at: string;
+  date: string;
+  total_price: number;
+  cost_total: number;
+  gross_profit: number;
 }
 ```
 
-## 🧠 Convenções
+---
 
-* Nome dos canais: `entidade:ação`
-  Ex: `products:create`, `sales:list`;
-* Sempre usar plural para entidades;
-* Requests e responses devem ser tipados (shared/types);
+### `sales:getById`
+
+Busca uma venda com seus itens pelo `id`.
+
+**Request:**
+
+```ts
+{
+  id: number;
+}
+```
+
+**Response (sucesso):**
+
+```ts
+{
+  success: true;
+  sale: SaleWithItems; // Sale + items[]
+}
+```
+
+`SaleWithItems`:
+
+```ts
+{
+  id: number;
+  created_at: string;
+  updated_at: string;
+  date: string;
+  total_price: number;
+  cost_total: number;
+  gross_profit: number;
+  items: Array<{
+    id: number;
+    created_at: string;
+    updated_at: string;
+    sale_id: number;
+    product_id: number;
+    quantity: number;
+    unit_price: number;
+    unit_cost: number;
+  }>;
+}
+```
+
+---
+
+### `sales:delete`
+
+Remove uma venda e seus itens pelo `id`.
+
+**Request:**
+
+```ts
+{
+  id: number;
+}
+```
+
+**Response (sucesso):**
+
+```ts
+{
+  success: true;
+}
+```
+
+---
+
+## Regras Gerais
+
+- Todos os handlers são registrados no **Main Process** (`registerProductHandlers`, `registerSaleHandlers`);
+- O Renderer **nunca** acessa o banco diretamente;
+- Dados são validados no repository antes de persistir; erros são propagados pelo envelope `{ success: false, error }`;
+- `id` é sempre `number`;
+- Datas são strings ISO 8601 (ex.: `"2026-04-30T10:00:00.000Z"`).
+- `created_at` e `updated_at` são gerados automaticamente — nunca enviados no request;
+- `cost_total` e `gross_profit` são calculados internamente na criação da venda;
+- Toda persistência passa por repositories em `backend/repository/`;
+
+## Convenções de Canal
+
+- Formato: `entidade:acao` — ex.: `products:create`, `sales:list`;
+- Entidades sempre no **plural**;
+- Requests e responses devem ser tipados via `shared/`;
