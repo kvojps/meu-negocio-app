@@ -5,7 +5,13 @@ import type {
   SaleWithItems,
 } from "../../shared/sale";
 import { getDatabase, persistDatabase } from "../database/sqlite";
+import {
+  getLastInsertedId,
+  getChangedRowCount,
+  ensureRowFound,
+} from "../database/helpers";
 
+// Mappers
 type SaleRow = [number, string, string, string, number, number, number];
 type SaleItemRow = [
   number,
@@ -43,9 +49,18 @@ function mapSaleItemRow(row: SaleItemRow): SaleItem {
   };
 }
 
+// Validations
 function assertValidDate(date: string): void {
   if (Number.isNaN(Date.parse(date))) {
     throw new Error("Data da venda inválida.");
+  }
+}
+
+function assertValidSale(total_price: number): void {
+  if (!Number.isFinite(total_price) || total_price < 0) {
+    throw new Error(
+      "Valor total da venda deve ser um número válido maior ou igual a zero.",
+    );
   }
 }
 
@@ -82,8 +97,10 @@ function assertValidItems(items: CreateSaleInput["items"]): void {
   }
 }
 
+// Repository functions
 export function createSale(input: CreateSaleInput): Sale {
   assertValidDate(input.date);
+  assertValidSale(input.total_price);
   assertValidItems(input.items);
 
   const now = new Date().toISOString();
@@ -110,8 +127,7 @@ export function createSale(input: CreateSaleInput): Sale {
     ]);
     saleStmt.free();
 
-    const insertedRow = db.exec("SELECT last_insert_rowid() AS id");
-    const saleId = Number(insertedRow[0]?.values[0]?.[0] ?? 0);
+    const saleId = getLastInsertedId(db);
 
     const itemStmt = db.prepare(
       `INSERT INTO sale_items (created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost) VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -202,12 +218,8 @@ export function deleteSale(id: number): void {
     stmt.free();
   }
 
-  const changes = db.exec("SELECT changes() AS changes");
-  const changedRows = Number(changes[0]?.values[0]?.[0] ?? 0);
-
-  if (changedRows === 0) {
-    throw new Error("Venda não encontrada.");
-  }
+  const changedRows = getChangedRowCount(db);
+  ensureRowFound(changedRows, "Venda não encontrada.");
 
   persistDatabase();
 }

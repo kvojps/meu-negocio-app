@@ -1,6 +1,12 @@
 import type { Product, CreateProductInput } from "../../shared/product";
 import { getDatabase, persistDatabase } from "../database/sqlite";
+import {
+  getLastInsertedId,
+  getChangedRowCount,
+  ensureRowFound,
+} from "../database/helpers";
 
+// Mappers
 function mapProductRow(row: unknown[]): Product {
   return {
     id: Number(row[0]),
@@ -13,7 +19,36 @@ function mapProductRow(row: unknown[]): Product {
   };
 }
 
+// Validations
+function assertValidProduct(input: CreateProductInput): void {
+  if (typeof input.name !== "string" || input.name.trim().length === 0) {
+    throw new Error("Nome do produto é obrigatório.");
+  }
+
+  if (!Number.isFinite(input.price) || input.price < 0) {
+    throw new Error(
+      "Preço do produto deve ser um número válido maior ou igual a zero.",
+    );
+  }
+
+  if (!Number.isFinite(input.cost_price) || input.cost_price < 0) {
+    throw new Error(
+      "Custo do produto deve ser um número válido maior ou igual a zero.",
+    );
+  }
+
+  if (
+    input.description !== undefined &&
+    typeof input.description !== "string"
+  ) {
+    throw new Error("Descrição do produto deve ser uma string.");
+  }
+}
+
+// Repository functions
 export function createProduct(input: CreateProductInput): Product {
+  assertValidProduct(input);
+
   const now = new Date().toISOString();
   const db = getDatabase();
   const stmt = db.prepare(
@@ -29,8 +64,7 @@ export function createProduct(input: CreateProductInput): Product {
   ]);
   stmt.free();
 
-  const insertedRow = db.exec("SELECT last_insert_rowid() AS id");
-  const id = Number(insertedRow[0]?.values[0]?.[0] ?? 0);
+  const id = getLastInsertedId(db);
   persistDatabase();
 
   return { id, created_at: now, updated_at: now, ...input };
@@ -51,6 +85,8 @@ export function listProducts(): Product[] {
 }
 
 export function updateProduct(id: number, input: CreateProductInput): string {
+  assertValidProduct(input);
+
   const now = new Date().toISOString();
   const db = getDatabase();
   const stmt = db.prepare(
@@ -70,12 +106,8 @@ export function updateProduct(id: number, input: CreateProductInput): string {
     stmt.free();
   }
 
-  const changes = db.exec("SELECT changes() AS changes");
-  const changedRows = Number(changes[0]?.values[0]?.[0] ?? 0);
-
-  if (changedRows === 0) {
-    throw new Error("Produto não encontrado.");
-  }
+  const changedRows = getChangedRowCount(db);
+  ensureRowFound(changedRows, "Produto não encontrado.");
 
   persistDatabase();
   return now;
@@ -91,12 +123,8 @@ export function deleteProduct(id: number): void {
     stmt.free();
   }
 
-  const changes = db.exec("SELECT changes() AS changes");
-  const changedRows = Number(changes[0]?.values[0]?.[0] ?? 0);
-
-  if (changedRows === 0) {
-    throw new Error("Produto não encontrado.");
-  }
+  const changedRows = getChangedRowCount(db);
+  ensureRowFound(changedRows, "Produto não encontrado.");
 
   persistDatabase();
 }
