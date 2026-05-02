@@ -4,9 +4,9 @@
 
 Este projeto é um aplicativo desktop construído com **Electron + React**, dividido em três camadas principais:
 
-* **Main Process (Electron / Node.js)** → Backend | Camada lógica;
-* **Renderer Process (React)** → Frontend | Interface do usuário;
-* **Preload + IPC** → Comunicação segura entre Frontend e Backend;
+- **Backend (Electron / Node.js)** → Camada lógica/persistência;
+- **Renderer Process (React)** → Interface do usuário;
+- **Preload + IPC** → Comunicação segura entre Frontend e Backend;
 
 O sistema utiliza **SQLite** como banco de dados local para persistência.
 
@@ -17,7 +17,7 @@ O sistema utiliza **SQLite** como banco de dados local para persistência.
             ↓ IPC
 [ Preload (Bridge segura) ]
             ↓ IPC
-[ Main Process (Node/Electron) ]
+[ Backend (Node/Electron) ]
             ↓
 [ SQLite Database (local) ]
             ↓
@@ -26,69 +26,68 @@ O sistema utiliza **SQLite** como banco de dados local para persistência.
 
 ## 2. Responsabilidades por Camada
 
-### 2.1 Main Process
+### 2.1 Backend
 
 **> Responsável por**:
 
-* Criar e gerenciar janelas;
-* Registrar handlers de IPC;
-* Executar lógica de negócio;
-* Gerenciar conexão com SQLite;
-* Executar queries e regras de persistência;
-* Acessar sistema de arquivos;
+- Registrar handlers de IPC;
+- Executar lógica de negócio;
+- Gerenciar configuração e conexão com SQLite;
+- Executar queries e regras de persistência;
+- Acessar sistema de arquivos;
 
 **> Regras:**
 
-* Toda operação sensível deve acontecer aqui;
-* Toda persistência deve passar por esta camada;
-* Não expor APIs diretamente ao renderer;
-* Utilizar repositories para acesso ao banco;
+- Toda operação sensível deve acontecer aqui;
+- Toda persistência deve passar por esta camada;
+- Não expor APIs diretamente ao renderer;
+- Utilizar repositories para acesso ao banco;
 
 ### 2.2 Renderer Process
 
 **> Responsável por:**
 
-* Interações do usuário;
-* Interface do usuário (UI);
-* Gerenciamento de estado (React);
+- Interações do usuário;
+- Interface do usuário (UI);
+- Gerenciamento de estado (React);
 
 **> Regras:**
 
-* Toda comunicação com o sistema deve ocorrer via IPC;
-* Não acessar diretamente APIs do Node.js ou banco de dados;
-* Manter lógica de UI separada da lógica de negócio;
+- Toda comunicação com o sistema deve ocorrer via IPC;
+- Não acessar diretamente APIs do Node.js ou banco de dados;
+- Manter lógica de UI separada da lógica de negócio;
 
 ### 2.3 Preload Script
 
 **> Responsável por:**
 
-* Servir como camada de segurança entre renderer e main
-* Expor uma API controlada ao renderer
+- Servir como camada de segurança entre renderer e backend;
+- Expor uma API controlada ao renderer;
 
 **> Regras:**
 
-* Usar `contextBridge`
-* Expor apenas funções necessárias
-* Nunca expor acesso direto ao banco ou módulos do Node
+- Usar `contextBridge`;
+- Expor apenas funções necessárias;
+- Nunca expor acesso direto ao banco ou módulos do Node;
 
 ### 2.4. Comunicação (IPC)
 
 A comunicação entre renderer e main ocorre via IPC:
 
-* `ipcRenderer` → envia mensagens;
-* `ipcMain` → escuta e responde;
+- `ipcRenderer` → envia mensagens;
+- `ipcMain` → escuta e responde;
 
 ### 2.5 Fluxo padrão
 
 1. Renderer dispara ação;
 2. Preload encaminha chamada;
-3. Main process executa lógica;
-4. Main acessa SQLite se necessário;
+3. Backend executa lógica;
+4. Backend acessa SQLite se necessário;
 5. Retorna resposta ao renderer;
 
 ### 2.6. Camada de Persistência (SQLite)
 
-O sistema utiliza **SQLite** como banco de dados local, executado exclusivamente no **Main Process**.
+O sistema utiliza **SQLite** como banco de dados local, executado exclusivamente no **Backend**.
 
 **2.6.1 Organização:**
 
@@ -101,62 +100,62 @@ electron/main/database/
 
 **2.6.2 Componentes:**
 
-* **db.ts** → inicializa conexão com banco;
-* **migrations.ts** → cria/atualiza estrutura do banco;
-* **repositories/** → encapsula queries SQL;
+- **db.ts** → inicializa conexão com banco;
+- **migrations.ts** → cria/atualiza estrutura do banco;
+- **repositories/** → encapsula queries SQL;
 
 **2.6.3 Regras:**
 
-* Não acessar banco via IPC diretamente;
-* Nunca executar SQL fora de repositories;
-* Toda query deve estar centralizada;
-* Utilizar prepared statements sempre que possível;
+- Não acessar banco via IPC diretamente;
+- Nunca executar SQL fora de repositories;
+- Toda query deve estar centralizada;
+- Utilizar prepared statements sempre que possível;
 
 **2.6.4 Repositories:**
 
 Repositories são responsáveis por:
 
-* Encapsular queries SQL;
-* Isolar lógica de persistência;
-* Facilitar manutenção e testes;
+- Encapsular queries SQL;
+- Isolar lógica de persistência;
+- Facilitar manutenção e testes;
 
 Exemplo de responsabilidades:
 
-* Criar registros;
-* Buscar dados;
-* Atualizar informações;
-* Remover dados;
+- Criar registros;
+- Buscar dados;
+- Atualizar informações;
+- Remover dados;
 
 ### 2.7 Camada compartilhada
 
 A pasta `shared/` contém:
 
-* Tipos TypeScript;
-* Interfaces de dados;
-* Contratos de comunicação (IPC);
+- Tipos TypeScript;
+- Interfaces de dados;
+- Contratos de comunicação (IPC);
 
 **Objetivo**:
 
-* Evitar duplicação;
-* Garantir consistência entre camadas;
+- Evitar duplicação;
+- Garantir consistência entre camadas;
 
 ## 3. Segurança
 
 Medidas adotadas:
 
-* `contextIsolation: true`;
-* `nodeIntegration: false`;
-* Comunicação apenas via preload;
-* Validação de dados recebidos via IPC;
-* Banco acessível somente pelo main process;
+- `contextIsolation: true`;
+- `nodeIntegration: false`;
+- Comunicação apenas via preload;
+- Validação de dados recebidos via IPC;
+- Banco acessível somente pelo backend;
 
 ## 4. Convenções do Projeto
 
-* Separação clara entre UI, lógica e persistência;
-* IPC sempre tipado;
-* Nomeação padronizada de canais IPC;
-* Funções assíncronas para operações externas (quando necessário);
-* Queries centralizadas em repositories;
+- Separação clara entre UI, lógica e persistência;
+- IPC sempre tipado;
+- Nomeação padronizada de canais IPC;
+- Funções assíncronas para operações externas (quando necessário);
+- Queries centralizadas em repositories;
 
 ## 5. Fluxo de Dados
 
