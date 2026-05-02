@@ -8,7 +8,7 @@ Este documento define os contratos de comunicação entre o **Renderer (React)**
 
 Cria um novo produto.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -19,7 +19,7 @@ Cria um novo produto.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
 {
@@ -29,44 +29,35 @@ Cria um novo produto.
 }
 ```
 
----
-
 ### 📄 products:list
 
-  "price": "number",
-  "cost_price": "number"
-
-**request:**
+**> request:**
 
 ```json
 {}
 ```
 
-**response:**
+**> response:**
 
 ```json
-{
-  "price": "number",
-  "cost_price": "number"
+[
     {
       "id": "number",
       "created_at": "string",
       "updated_at": "string",
       "name": "string",
       "description": "string",
-      "price": "number"
+      "price": "number",
+      "cost_price": "number"
     }
-  ]
-}
+]
 ```
-
----
 
 ### 🔍 products:getById
 
 Busca um produto específico.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -74,28 +65,25 @@ Busca um produto específico.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
 {
-  "product": {
-    "id": "number",
-    "created_at": "string",
-    "updated_at": "string",
-    "name": "string",
-    "description": "string",
-    "price": "number"
-  }
+  "id": "number",
+  "created_at": "string",
+  "updated_at": "string",
+  "name": "string",
+  "description": "string",
+  "price": "number",
+  "cost_price": "number"
 }
 ```
-
----
 
 ### ✏️ products:update
 
 Atualiza um produto existente.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -107,22 +95,17 @@ Atualiza um produto existente.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
-{
-  "success": "boolean",
-  "updated_at": "string"
-}
+{}
 ```
-
----
 
 ### ❌ products:delete
 
 Remove um produto.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -130,15 +113,11 @@ Remove um produto.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
-{
-  "success": "boolean"
-}
+{}
 ```
-
----
 
 ## 💰 SALES (RECEITAS)
 
@@ -146,7 +125,7 @@ Remove um produto.
 
 Cria uma nova venda.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -167,7 +146,7 @@ Cria uma nova venda.
 
 * `total_price` pode ser calculado automaticamente ou informado manualmente
 
-**response:**
+**> response:**
 
 ```json
 {
@@ -177,23 +156,20 @@ Cria uma nova venda.
 }
 ```
 
----
-
 ### 📄 sales:list
 
 Lista todas as vendas.
 
-**request:**
+**> request:**
 
 ```json
 {}
 ```
 
-**response:**
+**> response:**
 
 ```json
-{
-  "sales": [
+[
     {
       "id": "number",
       "created_at": "string",
@@ -203,17 +179,15 @@ Lista todas as vendas.
       "cost_total": "number",
       "gross_profit": "number"
     }
-  ]
-}
-```
+]
 
----
+```
 
 ### 🔍 sales:getById
 
 Busca uma venda com seus itens.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -221,41 +195,37 @@ Busca uma venda com seus itens.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
 {
-  "sale": {
-    "id": "number",
-    "created_at": "string",
-    "updated_at": "string",
-    "date": "string",
-    "total_price": "number",
-    "cost_total": "number",
-    "gross_profit": "number",
-    "items": [
-      {
-        "id": "number",
-        "created_at": "string",
-        "updated_at": "string",
-        "sale_id": "number",
-        "product_id": "number",
-        "quantity": "number",
-        "unit_price": "number",
-        "unit_cost": "number"
-      }
-    ]
-  }
+  "id": "number",
+  "created_at": "string",
+  "updated_at": "string",
+  "date": "string",
+  "total_price": "number",
+  "cost_total": "number",
+  "gross_profit": "number",
+  "items": [
+    {
+      "id": "number",
+      "created_at": "string",
+      "updated_at": "string",
+      "sale_id": "number",
+      "product_id": "number",
+      "quantity": "number",
+      "unit_price": "number",
+      "unit_cost": "number"
+    }
+  ]
 }
 ```
-
----
 
 ### ❌ sales:delete
 
 Remove uma venda.
 
-**request:**
+**> request:**
 
 ```json
 {
@@ -263,36 +233,28 @@ Remove uma venda.
 }
 ```
 
-**response:**
+**> response:**
 
 ```json
-{
-  "success": "boolean"
-}
+{}
 ```
-
----
 
 ## ⚠️ REGRAS GERAIS
 
 * Todos os handlers devem ser implementados no **Main Process**;
 * O Renderer nunca acessa banco diretamente;
-* Toda persistência deve passar por repositories;
 * Dados devem ser validados antes de persistir;
 * IDs são sempre numéricos;
 * Datas devem ser strings no formato ISO (`2026-04-30T10:00:00Z`);
 * Campos `created_at` e `updated_at` são gerados automaticamente pelo sistema;
-
----
+* Toda persistência deve passar por repositories;
 
 ## 🔒 PADRÕES DE RESPOSTA
 
 ### Sucesso
 
 ```json
-{
-  "success": true
-}
+{}
 ```
 
 ### Erro
@@ -302,8 +264,6 @@ Remove uma venda.
   "error": "mensagem de erro"
 }
 ```
-
----
 
 ## 🧠 Convenções
 
