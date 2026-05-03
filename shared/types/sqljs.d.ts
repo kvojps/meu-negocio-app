@@ -7,6 +7,9 @@ declare module 'sql.js' {
 
   export interface SqlJsStatement {
     run(params?: unknown[]): void;
+    bind(params?: unknown[]): boolean;
+    step(): boolean;
+    get(): unknown[];
     free(): void;
   }
 

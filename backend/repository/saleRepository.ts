@@ -88,10 +88,15 @@ function assertValidItems(items: CreateSaleInput["items"]): void {
       throw new Error("Custo unitário inválido na venda.");
     }
 
-    const product = db.exec(
-      `SELECT id FROM products WHERE id = ${item.product_id}`,
-    );
-    if (product.length === 0 || product[0].values.length === 0) {
+    const productStmt = db.prepare(`SELECT id FROM products WHERE id = ?`);
+    let productExists = false;
+    try {
+      productStmt.bind([item.product_id]);
+      productExists = productStmt.step();
+    } finally {
+      productStmt.free();
+    }
+    if (!productExists) {
       throw new Error(`Produto ${item.product_id} não encontrado.`);
     }
   }
@@ -183,24 +188,32 @@ export function listSales(): Sale[] {
 
 export function getSaleById(id: number): SaleWithItems {
   const db = getDatabase();
-  const saleResult = db.exec(
-    `SELECT id, created_at, updated_at, date, total_price, cost_total, gross_profit FROM sales WHERE id = ${id}`,
+  const saleStmt = db.prepare(
+    `SELECT id, created_at, updated_at, date, total_price, cost_total, gross_profit FROM sales WHERE id = ?`,
   );
-
-  if (saleResult.length === 0 || saleResult[0].values.length === 0) {
-    throw new Error("Venda não encontrada.");
+  let sale: Sale;
+  try {
+    saleStmt.bind([id]);
+    if (!saleStmt.step()) {
+      throw new Error("Venda não encontrada.");
+    }
+    sale = mapSaleRow(saleStmt.get() as SaleRow);
+  } finally {
+    saleStmt.free();
   }
 
-  const itemResult = db.exec(
-    `SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items WHERE sale_id = ${id} ORDER BY id ASC`,
+  const itemStmt = db.prepare(
+    `SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items WHERE sale_id = ? ORDER BY id ASC`,
   );
-  const sale = mapSaleRow(saleResult[0].values[0] as SaleRow);
-  const items =
-    itemResult.length === 0
-      ? []
-      : itemResult[0].values.map((row: unknown[]) =>
-          mapSaleItemRow(row as SaleItemRow),
-        );
+  const items: SaleItem[] = [];
+  try {
+    itemStmt.bind([id]);
+    while (itemStmt.step()) {
+      items.push(mapSaleItemRow(itemStmt.get() as SaleItemRow));
+    }
+  } finally {
+    itemStmt.free();
+  }
 
   return {
     ...sale,
