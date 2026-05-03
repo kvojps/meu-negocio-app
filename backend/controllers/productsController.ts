@@ -30,7 +30,7 @@ export function registerProductHandlers() {
     },
   );
 
-  typedIpcMainHandle<any, { updated_at: string }>(
+  typedIpcMainHandle<ProductInput & { id: number }, { updated_at: string }>(
     "products:update",
     async (_event, productRaw) => {
       const parsed = updateProductSchema.parse(productRaw);
