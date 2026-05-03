@@ -1,35 +1,14 @@
 import type { Product, CreateProductInput } from "../../shared/product";
 import { getDatabase, persistDatabase } from "../database/sqlite";
 import {
+  mapProductRow,
+  type ProductRow,
+} from "../database/tables/productTables";
+import {
   getLastInsertedId,
   getChangedRowCount,
   ensureRowFound,
 } from "../database/helpers";
-
-// Mappers
-type ProductRow = [
-  number,
-  string,
-  string,
-  string,
-  string | null,
-  number,
-  number,
-];
-
-function mapProductRow(row: ProductRow): Product {
-  const [id, createdAt, updatedAt, name, description, price, costPrice] = row;
-
-  return {
-    id: Number(id),
-    created_at: String(createdAt),
-    updated_at: String(updatedAt),
-    name: String(name),
-    description: description === null ? undefined : String(description),
-    price: Number(price),
-    cost_price: Number(costPrice),
-  };
-}
 
 // Validations
 function assertValidProduct(input: CreateProductInput): void {
