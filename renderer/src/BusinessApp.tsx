@@ -1057,12 +1057,14 @@ export function App() {
     setProductError('');
 
     const response = await window.api.listProducts();
-    if (response.success && response.products) {
-      setProducts(response.products);
-      const nextTotalPages = Math.max(1, Math.ceil(response.products.length / ITEMS_PER_PAGE));
+    const products = response.success ? response.data?.products : undefined;
+
+    if (response.success && products) {
+      setProducts(products);
+      const nextTotalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
       setProductPage((currentPageValue) => Math.min(currentPageValue, nextTotalPages));
     } else {
-      setProductError(response.error ?? 'Erro ao carregar produtos.');
+      setProductError(response.success ? 'Erro ao carregar produtos.' : response.error.message ?? 'Erro ao carregar produtos.');
     }
 
     setLoadingProducts(false);
@@ -1073,12 +1075,14 @@ export function App() {
     setSalesError('');
 
     const response = await window.api.listSales();
-    if (response.success && response.sales) {
-      setSales(response.sales);
-      const nextTotalPages = Math.max(1, Math.ceil(response.sales.length / ITEMS_PER_PAGE));
+    const sales = response.success ? response.data?.sales : undefined;
+
+    if (response.success && sales) {
+      setSales(sales);
+      const nextTotalPages = Math.max(1, Math.ceil(sales.length / ITEMS_PER_PAGE));
       setSalePage((currentPageValue) => Math.min(currentPageValue, nextTotalPages));
     } else {
-      setSalesError(response.error ?? 'Erro ao carregar receitas.');
+      setSalesError(response.success ? 'Erro ao carregar receitas.' : response.error.message ?? 'Erro ao carregar receitas.');
     }
 
     setLoadingSales(false);
@@ -1107,15 +1111,16 @@ export function App() {
   async function handleSaveProduct(product: CreateProductPayload, productId?: number) {
     if (productId) {
       const response = await window.api.updateProduct({ id: productId, ...product });
+      const updatedAt = response.success ? response.data?.updated_at : undefined;
 
-      if (!response.success || !response.updated_at) {
-        throw new Error(response.error ?? 'Erro ao atualizar produto.');
+      if (!response.success || !updatedAt) {
+        throw new Error(response.success ? 'Erro ao atualizar produto.' : response.error.message ?? 'Erro ao atualizar produto.');
       }
 
       setProducts((currentProducts) =>
         currentProducts.map((currentProduct) =>
           currentProduct.id === productId
-            ? { ...currentProduct, ...product, updated_at: response.updated_at }
+            ? { ...currentProduct, ...product, updated_at: updatedAt }
             : currentProduct
         )
       );
@@ -1125,12 +1130,13 @@ export function App() {
     }
 
     const response = await window.api.createProduct(product);
+    const createdProduct = response.success ? response.data?.product : undefined;
 
-    if (!response.success || !response.product) {
-      throw new Error(response.error ?? 'Erro ao cadastrar produto.');
+    if (!response.success || !createdProduct) {
+      throw new Error(response.success ? 'Erro ao cadastrar produto.' : response.error.message ?? 'Erro ao cadastrar produto.');
     }
 
-    setProducts((currentProducts) => [response.product as Product, ...currentProducts]);
+    setProducts((currentProducts) => [createdProduct as Product, ...currentProducts]);
     setProductError('');
     setProductPage(1);
     closeProductModal();
@@ -1150,7 +1156,7 @@ export function App() {
     const response = await window.api.deleteProduct({ id: product.id });
 
     if (!response.success) {
-      setProductError(response.error ?? 'Erro ao excluir produto.');
+      setProductError(response.error.message ?? 'Erro ao excluir produto.');
       return;
     }
 
@@ -1167,12 +1173,13 @@ export function App() {
 
   async function handleSaveSale(sale: CreateSaleInput) {
     const response = await window.api.createSale(sale);
+    const createdSale = response.success ? response.data?.sale : undefined;
 
-    if (!response.success || !response.sale) {
-      throw new Error(response.error ?? 'Erro ao registrar receita.');
+    if (!response.success || !createdSale) {
+      throw new Error(response.success ? 'Erro ao registrar receita.' : response.error.message ?? 'Erro ao registrar receita.');
     }
 
-    setSales((currentSales) => [response.sale as Sale, ...currentSales]);
+    setSales((currentSales) => [createdSale as Sale, ...currentSales]);
     setSalesError('');
     setSalePage(1);
     closeSaleModal();
@@ -1192,7 +1199,7 @@ export function App() {
     const response = await window.api.deleteSale({ id: sale.id });
 
     if (!response.success) {
-      setSalesError(response.error ?? 'Erro ao excluir receita.');
+      setSalesError(response.error.message ?? 'Erro ao excluir receita.');
       return;
     }
 
@@ -1215,13 +1222,15 @@ export function App() {
     setSaleDetailsStatus('Carregando detalhes...');
 
     const response = await window.api.getSaleById({ id: sale.id });
-    if (response.success && response.sale) {
-      setSaleDetails(response.sale);
+    const saleDetails = response.success ? response.data?.sale : undefined;
+
+    if (response.success && saleDetails) {
+      setSaleDetails(saleDetails);
       setSaleDetailsStatus('');
       return;
     }
 
-    setSaleDetailsStatus(response.error ?? 'Erro ao carregar receita.');
+    setSaleDetailsStatus(response.success ? 'Erro ao carregar receita.' : response.error.message ?? 'Erro ao carregar receita.');
   }
 
   const totalProductPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));

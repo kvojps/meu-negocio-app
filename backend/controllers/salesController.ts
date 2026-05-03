@@ -1,5 +1,3 @@
-import { ipcMain, IpcMainInvokeEvent } from "electron";
-import { ZodError } from "zod";
 import type { CreateSaleInput } from "../../shared/dtos/saleDto";
 import {
   createSale,
@@ -9,76 +7,43 @@ import {
 } from "../repository/saleRepository";
 import { productExists } from "../repository/productRepository";
 import { createSaleSchema } from "../../shared/dtos/saleDto";
+import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerSaleHandlers() {
-  ipcMain.handle(
+  typedIpcMainHandle<CreateSaleInput, { sale: unknown }>(
     "sales:create",
-    async (_event: IpcMainInvokeEvent, saleRaw: CreateSaleInput) => {
-      try {
-        const input = createSaleSchema.parse(saleRaw) as CreateSaleInput;
+    async (_event, saleRaw) => {
+      const input = createSaleSchema.parse(saleRaw) as CreateSaleInput;
 
-        for (const item of input.items) {
-          if (!productExists(item.product_id)) {
-            throw new Error(`Produto ${item.product_id} não encontrado.`);
-          }
+      for (const item of input.items) {
+        if (!productExists(item.product_id)) {
+          throw new Error(`Produto ${item.product_id} não encontrado.`);
         }
-
-        const created = createSale(input);
-        return { success: true, sale: created };
-      } catch (err) {
-        if (err instanceof ZodError) {
-          return {
-            success: false,
-            error: err.issues.map((e) => e.message).join("; "),
-          };
-        }
-        return {
-          success: false,
-          error: err instanceof Error ? err.message : String(err),
-        };
       }
+
+      const created = createSale(input);
+      return { sale: created };
     },
   );
 
-  ipcMain.handle("sales:list", async (_event: IpcMainInvokeEvent) => {
-    try {
-      const items = listSales();
-      return { success: true, sales: items };
-    } catch (err) {
-      return {
-        success: false,
-        error: err instanceof Error ? err.message : String(err),
-      };
-    }
+  typedIpcMainHandle<void, { sales: unknown[] }>("sales:list", async () => {
+    const items = listSales();
+    return { sales: items };
   });
 
-  ipcMain.handle(
+  typedIpcMainHandle<{ id: number }, { sale: unknown }>(
     "sales:getById",
-    async (_event: IpcMainInvokeEvent, payload: { id: number }) => {
-      try {
-        const sale = getSaleById(payload.id);
-        return { success: true, sale };
-      } catch (err) {
-        return {
-          success: false,
-          error: err instanceof Error ? err.message : String(err),
-        };
-      }
+    async (_event, payload) => {
+      const sale = getSaleById(payload.id);
+      return { sale };
     },
   );
 
-  ipcMain.handle(
+  typedIpcMainHandle<{ id: number }, null>(
     "sales:delete",
-    async (_event: IpcMainInvokeEvent, payload: { id: number }) => {
-      try {
-        deleteSale(payload.id);
-        return { success: true };
-      } catch (err) {
-        return {
-          success: false,
-          error: err instanceof Error ? err.message : String(err),
-        };
-      }
+    async (_event, payload) => {
+      deleteSale(payload.id);
+      return null;
     },
   );
 }
