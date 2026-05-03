@@ -1,4 +1,5 @@
 import type { ProductInput } from "../../shared/dtos/productDto";
+import type { Product } from "../../shared/product";
 import {
   createProduct,
   deleteProduct,
@@ -12,7 +13,7 @@ import {
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerProductHandlers() {
-  typedIpcMainHandle<ProductInput, { product: unknown }>(
+  typedIpcMainHandle<ProductInput, { product: Product }>(
     "products:create",
     async (_event, productRaw) => {
       const input = createProductSchema.parse(productRaw) as ProductInput;
@@ -21,7 +22,7 @@ export function registerProductHandlers() {
     },
   );
 
-  typedIpcMainHandle<void, { products: unknown[] }>(
+  typedIpcMainHandle<void, { products: Product[] }>(
     "products:list",
     async () => {
       const items = listProducts();
@@ -29,7 +30,7 @@ export function registerProductHandlers() {
     },
   );
 
-  typedIpcMainHandle<any, { updated_at: unknown }>(
+  typedIpcMainHandle<any, { updated_at: string }>(
     "products:update",
     async (_event, productRaw) => {
       const parsed = updateProductSchema.parse(productRaw);

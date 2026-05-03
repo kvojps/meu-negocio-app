@@ -1,4 +1,5 @@
 import type { CreateSaleInput } from "../../shared/dtos/saleDto";
+import type { Sale, SaleWithItems } from "../../shared/sale";
 import {
   createSale,
   deleteSale,
@@ -10,7 +11,7 @@ import { createSaleSchema } from "../../shared/dtos/saleDto";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerSaleHandlers() {
-  typedIpcMainHandle<CreateSaleInput, { sale: unknown }>(
+  typedIpcMainHandle<CreateSaleInput, { sale: Sale }>(
     "sales:create",
     async (_event, saleRaw) => {
       const input = createSaleSchema.parse(saleRaw) as CreateSaleInput;
@@ -26,12 +27,12 @@ export function registerSaleHandlers() {
     },
   );
 
-  typedIpcMainHandle<void, { sales: unknown[] }>("sales:list", async () => {
+  typedIpcMainHandle<void, { sales: Sale[] }>("sales:list", async () => {
     const items = listSales();
     return { sales: items };
   });
 
-  typedIpcMainHandle<{ id: number }, { sale: unknown }>(
+  typedIpcMainHandle<{ id: number }, { sale: SaleWithItems }>(
     "sales:getById",
     async (_event, payload) => {
       const sale = getSaleById(payload.id);
