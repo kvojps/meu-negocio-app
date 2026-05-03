@@ -25,27 +25,41 @@ type SaleItemRow = [
 ];
 
 function mapSaleRow(row: SaleRow): Sale {
+  const [id, createdAt, updatedAt, date, totalPrice, costTotal, grossProfit] =
+    row;
+
   return {
-    id: Number(row[0]),
-    created_at: String(row[1]),
-    updated_at: String(row[2]),
-    date: String(row[3]),
-    total_price: Number(row[4]),
-    cost_total: Number(row[5]),
-    gross_profit: Number(row[6]),
+    id: Number(id),
+    created_at: String(createdAt),
+    updated_at: String(updatedAt),
+    date: String(date),
+    total_price: Number(totalPrice),
+    cost_total: Number(costTotal),
+    gross_profit: Number(grossProfit),
   };
 }
 
 function mapSaleItemRow(row: SaleItemRow): SaleItem {
+  const [
+    id,
+    createdAt,
+    updatedAt,
+    saleId,
+    productId,
+    quantity,
+    unitPrice,
+    unitCost,
+  ] = row;
+
   return {
-    id: Number(row[0]),
-    created_at: String(row[1]),
-    updated_at: String(row[2]),
-    sale_id: Number(row[3]),
-    product_id: Number(row[4]),
-    quantity: Number(row[5]),
-    unit_price: Number(row[6]),
-    unit_cost: Number(row[7]),
+    id: Number(id),
+    created_at: String(createdAt),
+    updated_at: String(updatedAt),
+    sale_id: Number(saleId),
+    product_id: Number(productId),
+    quantity: Number(quantity),
+    unit_price: Number(unitPrice),
+    unit_cost: Number(unitCost),
   };
 }
 

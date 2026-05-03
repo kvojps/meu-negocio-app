@@ -7,15 +7,27 @@ import {
 } from "../database/helpers";
 
 // Mappers
-function mapProductRow(row: unknown[]): Product {
+type ProductRow = [
+  number,
+  string,
+  string,
+  string,
+  string | null,
+  number,
+  number,
+];
+
+function mapProductRow(row: ProductRow): Product {
+  const [id, createdAt, updatedAt, name, description, price, costPrice] = row;
+
   return {
-    id: Number(row[0]),
-    created_at: String(row[1]),
-    updated_at: String(row[2]),
-    name: String(row[3]),
-    description: row[4] === null ? undefined : String(row[4]),
-    price: Number(row[5]),
-    cost_price: Number(row[6]),
+    id: Number(id),
+    created_at: String(createdAt),
+    updated_at: String(updatedAt),
+    name: String(name),
+    description: description === null ? undefined : String(description),
+    price: Number(price),
+    cost_price: Number(costPrice),
   };
 }
 
@@ -81,7 +93,7 @@ export function listProducts(): Product[] {
   }
 
   const table = result[0];
-  return table.values.map((row: unknown[]) => mapProductRow(row));
+  return table.values.map((row: unknown[]) => mapProductRow(row as ProductRow));
 }
 
 export function updateProduct(id: number, input: CreateProductInput): string {
