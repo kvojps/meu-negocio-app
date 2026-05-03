@@ -1,14 +1,14 @@
 import type { Product, CreateProductInput } from "../../shared/product";
-import { getDatabase, persistDatabase } from "../database/sqlite";
+import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   mapProductRow,
   type ProductRow,
-} from "../database/tables/productTables";
+} from "../infra/database/tables/productTables";
 import {
   getLastInsertedId,
   getChangedRowCount,
   ensureRowFound,
-} from "../database/helpers";
+} from "../infra/database/helpers";
 
 // Validations
 function assertValidProduct(input: CreateProductInput): void {

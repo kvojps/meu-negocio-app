@@ -4,18 +4,18 @@ import type {
   SaleItem,
   SaleWithItems,
 } from "../../shared/sale";
-import { getDatabase, persistDatabase } from "../database/sqlite";
+import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   getLastInsertedId,
   getChangedRowCount,
   ensureRowFound,
-} from "../database/helpers";
+} from "../infra/database/helpers";
 import {
   mapSaleRow,
   mapSaleItemRow,
   type SaleRow,
   type SaleItemRow,
-} from "../database/tables/saleTables";
+} from "../infra/database/tables/saleTables";
 
 // Validations
 function assertValidDate(date: string): void {

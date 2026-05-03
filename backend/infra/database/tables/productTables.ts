@@ -1,4 +1,4 @@
-import type { Product } from "../../../shared/product";
+import type { Product } from "../../../../shared/product";
 
 export type ProductRow = [
   number,
