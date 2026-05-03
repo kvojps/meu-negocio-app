@@ -2,7 +2,7 @@
 
 Este documento define os contratos de comunicação entre o **Renderer (React)** e o **Main Process (Electron)** via IPC. Todos os dados devem seguir exatamente estas estruturas.
 
-> Tipos compartilhados estão em `shared/product.ts` e `shared/sale.ts`.
+> Tipos compartilhados estão em `shared/product.ts`, `shared/sale.ts` e `shared/dtos/`.
 
 ---
 
@@ -32,7 +32,7 @@ O campo `error` é uma string com a mensagem da exceção lançada.
 
 Cria um novo produto.
 
-**Request:** `CreateProductInput`
+**Request:** `ProductInput`
 
 ```ts
 {
@@ -75,7 +75,7 @@ Lista todos os produtos, ordenados por `id DESC`.
 
 Atualiza um produto existente.
 
-**Request:** `UpdateProductInput`
+**Request:** `ProductInput` + `id`
 
 ```ts
 {

@@ -1,9 +1,5 @@
-import type {
-  CreateSaleInput,
-  Sale,
-  SaleItem,
-  SaleWithItems,
-} from "../../shared/sale";
+import type { CreateSaleInput } from "../../shared/dtos/saleDto";
+import type { Sale, SaleItem, SaleWithItems } from "../../shared/sale";
 import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   getLastInsertedId,
@@ -17,65 +13,9 @@ import {
   type SaleItemRow,
 } from "../infra/database/tables/saleTables";
 
-// Validations
-function assertValidDate(date: string): void {
-  if (Number.isNaN(Date.parse(date))) {
-    throw new Error("Data da venda inválida.");
-  }
-}
+// NOTE: Repository assumes input already validated
 
-function assertValidSale(total_price: number): void {
-  if (!Number.isFinite(total_price) || total_price < 0) {
-    throw new Error(
-      "Valor total da venda deve ser um número válido maior ou igual a zero.",
-    );
-  }
-}
-
-function assertValidItems(items: CreateSaleInput["items"]): void {
-  if (items.length === 0) {
-    throw new Error("Adicione ao menos um item à venda.");
-  }
-
-  const db = getDatabase();
-
-  for (const item of items) {
-    if (!Number.isInteger(item.product_id) || item.product_id <= 0) {
-      throw new Error("Produto inválido na venda.");
-    }
-
-    if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
-      throw new Error("Quantidade inválida na venda.");
-    }
-
-    if (!Number.isFinite(item.unit_price) || item.unit_price < 0) {
-      throw new Error("Preço unitário inválido na venda.");
-    }
-
-    if (!Number.isFinite(item.unit_cost) || item.unit_cost < 0) {
-      throw new Error("Custo unitário inválido na venda.");
-    }
-
-    const productStmt = db.prepare(`SELECT id FROM products WHERE id = ?`);
-    let productExists = false;
-    try {
-      productStmt.bind([item.product_id]);
-      productExists = productStmt.step();
-    } finally {
-      productStmt.free();
-    }
-    if (!productExists) {
-      throw new Error(`Produto ${item.product_id} não encontrado.`);
-    }
-  }
-}
-
-// Repository functions
 export function createSale(input: CreateSaleInput): Sale {
-  assertValidDate(input.date);
-  assertValidSale(input.total_price);
-  assertValidItems(input.items);
-
   const now = new Date().toISOString();
   const db = getDatabase();
   const costTotal = input.items.reduce(

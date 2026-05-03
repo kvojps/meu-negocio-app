@@ -23,12 +23,4 @@ export interface SaleWithItems extends Sale {
   items: SaleItem[];
 }
 
-// Inputs
-export type CreateSaleItemInput = Omit<
-  SaleItem,
-  "id" | "created_at" | "updated_at" | "sale_id"
->;
-
-export type CreateSaleInput = Omit<Sale, "id" | "created_at" | "updated_at"> & {
-  items: CreateSaleItemInput[];
-};
+// Note: input types moved to DTOs in `shared/dtos/saleDto.ts`

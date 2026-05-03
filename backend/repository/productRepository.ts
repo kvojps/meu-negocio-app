@@ -1,4 +1,5 @@
-import type { Product, CreateProductInput } from "../../shared/product";
+import type { Product } from "../../shared/product";
+import type { ProductInput } from "../../shared/dtos/productDto";
 import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   mapProductRow,
@@ -10,36 +11,9 @@ import {
   ensureRowFound,
 } from "../infra/database/helpers";
 
-// Validations
-function assertValidProduct(input: CreateProductInput): void {
-  if (typeof input.name !== "string" || input.name.trim().length === 0) {
-    throw new Error("Nome do produto é obrigatório.");
-  }
+// NOTE: Repository assumes input already validated
 
-  if (!Number.isFinite(input.price) || input.price < 0) {
-    throw new Error(
-      "Preço do produto deve ser um número válido maior ou igual a zero.",
-    );
-  }
-
-  if (!Number.isFinite(input.cost_price) || input.cost_price < 0) {
-    throw new Error(
-      "Custo do produto deve ser um número válido maior ou igual a zero.",
-    );
-  }
-
-  if (
-    input.description !== undefined &&
-    typeof input.description !== "string"
-  ) {
-    throw new Error("Descrição do produto deve ser uma string.");
-  }
-}
-
-// Repository functions
-export function createProduct(input: CreateProductInput): Product {
-  assertValidProduct(input);
-
+export function createProduct(input: ProductInput): Product {
   const now = new Date().toISOString();
   const db = getDatabase();
   const stmt = db.prepare(
@@ -75,9 +49,18 @@ export function listProducts(): Product[] {
   return table.values.map((row: unknown[]) => mapProductRow(row as ProductRow));
 }
 
-export function updateProduct(id: number, input: CreateProductInput): string {
-  assertValidProduct(input);
+export function productExists(id: number): boolean {
+  const db = getDatabase();
+  const stmt = db.prepare(`SELECT id FROM products WHERE id = ?`);
+  try {
+    stmt.bind([id]);
+    return stmt.step();
+  } finally {
+    stmt.free();
+  }
+}
 
+export function updateProduct(id: number, input: ProductInput): string {
   const now = new Date().toISOString();
   const db = getDatabase();
   const stmt = db.prepare(

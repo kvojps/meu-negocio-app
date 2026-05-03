@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { CreateSaleInput } from '../shared/sale';
+import type { CreateSaleInput } from '../shared/dtos/saleDto';
 
 contextBridge.exposeInMainWorld('api', {
   createProduct: (product: any) => ipcRenderer.invoke('products:create', product),
