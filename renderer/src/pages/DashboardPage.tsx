@@ -2,16 +2,15 @@ import { useState } from 'react';
 import type { Sale } from '../../../shared';
 import type { DashboardPeriod } from '../utils/ui';
 import {
-  buildDashboardBuckets,
   formatCurrency,
   formatDate,
   formatDashboardAxisLabel,
   formatRangeLabel,
   getCurrentMonthRange,
   getDashboardRange,
-  isSaleWithinRange,
   toDateInputValue
 } from '../utils/formatters';
+import { useDashboardMetrics } from '../hooks/useDashboardMetrics';
 
 type DashboardPageProps = {
   sales: Sale[];
@@ -26,15 +25,16 @@ export function DashboardPage({ sales, loading, onOpenSale }: DashboardPageProps
   const [customEndDate, setCustomEndDate] = useState(toDateInputValue(currentMonthRange.end));
 
   const range = getDashboardRange(period, customStartDate, customEndDate);
-  const filteredSales = sales.filter((sale) => isSaleWithinRange(sale, range.start, range.end));
-  const buckets = buildDashboardBuckets(filteredSales, range.start, range.end);
-
-  const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.total_price, 0);
-  const totalCost = filteredSales.reduce((sum, sale) => sum + (sale.cost_total ?? 0), 0);
-  const totalProfit = filteredSales.reduce((sum, sale) => sum + (sale.gross_profit ?? 0), 0);
-  const averageTicket = filteredSales.length > 0 ? totalRevenue / filteredSales.length : 0;
-  const peakRevenue = buckets.reduce((maxValue, bucket) => Math.max(maxValue, bucket.revenue), 0);
-  const recentSales = filteredSales.slice(0, 6);
+  const {
+    filteredSales,
+    buckets,
+    totalRevenue,
+    totalCost,
+    totalProfit,
+    averageTicket,
+    peakRevenue,
+    recentSales
+  } = useDashboardMetrics(sales, range);
   const chartWidth = 760;
   const chartHeight = 260;
   const chartPaddingX = 32;
