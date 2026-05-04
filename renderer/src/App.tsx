@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import type { Product, Sale, SaleWithItems, CreateSaleInput } from '../../shared';
-import type { ActiveSection, CreateProductPayload } from './utils/ui';
+import { useState } from 'react';
+import type { ActiveSection } from './utils/ui';
 import { Sidebar } from './components/layout/Sidebar';
 import { ProductModal } from './components/products/ProductModal';
 import { SaleModal } from './components/sales/SaleModal';
@@ -8,199 +7,51 @@ import { SaleDetailsModal } from './components/sales/SaleDetailsModal';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { SalesPage } from './pages/SalesPage';
-import { usePagination } from './hooks/usePagination';
+import { useProducts } from './hooks/useProducts';
+import { useSales } from './hooks/useSales';
 
 export function App() {
   const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [productError, setProductError] = useState('');
-  const [productModalOpen, setProductModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const [sales, setSales] = useState<Sale[]>([]);
-  const [loadingSales, setLoadingSales] = useState(true);
-  const [salesError, setSalesError] = useState('');
-  const [saleModalOpen, setSaleModalOpen] = useState(false);
-  const [saleDetailsOpen, setSaleDetailsOpen] = useState(false);
-  const [saleDetails, setSaleDetails] = useState<SaleWithItems | null>(null);
-  const [saleDetailsStatus, setSaleDetailsStatus] = useState('');
+  const {
+    products,
+    paginatedProducts,
+    loadingProducts,
+    productError,
+    productPage,
+    totalProductPages,
+    productModalOpen,
+    editingProduct,
+    openCreateProductModal,
+    openEditProductModal,
+    closeProductModal,
+    handleSaveProduct,
+    handleDeleteProduct,
+    goToPrevProductPage,
+    goToNextProductPage
+  } = useProducts();
 
   const {
-    page: productPage,
-    totalPages: totalProductPages,
-    paginatedItems: paginatedProducts,
-    goToFirst: goToFirstProductPage,
-    goToPrev: goToPrevProductPage,
-    goToNext: goToNextProductPage
-  } = usePagination(products);
-
-  const {
-    page: salePage,
-    totalPages: totalSalePages,
-    paginatedItems: paginatedSales,
-    goToFirst: goToFirstSalePage,
-    goToPrev: goToPrevSalePage,
-    goToNext: goToNextSalePage
-  } = usePagination(sales);
-
-  async function loadProducts() {
-    setLoadingProducts(true);
-    setProductError('');
-
-    const response = await window.api.listProducts();
-    const loadedProducts = response.success ? response.data?.products : undefined;
-
-    if (response.success && loadedProducts) {
-      setProducts(loadedProducts);
-    } else {
-      setProductError(response.success ? 'Erro ao carregar produtos.' : response.error.message ?? 'Erro ao carregar produtos.');
-    }
-
-    setLoadingProducts(false);
-  }
-
-  async function loadSales() {
-    setLoadingSales(true);
-    setSalesError('');
-
-    const response = await window.api.listSales();
-    const loadedSales = response.success ? response.data?.sales : undefined;
-
-    if (response.success && loadedSales) {
-      setSales(loadedSales);
-    } else {
-      setSalesError(response.success ? 'Erro ao carregar receitas.' : response.error.message ?? 'Erro ao carregar receitas.');
-    }
-
-    setLoadingSales(false);
-  }
-
-  useEffect(() => {
-    void loadProducts();
-    void loadSales();
-  }, []);
-
-  function openCreateProductModal() {
-    setEditingProduct(null);
-    setProductModalOpen(true);
-  }
-
-  function openEditProductModal(product: Product) {
-    setEditingProduct(product);
-    setProductModalOpen(true);
-  }
-
-  function closeProductModal() {
-    setProductModalOpen(false);
-    setEditingProduct(null);
-  }
-
-  async function handleSaveProduct(product: CreateProductPayload, productId?: number) {
-    if (productId) {
-      const response = await window.api.updateProduct({ id: productId, ...product });
-      const updatedAt = response.success ? response.data?.updated_at : undefined;
-
-      if (!response.success || !updatedAt) {
-        throw new Error(response.success ? 'Erro ao atualizar produto.' : response.error.message ?? 'Erro ao atualizar produto.');
-      }
-
-      setProducts((current) =>
-        current.map((p) => (p.id === productId ? { ...p, ...product, updated_at: updatedAt } : p))
-      );
-      setProductError('');
-      closeProductModal();
-      return;
-    }
-
-    const response = await window.api.createProduct(product);
-    const createdProduct = response.success ? response.data?.product : undefined;
-
-    if (!response.success || !createdProduct) {
-      throw new Error(response.success ? 'Erro ao cadastrar produto.' : response.error.message ?? 'Erro ao cadastrar produto.');
-    }
-
-    setProducts((current) => [createdProduct as Product, ...current]);
-    setProductError('');
-    goToFirstProductPage();
-    closeProductModal();
-  }
-
-  async function handleDeleteProduct(product: Product) {
-    if (!product.id) return;
-
-    const confirmed = window.confirm(`Excluir o produto "${product.name}"?`);
-    if (!confirmed) return;
-
-    setProductError('');
-    const response = await window.api.deleteProduct({ id: product.id });
-
-    if (!response.success) {
-      setProductError(response.error.message ?? 'Erro ao excluir produto.');
-      return;
-    }
-
-    await loadProducts();
-  }
-
-  async function handleSaveSale(sale: CreateSaleInput) {
-    const response = await window.api.createSale(sale);
-    const createdSale = response.success ? response.data?.sale : undefined;
-
-    if (!response.success || !createdSale) {
-      throw new Error(response.success ? 'Erro ao registrar receita.' : response.error.message ?? 'Erro ao registrar receita.');
-    }
-
-    setSales((current) => [createdSale as Sale, ...current]);
-    setSalesError('');
-    goToFirstSalePage();
-    setSaleModalOpen(false);
-  }
-
-  async function handleDeleteSale(sale: Sale) {
-    if (!sale.id) return;
-
-    const confirmed = window.confirm(`Excluir a receita #${sale.id}?`);
-    if (!confirmed) return;
-
-    setSalesError('');
-    const response = await window.api.deleteSale({ id: sale.id });
-
-    if (!response.success) {
-      setSalesError(response.error.message ?? 'Erro ao excluir receita.');
-      return;
-    }
-
-    if (saleDetails?.id === sale.id) {
-      setSaleDetailsOpen(false);
-      setSaleDetails(null);
-      setSaleDetailsStatus('');
-    }
-
-    await loadSales();
-  }
-
-  async function openSaleDetails(sale: Sale) {
-    if (!sale.id) return;
-
-    setSaleDetailsOpen(true);
-    setSaleDetails(null);
-    setSaleDetailsStatus('Carregando detalhes...');
-
-    const response = await window.api.getSaleById({ id: sale.id });
-    const details = response.success ? response.data?.sale : undefined;
-
-    if (response.success && details) {
-      setSaleDetails(details);
-      setSaleDetailsStatus('');
-      return;
-    }
-
-    setSaleDetailsStatus(response.success ? 'Erro ao carregar receita.' : response.error.message ?? 'Erro ao carregar receita.');
-  }
-
+    sales,
+    paginatedSales,
+    loadingSales,
+    salesError,
+    salePage,
+    totalSalePages,
+    saleModalOpen,
+    saleDetailsOpen,
+    saleDetails,
+    saleDetailsStatus,
+    openSaleModal,
+    closeSaleModal,
+    closeSaleDetails,
+    openSaleDetails,
+    handleSaveSale,
+    handleDeleteSale,
+    goToPrevSalePage,
+    goToNextSalePage
+  } = useSales();
 
   return (
     <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
@@ -237,9 +88,9 @@ export function App() {
             products={products}
             salePage={salePage}
             totalSalePages={totalSalePages}
-            onCreateSale={() => setSaleModalOpen(true)}
+            onCreateSale={openSaleModal}
             onOpenSaleDetails={(s) => void openSaleDetails(s)}
-            onDeleteSale={(s) => void handleDeleteSale(s)}
+            onDeleteSale={(s) => void handleDeleteSale(s, products)}
             onPreviousPage={goToPrevSalePage}
             onNextPage={goToNextSalePage}
           />
@@ -255,7 +106,7 @@ export function App() {
       <SaleModal
         open={saleModalOpen}
         products={products}
-        onClose={() => setSaleModalOpen(false)}
+        onClose={closeSaleModal}
         onSave={handleSaveSale}
       />
       <SaleDetailsModal
@@ -263,11 +114,7 @@ export function App() {
         sale={saleDetails}
         products={products}
         status={saleDetailsStatus}
-        onClose={() => {
-          setSaleDetailsOpen(false);
-          setSaleDetails(null);
-          setSaleDetailsStatus('');
-        }}
+        onClose={closeSaleDetails}
       />
     </div>
   );
