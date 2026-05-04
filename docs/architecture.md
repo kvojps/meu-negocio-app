@@ -10,7 +10,7 @@ Este projeto é um aplicativo desktop construído com **Electron + React + TypeS
 | **Preload**      | Electron contextBridge | Ponte segura entre renderer e main            |
 | **Renderer**     | React + TypeScript     | Interface do usuário e estado de UI           |
 
-A persistência é feita exclusivamente com **SQLite** via **SqlJs**, operando 100% offline.
+A persistência é feita exclusivamente com **SQLite** via **sql.js**, operando 100% offline.
 
 > [!IMPORTANT]
 > O renderer **nunca** acessa Node.js, o sistema de arquivos ou o banco de dados diretamente. Toda comunicação deve passar pelo canal IPC definido em [`api-contracts.md`](api-contracts.md).
@@ -24,12 +24,12 @@ graph TD
     A["Renderer Process<br/>(React UI)"]
     B["Preload Script<br/>(contextBridge)"]
     C["Main Process<br/>(Electron / Node.js)"]
-    D["Repositories<br/>(productRepository, saleRepository)"]
-    E["SQLite<br/>(better-sqlite3)"]
+  D["Controllers + Repositories<br/>(typedIpcMainHandle + repositories)"]
+  E["SQLite<br/>(sql.js)"]
 
     A -- "window.api.*" --> B
     B -- "ipcRenderer.invoke" --> C
-    C -- "ipcMain.handle" --> D
+  C -- "typedIpcMainHandle / ipcMain.handle" --> D
     D --> E
 ```
 
@@ -41,21 +41,35 @@ graph TD
 bussiness_management/
 ├── electronApp.ts            # Ponto de entrada do Electron (main process)
 ├── backend/
-│   ├── controllers/          # Handlers IPC — registram ipcMain.handle
-│   ├── database/
-│   │   ├── sqlite.ts         # Configuração e conexão com o banco
-│   │   ├── schema.ts         # Criação de tabelas (DDL)
-│   │   ├── helpers.ts        # Utilitários de banco (timestamps, etc.)
-│   │   └── paths.ts          # Resolução de caminho do arquivo .db
+│   ├── controllers/          # Handlers IPC — registram os canais tipados
+│   ├── infra/
+│   │   ├── typedIpc.ts       # Wrapper tipado sobre ipcMain.handle
+│   │   └── database/
+│   │       ├── sqlite.ts     # Configuração e conexão com o banco
+│   │       ├── schema.ts     # Criação de tabelas (DDL)
+│   │       ├── helpers.ts    # Utilitários de banco (timestamps, etc.)
+│   │       ├── paths.ts      # Resolução de caminho do arquivo .db
+│   │       └── tables/
+│   │           ├── productTables.ts
+│   │           └── saleTables.ts
 │   ├── repository/
 │   │   ├── productRepository.ts
 │   │   └── saleRepository.ts
 │   └── preload.ts            # Ponte contextBridge
 ├── renderer/                 # Aplicação React (UI)
 ├── shared/
-│   ├── types/                # Tipos TypeScript compartilhados
-│   ├── product.ts            # Contrato de produto
-│   └── sale.ts               # Contrato de venda
+│   ├── index.ts              # Reexporta contratos e modelos compartilhados
+│   ├── contracts/
+│   │   ├── ipcApi.ts         # Interface da API exposta ao renderer
+│   │   └── ipcContracts.ts   # Envelope ApiResponse
+│   ├── models/
+│   │   ├── product.ts
+│   │   ├── sale.ts
+│   │   └── dtos/
+│   │       ├── productDto.ts
+│   │       └── saleDto.ts
+│   └── types/
+│       └── sqljs.d.ts
 └── docs/                     # Documentação do projeto
 ```
 
@@ -63,13 +77,13 @@ bussiness_management/
 
 ## 4. Responsabilidades por camada
 
-### 4.1 Main Process (`electronApp.ts` + `backend/controllers/`)
+### 4.1 Main Process (`electronApp.ts` + `backend/controllers/` + `backend/infra/typedIpc.ts`)
 
 **Responsável por:**
 
 - Criar e gerenciar a janela do Electron;
 - Gerenciar o ciclo de vida da aplicação e do banco;
-- Registrar handlers `ipcMain.handle` para cada canal;
+- Registrar handlers tipados para cada canal IPC;
 - Orquestrar chamadas aos repositories;
 
 **Regras:**
@@ -80,16 +94,17 @@ bussiness_management/
 
 ---
 
-### 4.2 Camada de persistência (`backend/database/` + `backend/repository/`)
+### 4.2 Camada de persistência (`backend/infra/database/` + `backend/repository/`)
 
 O banco é acessado exclusivamente pelo Main Process através da seguinte organização:
 
 ```txt
-backend/database/
+backend/infra/database/
   ├── sqlite.ts     → abre/fecha conexão, exporta instância db
   ├── schema.ts     → executa CREATE TABLE (rodado na inicialização)
   ├── helpers.ts    → funções auxiliares (ex: gerar timestamps)
-  └── paths.ts      → resolve o caminho do arquivo .db em dev e produção
+  ├── paths.ts      → resolve o caminho do arquivo .db em dev e produção
+  └── tables/       → mapeamento entre linhas SQLite e modelos compartilhados
 
 backend/repository/
   ├── productRepository.ts   → CRUD de produtos
@@ -110,11 +125,12 @@ backend/repository/
 
 - Expor uma API controlada ao renderer via `contextBridge.exposeInMainWorld`;
 - Encaminhar chamadas usando `ipcRenderer.invoke(canal, payload)`;
+- Reutilizar os contratos tipados definidos em `shared/contracts/ipcApi.ts`;
 
 **Regras:**
 
 - Usar `contextIsolation: true` e `nodeIntegration: false` sempre;
-- Expor **apenas** as funções listadas nos contratos de [`api-contracts.md`](api-contracts.md);
+- Expor **apenas** as funções listadas nos contratos de [`api-contracts.md`](api-contracts.md) e em `shared/contracts/ipcApi.ts`;
 - Nunca expor referências diretas a módulos Node.js ou ao banco;
 
 Exemplo de estrutura exposta:
@@ -122,14 +138,14 @@ Exemplo de estrutura exposta:
 ```typescript
 // backend/preload.ts
 contextBridge.exposeInMainWorld("api", {
-  products: {
-    create: (data) => ipcRenderer.invoke("products:create", data),
-    list: () => ipcRenderer.invoke("products:list"),
-    // ...
-  },
-  sales: {
-    /* ... */
-  },
+  createProduct: (data) => ipcRenderer.invoke("products:create", data),
+  listProducts: () => ipcRenderer.invoke("products:list"),
+  updateProduct: (data) => ipcRenderer.invoke("products:update", data),
+  deleteProduct: (data) => ipcRenderer.invoke("products:delete", data),
+  createSale: (data) => ipcRenderer.invoke("sales:create", data),
+  listSales: () => ipcRenderer.invoke("sales:list"),
+  getSaleById: (data) => ipcRenderer.invoke("sales:getById", data),
+  deleteSale: (data) => ipcRenderer.invoke("sales:delete", data),
 });
 ```
 
@@ -145,7 +161,7 @@ contextBridge.exposeInMainWorld("api", {
 
 **Regras:**
 
-- Não importar nem usar APIs de Node.js, `fs`, `path`, ou `better-sqlite3`;
+- Não importar nem usar APIs de Node.js, `fs`, `path`, ou acesso direto ao banco;
 - Não acessar banco ou sistema de arquivos de forma direta;
 - Lógica de negócio e validações de domínio devem estar no Main Process;
 
@@ -155,11 +171,12 @@ contextBridge.exposeInMainWorld("api", {
 
 Contém tipos e contratos TypeScript usados por **ambas** as camadas:
 
-| Arquivo             | Conteúdo                                                    |
-| ------------------- | ----------------------------------------------------------- |
-| `shared/types/`     | Interfaces e tipos base (ex: `Product`, `Sale`, `SaleItem`) |
-| `shared/product.ts` | Contrato tipado de produto para IPC                         |
-| `shared/sale.ts`    | Contrato tipado de venda e itens para IPC                   |
+| Arquivo             | Conteúdo                                              |
+| ------------------- | ----------------------------------------------------- |
+| `shared/index.ts`   | Reexporta os contratos e modelos compartilhados       |
+| `shared/contracts/` | `AppApi`, `ApiResponse` e helpers do envelope IPC     |
+| `shared/models/`    | Entidades e DTOs compartilhados entre renderer e main |
+| `shared/types/`     | Tipos auxiliares, como a integração com `sql.js`      |
 
 **Objetivo:** eliminar duplicação e garantir consistência de tipos entre renderer e main.
 
@@ -175,7 +192,7 @@ sequenceDiagram
     participant Repo as Repository
     participant DB as SQLite
 
-    UI->>Pre: window.api.products.create(data)
+    UI->>Pre: window.api.createProduct(data)
     Pre->>Main: ipcRenderer.invoke("products:create", data)
     Main->>Repo: productRepository.create(data)
     Repo->>DB: INSERT (prepared statement)
@@ -205,9 +222,9 @@ sequenceDiagram
 - **Canais IPC:** formato `entidade:acao` (ex: `products:create`, `sales:list`);
 - **Entidades:** sempre no plural nos canais e nos repositórios;
 - **Timestamps:** `created_at` e `updated_at` em todas as entidades, formato ISO 8601;
-- **Tipagem:** todos os payloads IPC tipados via `shared/`;
+- **Tipagem:** todos os payloads IPC tipados via `shared/` e validados no Main Process antes da persistência;
 - **SQL:** sempre via prepared statements, centralizado nos repositories;
-- **Async:** operações externas usam `async/await`; better-sqlite3 é síncrono por design;
+- **Async:** o IPC usa `async/await`, enquanto a persistência com `sql.js` é síncrona dentro dos repositories;
 
 ---
 

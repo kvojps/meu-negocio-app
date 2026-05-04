@@ -2,27 +2,27 @@
 
 Este documento define os contratos de comunicação entre o **Renderer (React)** e o **Main Process (Electron)** via IPC. Todos os dados devem seguir exatamente estas estruturas.
 
-> Tipos compartilhados estão em `shared/product.ts`, `shared/sale.ts` e `shared/dtos/`.
+> Tipos compartilhados estão em `shared/models/`, `shared/models/dtos/`, `shared/contracts/` e são reexportados por `shared/index.ts`.
 
 ---
 
 ## Padrão de Resposta
 
-Todas as respostas seguem o mesmo envelope:
+Todas as respostas seguem o mesmo envelope definido em `shared/contracts/ipcContracts.ts`:
 
 **Sucesso:**
 
 ```ts
-{ success: true, [chave]: payload }
+{ success: true, data: payload }
 ```
 
 **Erro:**
 
 ```ts
-{ success: false, error: string }
+{ success: false, error: { message: string, code?: string, details?: unknown } }
 ```
 
-O campo `error` é uma string com a mensagem da exceção lançada.
+O campo `error` carrega a mensagem da exceção e, quando disponível, metadados adicionais de validação ou domínio.
 
 ---
 
@@ -48,7 +48,9 @@ Cria um novo produto.
 ```ts
 {
   success: true;
-  product: Product; // objeto completo com id, created_at, updated_at e todos os campos
+  data: {
+    product: Product; // objeto completo com id, created_at, updated_at e todos os campos
+  }
 }
 ```
 
@@ -65,7 +67,9 @@ Lista todos os produtos, ordenados por `id DESC`.
 ```ts
 {
   success: true;
-  products: Product[];
+  data: {
+    products: Product[];
+  };
 }
 ```
 
@@ -92,7 +96,9 @@ Atualiza um produto existente.
 ```ts
 {
   success: true;
-  updated_at: string; // ISO timestamp do momento da atualização
+  data: {
+    updated_at: string; // ISO timestamp do momento da atualização
+  }
 }
 ```
 
@@ -115,6 +121,7 @@ Remove um produto pelo `id`.
 ```ts
 {
   success: true;
+  data: null;
 }
 ```
 
@@ -146,7 +153,9 @@ Cria uma nova venda com seus itens. `cost_total` e `gross_profit` são **calcula
 ```ts
 {
   success: true;
-  sale: Sale; // inclui id, created_at, updated_at, date, total_price, cost_total, gross_profit
+  data: {
+    sale: Sale; // inclui id, created_at, updated_at, date, total_price, cost_total, gross_profit
+  }
 }
 ```
 
@@ -163,7 +172,9 @@ Lista todas as vendas, ordenadas por `date DESC, id DESC`.
 ```ts
 {
   success: true;
-  sales: Sale[];
+  data: {
+    sales: Sale[];
+  };
 }
 ```
 
@@ -200,7 +211,9 @@ Busca uma venda com seus itens pelo `id`.
 ```ts
 {
   success: true;
-  sale: SaleWithItems; // Sale + items[]
+  data: {
+    sale: SaleWithItems; // Sale + items[]
+  }
 }
 ```
 
@@ -247,6 +260,7 @@ Remove uma venda e seus itens pelo `id`.
 ```ts
 {
   success: true;
+  data: null;
 }
 ```
 
@@ -254,17 +268,17 @@ Remove uma venda e seus itens pelo `id`.
 
 ## Regras Gerais
 
-- Todos os handlers são registrados no **Main Process** (`registerProductHandlers`, `registerSaleHandlers`);
+- Todos os handlers são registrados no **Main Process** (`registerProductHandlers`, `registerSaleHandlers`) usando `typedIpcMainHandle`;
 - O Renderer **nunca** acessa o banco diretamente;
-- Dados são validados no repository antes de persistir; erros são propagados pelo envelope `{ success: false, error }`;
+- Dados são validados no Main Process antes de persistir; os repositories assumem entrada já validada;
 - `id` é sempre `number`;
 - Datas são strings ISO 8601 (ex.: `"2026-04-30T10:00:00.000Z"`).
 - `created_at` e `updated_at` são gerados automaticamente — nunca enviados no request;
 - `cost_total` e `gross_profit` são calculados internamente na criação da venda;
-- Toda persistência passa por repositories em `backend/repository/`;
+- Toda persistência passa por repositories em `backend/repository/`, com acesso ao banco em `backend/infra/database/`;
 
 ## Convenções de Canal
 
 - Formato: `entidade:acao` — ex.: `products:create`, `sales:list`;
 - Entidades sempre no **plural**;
-- Requests e responses devem ser tipados via `shared/`;
+- Requests e responses devem ser tipados via `shared/` e expostos no renderer via `shared/contracts/ipcApi.ts`;
