@@ -6,14 +6,14 @@ import {
   listSales,
 } from "../repository/saleRepository";
 import { productExists } from "../repository/productRepository";
-import { createSaleSchema } from "../../shared";
+import { createSaleDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerSaleHandlers() {
   typedIpcMainHandle<CreateSaleInput, { sale: Sale }>(
     "sales:create",
     async (_event, saleRaw) => {
-      const input = createSaleSchema.parse(saleRaw) as CreateSaleInput;
+      const input = createSaleDto.parse(saleRaw) as CreateSaleInput;
 
       for (const item of input.items) {
         if (!productExists(item.product_id)) {
