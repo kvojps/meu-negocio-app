@@ -1,7 +1,7 @@
 import type { Product } from "../models/product";
 import type { CreateSaleInput } from "../models/dtos/saleDto";
 import type { Sale, SaleWithItems } from "../models/sale";
-import type { ApiResponse } from "./ipcContracts";
+import type { ApiResponse } from "../contracts/ipcContracts";
 import type { ProductInput as ProductDtoInput } from "../models/dtos/productDto";
 
 export type AppApi = {
