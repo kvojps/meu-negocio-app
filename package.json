@@ -1,6 +1,6 @@
 {
   "name": "meu-negocio-app",
-  "version": "0.4.11",
+  "version": "0.4.17",
   "private": true,
   "main": "dist/electronApp.js",
   "scripts": {
