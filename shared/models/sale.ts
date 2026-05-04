@@ -23,4 +23,4 @@ export interface SaleWithItems extends Sale {
   items: SaleItem[];
 }
 
-// Note: input types moved to DTOs in `shared/dtos/saleDto.ts`
+// Note: input types moved to DTOs in `shared/models/dtos/saleDto.ts`

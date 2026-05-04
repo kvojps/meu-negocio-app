@@ -1,5 +1,9 @@
-import type { CreateSaleInput } from "../../shared/dtos/saleDto";
-import type { Sale, SaleItem, SaleWithItems } from "../../shared/sale";
+import type {
+  CreateSaleInput,
+  Sale,
+  SaleItem,
+  SaleWithItems,
+} from "../../shared";
 import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   getLastInsertedId,

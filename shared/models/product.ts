@@ -8,4 +8,4 @@ export interface Product {
   cost_price: number;
 }
 
-// Note: input types moved to DTOs in `shared/dtos/productDto.ts`
+// Note: input types moved to DTOs in `shared/models/dtos/productDto.ts`

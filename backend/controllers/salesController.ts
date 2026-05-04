@@ -1,5 +1,4 @@
-import type { CreateSaleInput } from "../../shared/dtos/saleDto";
-import type { Sale, SaleWithItems } from "../../shared/sale";
+import type { CreateSaleInput, Sale, SaleWithItems } from "../../shared";
 import {
   createSale,
   deleteSale,
@@ -7,7 +6,7 @@ import {
   listSales,
 } from "../repository/saleRepository";
 import { productExists } from "../repository/productRepository";
-import { createSaleSchema } from "../../shared/dtos/saleDto";
+import { createSaleSchema } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerSaleHandlers() {

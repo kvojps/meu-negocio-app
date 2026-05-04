@@ -1,15 +1,11 @@
-import type { ProductInput } from "../../shared/dtos/productDto";
-import type { Product } from "../../shared/product";
+import type { ProductInput, Product } from "../../shared";
 import {
   createProduct,
   deleteProduct,
   listProducts,
   updateProduct,
 } from "../repository/productRepository";
-import {
-  createProductSchema,
-  updateProductSchema,
-} from "../../shared/dtos/productDto";
+import { createProductSchema, updateProductSchema } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerProductHandlers() {

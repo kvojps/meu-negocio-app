@@ -1,17 +1,16 @@
-import type { Product } from "./product";
-import type { CreateSaleInput } from "./dtos/saleDto";
-import type { Sale, SaleWithItems } from "./sale";
+import type { Product } from "../models/product";
+import type { CreateSaleInput } from "../models/dtos/saleDto";
+import type { Sale, SaleWithItems } from "../models/sale";
 import type { ApiResponse } from "./ipcContracts";
-
-export type ProductInput = Omit<Product, "id" | "created_at" | "updated_at">;
+import type { ProductInput as ProductDtoInput } from "../models/dtos/productDto";
 
 export type AppApi = {
   createProduct: (
-    product: ProductInput,
+    product: ProductDtoInput,
   ) => Promise<ApiResponse<{ product: Product }>>;
   listProducts: () => Promise<ApiResponse<{ products: Product[] }>>;
   updateProduct: (
-    product: ProductInput & { id: number },
+    product: ProductDtoInput & { id: number },
   ) => Promise<ApiResponse<{ updated_at: string }>>;
   deleteProduct: (payload: { id: number }) => Promise<ApiResponse<null>>;
   createSale: (sale: CreateSaleInput) => Promise<ApiResponse<{ sale: Sale }>>;

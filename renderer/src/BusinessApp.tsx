@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Product } from '../../shared/product';
-import type { CreateSaleInput } from '../../shared/dtos/saleDto';
-import type { Sale, SaleWithItems } from '../../shared/sale';
+import type { Product, CreateSaleInput, Sale, SaleWithItems } from '../../shared';
 
 type CreateProductPayload = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
 type ActiveSection = 'dashboard' | 'products' | 'sales';
