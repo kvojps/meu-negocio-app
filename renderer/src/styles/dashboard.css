@@ -1,0 +1,162 @@
+.dashboard-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.dashboard-card {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-header {
+  margin-bottom: 0;
+}
+
+.dashboard-period-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dashboard-custom-range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 14px;
+}
+
+.dashboard-custom-range label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.dashboard-range-label {
+  margin: 0;
+  color: var(--muted);
+}
+
+.dashboard-metrics {
+  margin-top: 0;
+}
+
+.dashboard-chart-wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.dashboard-chart-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.dashboard-chart-legend span {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.revenue-swatch {
+  background: #2563eb;
+}
+
+.profit-swatch {
+  background: #16a34a;
+}
+
+.dashboard-line-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.dashboard-axis {
+  stroke: rgba(40, 26, 18, 0.18);
+  stroke-width: 1.2;
+}
+
+.dashboard-axis-vertical {
+  stroke: rgba(40, 26, 18, 0.12);
+}
+
+.dashboard-grid-line {
+  stroke: rgba(40, 26, 18, 0.08);
+  stroke-dasharray: 4 6;
+}
+
+.dashboard-axis-label {
+  fill: var(--muted);
+  font-size: 12px;
+}
+
+.dashboard-line {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.revenue-line {
+  stroke: #2563eb;
+}
+
+.profit-line {
+  stroke: #16a34a;
+  stroke-dasharray: 8 6;
+}
+
+.dashboard-point {
+  stroke: white;
+  stroke-width: 2;
+}
+
+.revenue-point {
+  fill: #2563eb;
+}
+
+.profit-point {
+  fill: #16a34a;
+}
+
+.dashboard-point-hit-area {
+  fill: transparent;
+}
+
+.dashboard-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-summary-strip > div {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(40, 26, 18, 0.1);
+}
+
+.dashboard-summary-strip span,
+.dashboard-chart-values span {
+  color: var(--muted);
+}
+
+.dashboard-summary-strip strong,
+.dashboard-chart-values strong {
+  display: block;
+  margin-top: 6px;
+}
+
+.dashboard-chart {
+  display: block;
+}
