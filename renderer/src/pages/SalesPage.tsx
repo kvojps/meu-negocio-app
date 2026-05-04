@@ -5,6 +5,7 @@ import { TablePagination } from '../components/shared/TablePagination';
 
 type SalesPageProps = {
   sales: Sale[];
+  paginatedSales: Sale[];
   loadingSales: boolean;
   salesError: string;
   products: Product[];
@@ -19,6 +20,7 @@ type SalesPageProps = {
 
 export function SalesPage({
   sales,
+  paginatedSales,
   loadingSales,
   salesError,
   products,
@@ -31,8 +33,6 @@ export function SalesPage({
   onNextPage
 }: SalesPageProps) {
   const totalRevenue = sales.reduce((sum, sale) => sum + sale.total_price, 0);
-  const saleStartIndex = (salePage - 1) * 8;
-  const paginatedSales = sales.slice(saleStartIndex, saleStartIndex + 8);
 
   return (
     <>

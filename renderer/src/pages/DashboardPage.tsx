@@ -4,6 +4,7 @@ import type { DashboardPeriod } from '../utils/ui';
 import {
   buildDashboardBuckets,
   formatCurrency,
+  formatDate,
   formatDashboardAxisLabel,
   formatRangeLabel,
   getCurrentMonthRange,
@@ -11,7 +12,6 @@ import {
   isSaleWithinRange,
   toDateInputValue
 } from '../utils/formatters';
-import { formatDate } from '../utils/formatters';
 
 type DashboardPageProps = {
   sales: Sale[];

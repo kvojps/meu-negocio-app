@@ -63,9 +63,6 @@ export function getCurrentMonthRange(referenceDate: Date): { start: Date; end: D
   return { start: startOfLocalDay(start), end: endOfLocalDay(end) };
 }
 
-export function formatDashboardDateLabel(date: Date): string {
-  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-}
 
 export function getDashboardRange(
   period: DashboardPeriod,
@@ -110,7 +107,7 @@ export function buildDashboardBuckets(sales: Sale[], start: Date, end: Date): Da
     if (!buckets.has(key)) {
       buckets.set(key, {
         key,
-        label: formatDashboardDateLabel(saleDate),
+        label: formatDashboardAxisLabel(saleDate),
         saleCount: 0,
         revenue: 0,
         cost: 0,
@@ -133,7 +130,7 @@ export function buildDashboardBuckets(sales: Sale[], start: Date, end: Date): Da
     result.push(
       buckets.get(key) ?? {
         key,
-        label: formatDashboardDateLabel(cursor),
+        label: formatDashboardAxisLabel(cursor),
         saleCount: 0,
         revenue: 0,
         cost: 0,

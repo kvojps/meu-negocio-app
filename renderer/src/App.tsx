@@ -8,8 +8,7 @@ import { SaleDetailsModal } from './components/sales/SaleDetailsModal';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { SalesPage } from './pages/SalesPage';
-
-const ITEMS_PER_PAGE = 8;
+import { usePagination } from './hooks/usePagination';
 
 export function App() {
   const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard');
@@ -20,16 +19,32 @@ export function App() {
   const [productError, setProductError] = useState('');
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [productPage, setProductPage] = useState(1);
 
   const [sales, setSales] = useState<Sale[]>([]);
   const [loadingSales, setLoadingSales] = useState(true);
   const [salesError, setSalesError] = useState('');
   const [saleModalOpen, setSaleModalOpen] = useState(false);
-  const [salePage, setSalePage] = useState(1);
   const [saleDetailsOpen, setSaleDetailsOpen] = useState(false);
   const [saleDetails, setSaleDetails] = useState<SaleWithItems | null>(null);
   const [saleDetailsStatus, setSaleDetailsStatus] = useState('');
+
+  const {
+    page: productPage,
+    totalPages: totalProductPages,
+    paginatedItems: paginatedProducts,
+    goToFirst: goToFirstProductPage,
+    goToPrev: goToPrevProductPage,
+    goToNext: goToNextProductPage
+  } = usePagination(products);
+
+  const {
+    page: salePage,
+    totalPages: totalSalePages,
+    paginatedItems: paginatedSales,
+    goToFirst: goToFirstSalePage,
+    goToPrev: goToPrevSalePage,
+    goToNext: goToNextSalePage
+  } = usePagination(sales);
 
   async function loadProducts() {
     setLoadingProducts(true);
@@ -40,8 +55,6 @@ export function App() {
 
     if (response.success && loadedProducts) {
       setProducts(loadedProducts);
-      const nextTotalPages = Math.max(1, Math.ceil(loadedProducts.length / ITEMS_PER_PAGE));
-      setProductPage((current) => Math.min(current, nextTotalPages));
     } else {
       setProductError(response.success ? 'Erro ao carregar produtos.' : response.error.message ?? 'Erro ao carregar produtos.');
     }
@@ -58,8 +71,6 @@ export function App() {
 
     if (response.success && loadedSales) {
       setSales(loadedSales);
-      const nextTotalPages = Math.max(1, Math.ceil(loadedSales.length / ITEMS_PER_PAGE));
-      setSalePage((current) => Math.min(current, nextTotalPages));
     } else {
       setSalesError(response.success ? 'Erro ao carregar receitas.' : response.error.message ?? 'Erro ao carregar receitas.');
     }
@@ -113,7 +124,7 @@ export function App() {
 
     setProducts((current) => [createdProduct as Product, ...current]);
     setProductError('');
-    setProductPage(1);
+    goToFirstProductPage();
     closeProductModal();
   }
 
@@ -144,7 +155,7 @@ export function App() {
 
     setSales((current) => [createdSale as Sale, ...current]);
     setSalesError('');
-    setSalePage(1);
+    goToFirstSalePage();
     setSaleModalOpen(false);
   }
 
@@ -190,8 +201,6 @@ export function App() {
     setSaleDetailsStatus(response.success ? 'Erro ao carregar receita.' : response.error.message ?? 'Erro ao carregar receita.');
   }
 
-  const totalProductPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
-  const totalSalePages = Math.max(1, Math.ceil(sales.length / ITEMS_PER_PAGE));
 
   return (
     <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
@@ -208,6 +217,7 @@ export function App() {
         ) : activeSection === 'products' ? (
           <ProductsPage
             products={products}
+            paginatedProducts={paginatedProducts}
             loadingProducts={loadingProducts}
             productError={productError}
             productPage={productPage}
@@ -215,12 +225,13 @@ export function App() {
             onCreateProduct={openCreateProductModal}
             onEditProduct={openEditProductModal}
             onDeleteProduct={(p) => void handleDeleteProduct(p)}
-            onPreviousPage={() => setProductPage((prev) => Math.max(prev - 1, 1))}
-            onNextPage={() => setProductPage((prev) => Math.min(prev + 1, totalProductPages))}
+            onPreviousPage={goToPrevProductPage}
+            onNextPage={goToNextProductPage}
           />
         ) : (
           <SalesPage
             sales={sales}
+            paginatedSales={paginatedSales}
             loadingSales={loadingSales}
             salesError={salesError}
             products={products}
@@ -229,8 +240,8 @@ export function App() {
             onCreateSale={() => setSaleModalOpen(true)}
             onOpenSaleDetails={(s) => void openSaleDetails(s)}
             onDeleteSale={(s) => void handleDeleteSale(s)}
-            onPreviousPage={() => setSalePage((prev) => Math.max(prev - 1, 1))}
-            onNextPage={() => setSalePage((prev) => Math.min(prev + 1, totalSalePages))}
+            onPreviousPage={goToPrevSalePage}
+            onNextPage={goToNextSalePage}
           />
         )}
       </main>

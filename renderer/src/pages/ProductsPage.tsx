@@ -6,6 +6,7 @@ import { TablePagination } from '../components/shared/TablePagination';
 
 type ProductsPageProps = {
   products: Product[];
+  paginatedProducts: Product[];
   loadingProducts: boolean;
   productError: string;
   productPage: number;
@@ -19,6 +20,7 @@ type ProductsPageProps = {
 
 export function ProductsPage({
   products,
+  paginatedProducts,
   loadingProducts,
   productError,
   productPage,
@@ -30,8 +32,6 @@ export function ProductsPage({
   onNextPage
 }: ProductsPageProps) {
   const totalCatalogValue = products.reduce((sum, product) => sum + product.price, 0);
-  const productStartIndex = (productPage - 1) * 8;
-  const paginatedProducts = products.slice(productStartIndex, productStartIndex + 8);
 
   return (
     <>
