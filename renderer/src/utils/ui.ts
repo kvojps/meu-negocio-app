@@ -1,0 +1,23 @@
+import type { Product } from '../../../shared';
+
+export type CreateProductPayload = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
+
+export type ActiveSection = 'dashboard' | 'products' | 'sales';
+
+export type DashboardPeriod = 'week' | 'month' | 'custom';
+
+export type SaleFormItemState = {
+  productId: string;
+  quantity: string;
+  unitPrice: string;
+  unitCost: string;
+};
+
+export type DashboardBucket = {
+  key: string;
+  label: string;
+  saleCount: number;
+  revenue: number;
+  cost: number;
+  profit: number;
+};
