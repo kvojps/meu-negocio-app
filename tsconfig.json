@@ -11,7 +11,7 @@
     "resolveJsonModule": true
   },
   "include": [
-    "app/electronApp.ts",
+    "app/app.ts",
     "app/backend/**/*.ts",
     "shared/**/*.d.ts",
     "shared/**/*.ts"

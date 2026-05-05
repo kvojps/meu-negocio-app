@@ -2,7 +2,7 @@
   "name": "meu-negocio-app",
   "version": "0.4.21",
   "private": true,
-  "main": "dist/app/electronApp.js",
+  "main": "dist/app/app.js",
   "scripts": {
     "build": "npm run build:frontend && npm run build:main",
     "build:main": "tsc -p tsconfig.json",
