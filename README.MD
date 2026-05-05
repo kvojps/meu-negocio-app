@@ -31,5 +31,5 @@ npm run dist
 | Documento                                     | Descrição                                           |
 | --------------------------------------------- | --------------------------------------------------- |
 | [Visão geral](docs/app-overview.md)           | Objetivo, escopo, funcionalidades e modelo de dados |
-| [Arquitetura](docs/architecture.md)           | Camadas, estrutura real do projeto e fluxo de dados |
-| [Contratos de API IPC](docs/api-contracts.md) | Contratos de comunicação entre renderer e main      |
+| [Arquitetura](docs/architecture.md)           | Organização do projeto e fluxo de dados             |
+| [Contratos de API IPC](docs/api-contracts.md) | Regras de comunicação entre renderer e main         |
