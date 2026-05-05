@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Product } from '../../../shared';
-import type { CreateProductPayload } from '../utils/ui';
+import type { ProductInput } from '../../../shared';
 import { usePagination } from './usePagination';
 
 type UseProductsResult = {
@@ -18,7 +18,7 @@ type UseProductsResult = {
   openEditProductModal: (product: Product) => void;
   closeProductModal: () => void;
   // Handlers de CRUD
-  handleSaveProduct: (product: CreateProductPayload, productId?: number) => Promise<void>;
+  handleSaveProduct: (product: ProductInput, productId?: number) => Promise<void>;
   handleDeleteProduct: (product: Product) => Promise<void>;
   // Navegação de página
   goToPrevProductPage: () => void;
@@ -80,7 +80,7 @@ export function useProducts(): UseProductsResult {
     setEditingProduct(null);
   }
 
-  async function handleSaveProduct(product: CreateProductPayload, productId?: number) {
+  async function handleSaveProduct(product: ProductInput, productId?: number) {
     if (productId) {
       const response = await window.api.updateProduct({ id: productId, ...product });
       const updatedAt = response.success ? response.data?.updated_at : undefined;

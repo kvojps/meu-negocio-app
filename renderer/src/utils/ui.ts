@@ -1,8 +1,4 @@
-import type { Product } from '../../../shared';
-
 export const ITEMS_PER_PAGE = 8;
-
-export type CreateProductPayload = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
 
 export type ActiveSection = 'dashboard' | 'products' | 'sales';
 

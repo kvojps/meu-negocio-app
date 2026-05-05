@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { Product } from '../../../../shared';
-import type { CreateProductPayload } from '../../utils/ui';
+import { createProductDto, type ProductInput } from '../../../../shared';
 
 type ProductModalProps = {
   open: boolean;
   product: Product | null;
   onClose: () => void;
-  onSave: (product: CreateProductPayload, productId?: number) => Promise<void>;
+  onSave: (product: ProductInput, productId?: number) => Promise<void>;
 };
 
 export function ProductModal({ open, product, onClose, onSave }: ProductModalProps) {
@@ -58,23 +58,15 @@ export function ProductModal({ open, product, onClose, onSave }: ProductModalPro
           onSubmit={async (event) => {
             event.preventDefault();
 
-            const normalizedName = name.trim();
-            const normalizedDescription = description.trim();
-            const normalizedPrice = Number(price);
-            const normalizedCostPrice = Number(costPrice);
+            const parsed = createProductDto.safeParse({
+              name: name,
+              description: description || undefined,
+              price: Number(price),
+              cost_price: Number(costPrice),
+            });
 
-            if (!normalizedName) {
-              setStatus('Informe o nome do produto.');
-              return;
-            }
-
-            if (!Number.isFinite(normalizedPrice) || normalizedPrice < 0) {
-              setStatus('Informe um preço válido.');
-              return;
-            }
-
-            if (!Number.isFinite(normalizedCostPrice) || normalizedCostPrice < 0) {
-              setStatus('Informe um custo válido.');
+            if (!parsed.success) {
+              setStatus(parsed.error.issues[0].message);
               return;
             }
 
@@ -82,15 +74,7 @@ export function ProductModal({ open, product, onClose, onSave }: ProductModalPro
             setStatus(product ? 'Atualizando produto...' : 'Salvando produto...');
 
             try {
-              await onSave(
-                {
-                  name: normalizedName,
-                  description: normalizedDescription,
-                  price: normalizedPrice,
-                  cost_price: normalizedCostPrice
-                },
-                product?.id
-              );
+              await onSave(parsed.data, product?.id);
               setStatus(product ? 'Produto atualizado com sucesso.' : 'Produto salvo com sucesso.');
             } catch (error) {
               setStatus(error instanceof Error ? error.message : product ? 'Erro ao atualizar produto.' : 'Erro ao salvar produto.');

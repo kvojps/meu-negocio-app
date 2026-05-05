@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Product } from '../../../../shared';
-import type { CreateSaleInput } from '../../../../shared';
+import { createSaleDto, type CreateSaleInput } from '../../../../shared';
 import type { SaleFormItemState } from '../../utils/ui';
 import { buildSaleFormItem, calculateSaleTotal, toDateTimeLocalValue } from '../../utils/formatters';
 
@@ -112,60 +112,28 @@ export function SaleModal({ open, products, onClose, onSave }: SaleModalProps) {
             }
 
             const parsedDate = new Date(dateValue);
-            if (Number.isNaN(parsedDate.getTime())) {
-              setStatus('Informe uma data válida para a receita.');
+
+            const parsed = createSaleDto.safeParse({
+              date: Number.isNaN(parsedDate.getTime()) ? dateValue : parsedDate.toISOString(),
+              total_price: Number(totalPrice),
+              items: items.map((item) => ({
+                product_id: Number(item.productId),
+                quantity: Number(item.quantity),
+                unit_price: Number(item.unitPrice),
+                unit_cost: Number(item.unitCost),
+              })),
+            });
+
+            if (!parsed.success) {
+              setStatus(parsed.error.issues[0].message);
               return;
             }
 
-            const normalizedTotal = Number(totalPrice);
-            if (!Number.isFinite(normalizedTotal) || normalizedTotal < 0) {
-              setStatus('Informe um total válido para a receita.');
-              return;
-            }
-
-            const normalizedItems: CreateSaleInput['items'] = [];
-
-            for (const item of items) {
-              const productId = Number(item.productId);
-              const quantity = Number(item.quantity);
-              const unitPrice = Number(item.unitPrice);
-              const unitCost = Number(item.unitCost);
-
-              if (!Number.isInteger(productId) || productId <= 0) {
-                setStatus('Selecione um produto válido em todos os itens.');
-                return;
-              }
-
-              if (!products.some((product) => product.id === productId)) {
-                setStatus('Um dos produtos selecionados não existe mais.');
-                return;
-              }
-
-              if (!Number.isInteger(quantity) || quantity <= 0) {
-                setStatus('Informe uma quantidade válida em todos os itens.');
-                return;
-              }
-
-              if (!Number.isFinite(unitPrice) || unitPrice < 0) {
-                setStatus('Informe preços unitários válidos em todos os itens.');
-                return;
-              }
-
-              if (!Number.isFinite(unitCost) || unitCost < 0) {
-                setStatus('Informe custos unitários válidos em todos os itens.');
-                return;
-              }
-
-              normalizedItems.push({
-                product_id: productId,
-                quantity,
-                unit_price: unitPrice,
-                unit_cost: unitCost
-              });
-            }
-
-            if (normalizedItems.length === 0) {
-              setStatus('Adicione ao menos um item à receita.');
+            const unknownProduct = parsed.data.items.find(
+              (item) => !products.some((p) => p.id === item.product_id)
+            );
+            if (unknownProduct) {
+              setStatus('Um dos produtos selecionados não existe mais.');
               return;
             }
 
@@ -173,11 +141,7 @@ export function SaleModal({ open, products, onClose, onSave }: SaleModalProps) {
             setStatus('Salvando receita...');
 
             try {
-              await onSave({
-                date: parsedDate.toISOString(),
-                total_price: normalizedTotal,
-                items: normalizedItems
-              });
+              await onSave(parsed.data);
             } catch (error) {
               setStatus(error instanceof Error ? error.message : 'Erro ao salvar receita.');
             } finally {
