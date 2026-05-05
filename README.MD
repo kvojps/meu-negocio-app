@@ -1,4 +1,4 @@
-# Meu Negócio — v0.4.20
+# Meu Negócio — v0.4.21
 
 Aplicativo desktop Windows para auxiliar pequenos empreendedores no gerenciamento de produtos e vendas. Permite cadastrar produtos, registrar vendas e acompanhar o histórico de receitas de forma simples e organizada. Opera 100% offline, sem dependência de internet ou servidores externos.
 
