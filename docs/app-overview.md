@@ -18,11 +18,12 @@ Pequeno empreendedor, em uso individual, sem autenticação e sem sincronizaçã
 
 ### 1.3 Funcionalidades
 
-| Área      | O que faz                                         |
-| --------- | ------------------------------------------------- |
-| Dashboard | Gráficos de produtos e receitas                   |
-| Produtos  | Cadastro, consulta, edição e exclusão de produtos |
-| Receitas  | Cadastro, consulta e exclusão de vendas           |
+| Área                  | O que faz                                                          |
+| --------------------- | ------------------------------------------------------------------ |
+| Dashboard             | Gráficos de produtos e receitas                                    |
+| Produtos              | Cadastro, consulta, edição e exclusão de produtos                  |
+| Receitas              | Cadastro, consulta e exclusão de vendas                            |
+| Importação/Exportação | Importar e exportar dados (backup e restauração) via arquivo local |
 
 ## 2. Regras de negócio atuais
 
