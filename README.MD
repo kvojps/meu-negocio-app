@@ -1,12 +1,17 @@
 # Meu Negócio — v0.4.21
 
-Aplicativo desktop Windows para auxiliar pequenos empreendedores no gerenciamento de produtos e vendas. Permite cadastrar produtos, registrar vendas e acompanhar o histórico de receitas de forma simples e organizada. Opera 100% offline, sem dependência de internet ou servidores externos.
+Aplicativo desktop Electron + React para gestão local de produtos e receitas. O app opera 100% offline, com persistência em SQLite via `sql.js`, e está organizado em três áreas principais dentro de `app/`: `backend/`, `frontend/` e `shared/`.
 
----
+## O que o app faz hoje
 
-## Início Rápido
+- Cadastro, edição, listagem e exclusão de produtos.
+- Registro, listagem, consulta detalhada e exclusão de receitas.
+- Dashboard com métricas de faturamento, custo e lucro bruto por período.
+- Navegação entre seções por sidebar e modais para edição de dados.
 
-### Execução em modo desenvolvimento
+## Início rápido
+
+### Desenvolvimento
 
 ```powershell
 npm install
@@ -19,15 +24,33 @@ npm run start
 npm run dist
 ```
 
-O instalador `.exe` será gerado na pasta `release/`. Execute-o para instalar o aplicativo.
+O instalador `.exe` é gerado em `release/`.
 
----
+## Estrutura atual
+
+```txt
+app/
+ app.ts
+ backend/
+  preload.ts
+  controllers/
+  infra/
+  repository/
+ frontend/
+  index.html
+  vite.config.ts
+  src/
+ shared/
+docs/
+```
+
+O banco local é salvo em `appData/data/app.db` no diretório de dados do usuário do Electron.
 
 ## Documentação
 
 | Documento                                     | Descrição                                           |
 | --------------------------------------------- | --------------------------------------------------- |
 | [Visão geral](docs/app-overview.md)           | Objetivo, escopo, funcionalidades e modelo de dados |
-| [Arquitetura](docs/architecture.md)           | Camadas, estrutura de pastas e fluxo de dados       |
-| [Contratos de API IPC](docs/api-contracts.md) | Contratos de comunicação IPC (request/response)     |
-| [Decisões técnicas](docs/decisions.md)        | Decisões de design e suas justificativas            |
+| [Arquitetura](docs/architecture.md)           | Camadas, estrutura real do projeto e fluxo de dados |
+| [Contratos de API IPC](docs/api-contracts.md) | Contratos de comunicação entre renderer e main      |
+| [Decisões técnicas](docs/decisions.md)        | Decisões de design e regras do projeto              |

@@ -93,12 +93,13 @@ Este documento registra as principais decisões técnicas do projeto e seus moti
 
 ## 6. Estrutura de Pastas
 
-**Decisão:** Organizar o código nas pastas `backend/`, `renderer/`, `shared/` e `docs/`.
+**Decisão:** Organizar o código dentro de `app/`, com `backend/`, `frontend/`, `shared/` e `docs/` no nível do repositório.
 
 **Motivo:**
 
 - Separação clara entre camadas, evitando acoplamento indevido;
 - Facilita a localização de código e onboarding de novos desenvolvedores;
+- Mantém o source alinhado com o build gerado em `dist/app/`.
 
 > Detalhes da estrutura em [`architecture.md`](architecture.md).
 
@@ -137,3 +138,27 @@ Este documento registra as principais decisões técnicas do projeto e seus moti
 - Reduz complexidade inicial e tempo de entrega;
 - Foco no problema principal do usuário (gestão local do negócio);
 - Permite evolução futura incremental sem reescritas;
+
+---
+
+## 10. Estrutura Atual do Código
+
+**Decisão:** Manter a aplicação organizada dentro de `app/`, com `backend/`, `frontend/` e `shared/`.
+
+**Motivo:**
+
+- Facilita separar o bootstrap do Electron, a UI React e os contratos compartilhados;
+- Reduz ambiguidades entre source e build, já que o output final também fica sob `dist/app/`;
+- Mantém a documentação e o código alinhados com a árvore real do projeto.
+
+---
+
+## 11. Total da Venda
+
+**Decisão:** Receber `total_price` no payload da venda e calcular apenas `cost_total` e `gross_profit` no backend.
+
+**Motivo:**
+
+- O valor total pode refletir o preço efetivamente cobrado na venda, inclusive quando houver ajustes manuais;
+- O backend continua responsável pelos totais derivados e pela consistência dos indicadores financeiros;
+- O contrato fica explícito no IPC e evita suposições entre renderer e main process.

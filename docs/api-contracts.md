@@ -131,14 +131,14 @@ Remove um produto pelo `id`.
 
 ### `sales:create`
 
-Cria uma nova venda com seus itens. `cost_total` e `gross_profit` são **calculados internamente** — não devem ser enviados no request.
+Cria uma nova venda com seus itens. `cost_total` e `gross_profit` são **calculados internamente** no Main Process. O renderer envia `total_price` já definido e o backend valida o payload com `zod`.
 
 **Request:** `CreateSaleInput`
 
 ```ts
 {
   date: string; // ISO 8601, ex: "2026-04-30T10:00:00Z"
-  total_price: number; // >= 0
+  total_price: number; // >= 0, informado pela UI
   items: Array<{
     product_id: number; // deve existir na tabela products
     quantity: number; // inteiro > 0
@@ -147,6 +147,8 @@ Cria uma nova venda com seus itens. `cost_total` e `gross_profit` são **calcula
   }>;
 }
 ```
+
+Antes de persistir, o handler confirma se cada `product_id` existe na tabela `products`.
 
 **Response (sucesso):**
 
@@ -276,6 +278,7 @@ Remove uma venda e seus itens pelo `id`.
 - `created_at` e `updated_at` são gerados automaticamente — nunca enviados no request;
 - `cost_total` e `gross_profit` são calculados internamente na criação da venda;
 - Toda persistência passa por repositories em `backend/repository/`, com acesso ao banco em `backend/infra/database/`;
+- Erros de validação retornam o envelope de erro com `code: "VALIDATION"` e `details` com as issues do `zod`;
 
 ## Convenções de Canal
 
