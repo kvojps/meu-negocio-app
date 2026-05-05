@@ -1,4 +1,4 @@
-import type { CreateSaleInput, Sale, SaleWithItems } from "../../../shared";
+import type { CreateSaleInput, Sale, SaleWithItems } from "../../shared";
 import {
   createSale,
   deleteSale,
@@ -6,7 +6,7 @@ import {
   listSales,
 } from "../repository/saleRepository";
 import { productExists } from "../repository/productRepository";
-import { createSaleDto } from "../../../shared";
+import { createSaleDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerSaleHandlers() {

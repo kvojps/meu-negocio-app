@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Product } from '../../../../../shared';
-import { createSaleDto, type CreateSaleInput } from '../../../../../shared';
+import type { Product } from '../../../../shared';
+import { createSaleDto, type CreateSaleInput } from '../../../../shared';
 import type { SaleFormItemState } from '../../utils/ui';
 import { buildSaleFormItem, calculateSaleTotal, toDateTimeLocalValue } from '../../utils/formatters';
 

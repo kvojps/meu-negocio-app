@@ -1,6 +1,6 @@
 import { ipcMain, IpcMainInvokeEvent } from "electron";
 import { ZodError } from "zod";
-import { ApiResponse, formatError, formatSuccess } from "../../../shared";
+import { ApiResponse, formatError, formatSuccess } from "../../shared";
 
 export function typedIpcMainHandle<Req, Res>(
   channel: string,

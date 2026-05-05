@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Sale } from '../../../../shared';
+import type { Sale } from '../../../shared';
 import type { DashboardPeriod } from '../utils/ui';
 import {
   formatCurrency,

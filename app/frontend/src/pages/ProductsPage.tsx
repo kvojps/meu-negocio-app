@@ -1,4 +1,4 @@
-import type { Product } from '../../../../shared';
+import type { Product } from '../../../shared';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { PencilIcon, TrashIcon } from '../components/shared/Icons';
 import { TablePagination } from '../components/shared/TablePagination';

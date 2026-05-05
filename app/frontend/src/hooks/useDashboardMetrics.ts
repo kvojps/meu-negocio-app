@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Sale } from '../../../../shared';
+import type { Sale } from '../../../shared';
 import type { DashboardBucket } from '../utils/ui';
 import { buildDashboardBuckets, isSaleWithinRange } from '../utils/formatters';
 

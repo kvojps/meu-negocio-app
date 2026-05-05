@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Product, Sale, SaleWithItems, CreateSaleInput } from '../../../../shared';
+import type { Product, Sale, SaleWithItems, CreateSaleInput } from '../../../shared';
 import { usePagination } from './usePagination';
 
 type UseSalesResult = {

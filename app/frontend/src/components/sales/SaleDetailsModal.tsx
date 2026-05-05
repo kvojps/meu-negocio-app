@@ -1,4 +1,4 @@
-import type { Product, SaleWithItems } from '../../../../../shared';
+import type { Product, SaleWithItems } from '../../../../shared';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 
 type SaleDetailsModalProps = {

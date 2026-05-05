@@ -1,11 +1,11 @@
-import type { ProductInput, Product } from "../../../shared";
+import type { ProductInput, Product } from "../../shared";
 import {
   createProduct,
   deleteProduct,
   listProducts,
   updateProduct,
 } from "../repository/productRepository";
-import { createProductDto, updateProductDto } from "../../../shared";
+import { createProductDto, updateProductDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
 export function registerProductHandlers() {

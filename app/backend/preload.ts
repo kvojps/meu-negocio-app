@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { AppApi } from "../../shared";
+import type { AppApi } from "../shared";
 
 type ApiResult<T extends (...args: any[]) => Promise<any>> = Awaited<
   ReturnType<T>

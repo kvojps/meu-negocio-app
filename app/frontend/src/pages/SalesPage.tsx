@@ -1,4 +1,4 @@
-import type { Product, Sale } from '../../../../shared';
+import type { Product, Sale } from '../../../shared';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { EyeIcon, TrashIcon } from '../components/shared/Icons';
 import { TablePagination } from '../components/shared/TablePagination';

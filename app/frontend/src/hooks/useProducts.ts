@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Product } from '../../../../shared';
-import type { ProductInput } from '../../../../shared';
+import type { Product } from '../../../shared';
+import type { ProductInput } from '../../../shared';
 import { usePagination } from './usePagination';
 
 type UseProductsResult = {

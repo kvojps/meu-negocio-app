@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Product } from '../../../../../shared';
-import { createProductDto, type ProductInput } from '../../../../../shared';
+import type { Product } from '../../../../shared';
+import { createProductDto, type ProductInput } from '../../../../shared';
 
 type ProductModalProps = {
   open: boolean;

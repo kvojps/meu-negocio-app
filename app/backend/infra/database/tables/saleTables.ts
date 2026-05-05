@@ -1,4 +1,4 @@
-import type { Sale, SaleItem } from "../../../../../shared";
+import type { Sale, SaleItem } from "../../../../shared";
 
 export type SaleRow = [number, string, string, string, number, number, number];
 export type SaleItemRow = [

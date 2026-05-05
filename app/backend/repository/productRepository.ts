@@ -1,4 +1,4 @@
-import type { Product, ProductInput } from "../../../shared";
+import type { Product, ProductInput } from "../../shared";
 import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   mapProductRow,

@@ -1,4 +1,4 @@
-import type { Sale, Product } from '../../../../shared';
+import type { Sale, Product } from '../../../shared';
 import type { DashboardBucket, DashboardPeriod, SaleFormItemState } from './ui';
 
 export function formatCurrency(value: number): string {

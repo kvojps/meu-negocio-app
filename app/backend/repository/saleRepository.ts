@@ -3,7 +3,7 @@ import type {
   Sale,
   SaleItem,
   SaleWithItems,
-} from "../../../shared";
+} from "../../shared";
 import { getDatabase, persistDatabase } from "../infra/database/sqlite";
 import {
   getLastInsertedId,
