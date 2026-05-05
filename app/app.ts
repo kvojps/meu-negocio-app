@@ -3,6 +3,7 @@ import { join } from 'path';
 import { initializeDatabase } from './backend/infra/database/sqlite';
 import { registerProductHandlers } from './backend/controllers/productsController';
 import { registerSaleHandlers } from './backend/controllers/salesController';
+import { registerBackupHandlers } from './backend/controllers/backupController';
 
 
 function createWindow() {
@@ -23,6 +24,7 @@ app.whenReady().then(async () => {
 
   registerProductHandlers();
   registerSaleHandlers();
+  registerBackupHandlers();
 
   createWindow();
 

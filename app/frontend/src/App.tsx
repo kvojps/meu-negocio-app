@@ -7,6 +7,7 @@ import { SaleDetailsModal } from './components/sales/SaleDetailsModal';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { SalesPage } from './pages/SalesPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { useProducts } from './hooks/useProducts';
 import { useSales } from './hooks/useSales';
 
@@ -79,6 +80,8 @@ export function App() {
             onPreviousPage={goToPrevProductPage}
             onNextPage={goToNextProductPage}
           />
+        ) : activeSection === 'settings' ? (
+          <SettingsPage />
         ) : (
           <SalesPage
             sales={sales}

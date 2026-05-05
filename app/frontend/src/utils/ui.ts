@@ -1,6 +1,6 @@
 export const ITEMS_PER_PAGE = 8;
 
-export type ActiveSection = 'dashboard' | 'products' | 'sales';
+export type ActiveSection = 'dashboard' | 'products' | 'sales' | 'settings';
 
 export type DashboardPeriod = 'week' | 'month' | 'custom';
 

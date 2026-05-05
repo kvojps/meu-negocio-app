@@ -25,6 +25,10 @@ const api: AppApi = {
     invoke<ApiResult<AppApi["getSaleById"]>>("sales:getById", payload),
   deleteSale: (payload) =>
     invoke<ApiResult<AppApi["deleteSale"]>>("sales:delete", payload),
+  exportData: () =>
+    invoke<ApiResult<AppApi["exportData"]>>("dados:exportar"),
+  importData: (payload) =>
+    invoke<ApiResult<AppApi["importData"]>>("dados:importar", payload),
 };
 
 contextBridge.exposeInMainWorld("api", api);
