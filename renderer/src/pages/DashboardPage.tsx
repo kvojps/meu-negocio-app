@@ -12,6 +12,41 @@ import {
 } from '../utils/formatters';
 import { useDashboardMetrics } from '../hooks/useDashboardMetrics';
 
+/* ── Metric card icons ── */
+function IconCount() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H4a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H4a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H4a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h6a1 1 0 0 1 0 2H4a1 1 0 0 1-1-1Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function IconRevenue() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 0 1-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582ZM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 0 1-.567.267Z" />
+      <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm1-13a1 1 0 1 0-2 0v.092a4.535 4.535 0 0 0-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 1 0-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 1 0 2 0v-.092a4.535 4.535 0 0 0 1.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0 0 11 9.092V7.151c.391.127.68.317.843.504a1 1 0 1 0 1.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function IconCost() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm5-2.25A.75.75 0 0 1 7.75 7h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 7 7.75Zm0 2.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Zm.75 2a.75.75 0 0 0 0 1.5h2a.75.75 0 0 0 0-1.5h-2Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function IconProfit() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-1 9a1 1 0 0 0 1-1v-4a1 1 0 1 0-2 0v4a1 1 0 0 0 1 1Z" clipRule="evenodd" />
+      <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm1-13a1 1 0 1 0-2 0v.092a4.535 4.535 0 0 0-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 1 0-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 1 0 2 0v-.092a4.535 4.535 0 0 0 1.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0 0 11 9.092V7.151c.391.127.68.317.843.504a1 1 0 1 0 1.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
 type DashboardPageProps = {
   sales: Sale[];
   loading: boolean;
@@ -103,19 +138,31 @@ export function DashboardPage({ sales, loading, onOpenSale }: DashboardPageProps
         <p className="dashboard-range-label">{range.label}: {formatRangeLabel(range.start, range.end)}</p>
 
         <div className="metrics sales-metrics dashboard-metrics">
-          <div className="metric-card">
+          <div className="metric-card metric-card--accent">
+            <div className="metric-card-icon">
+              <IconCount />
+            </div>
             <span>Receitas</span>
             <strong>{loading ? '...' : filteredSales.length}</strong>
           </div>
-          <div className="metric-card">
+          <div className="metric-card metric-card--info">
+            <div className="metric-card-icon">
+              <IconRevenue />
+            </div>
             <span>Faturamento</span>
             <strong>{loading ? '...' : formatCurrency(totalRevenue)}</strong>
           </div>
-          <div className="metric-card">
+          <div className="metric-card metric-card--warning">
+            <div className="metric-card-icon">
+              <IconCost />
+            </div>
             <span>Custo</span>
             <strong>{loading ? '...' : formatCurrency(totalCost)}</strong>
           </div>
-          <div className="metric-card">
+          <div className="metric-card metric-card--success">
+            <div className="metric-card-icon">
+              <IconProfit />
+            </div>
             <span>Lucro</span>
             <strong>{loading ? '...' : formatCurrency(totalProfit)}</strong>
           </div>
@@ -210,13 +257,13 @@ export function DashboardPage({ sales, loading, onOpenSale }: DashboardPageProps
                 </tr>
               ) : (
                 recentSales.map((sale) => (
-                  <tr key={sale.id}>
+                  <tr key={sale.id} onClick={() => sale.id && onOpenSale(sale)}>
                     <td>{sale.id}</td>
                     <td>{formatDate(sale.date)}</td>
                     <td>{formatCurrency(sale.total_price)}</td>
                     <td>{formatCurrency(sale.gross_profit ?? 0)}</td>
                     <td>
-                      <button className="ghost-button row-action-button" type="button" onClick={() => sale.id && onOpenSale(sale)}>
+                      <button className="ghost-button row-action-button" type="button" onClick={(e) => { e.stopPropagation(); sale.id && onOpenSale(sale); }}>
                         Ver
                       </button>
                     </td>
