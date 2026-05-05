@@ -2,11 +2,11 @@
   "name": "meu-negocio-app",
   "version": "0.4.21",
   "private": true,
-  "main": "dist/electronApp.js",
+  "main": "dist/app/electronApp.js",
   "scripts": {
-    "build": "npm run build:renderer && npm run build:main",
+    "build": "npm run build:frontend && npm run build:main",
     "build:main": "tsc -p tsconfig.json",
-    "build:renderer": "vite build --config renderer/vite.config.ts",
+    "build:frontend": "vite build --config app/frontend/vite.config.ts",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder"
   },
