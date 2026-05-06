@@ -4,6 +4,7 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { join } from "path";
 import { getDrizzleDatabasePath } from "./paths";
 import * as schema from "./schema";
+import { logger } from "../logging/logger";
 
 let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
@@ -29,12 +30,16 @@ export async function initializeDrizzle() {
     // Aplica as migrações automaticamente ao iniciar
     migrate(dbInstance, { migrationsFolder: migrationsPath });
 
-    console.log(`[Database] Drizzle ORM inicializado em: ${dbPath}`);
+    logger.info("DATABASE", "Drizzle ORM initialized", { path: dbPath });
   } catch (error) {
-    console.error("[Database] Falha ao inicializar o Drizzle:", error);
+    logger.error("DATABASE", "Failed to initialize Drizzle", {
+      error: error instanceof Error ? error.message : String(error),
+      path: dbPath,
+    });
     throw error;
   }
 }
+
 
 export function getDb() {
   if (!dbInstance) {

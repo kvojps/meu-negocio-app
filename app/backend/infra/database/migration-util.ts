@@ -3,6 +3,7 @@ import { getDatabasePath } from "./paths";
 import * as BackupSqliteRepository from "../../repository/legacy/backupRepository";
 import * as DrizzleBackupRepository from "../../repository/drizzleBackupRepository";
 import { initializeDatabase } from "./sqlite";
+import logger from "../../infra/logging/logger";
 
 // TODO: Move this function to config.ts and remove this file;
 // TODO: Rename function to migrateLegacyDatabase;
@@ -20,7 +21,7 @@ export async function extractOldData() {
   }
 
   try {
-    console.log("[Migration] Detectado banco de dados legado (app.db). Analisando dados...");
+    logger.info("DATABASE", "Legacy database (app.db) detected. Analyzing data...");
 
     // Inicializa o sql.js para ler o arquivo antigo
     await initializeDatabase();
@@ -30,18 +31,21 @@ export async function extractOldData() {
 
     // Se não houver dados relevantes, não precisa migrar
     if (data.products.length === 0 && data.sales.length === 0) {
-      console.log("[Migration] Banco legado está vazio. Nenhuma ação necessária.");
+      logger.info("DATABASE", "Legacy database is empty. No migration needed.");
       return;
     }
 
-    console.log(`[Migration] Iniciando importação de ${data.products.length} produtos e ${data.sales.length} vendas...`);
+    logger.info("DATABASE", `Starting migration of ${data.products.length} products and ${data.sales.length} sales...`);
     DrizzleBackupRepository.importAllData(data);
 
     // Renomeia o arquivo antigo para marcar como migrado e evitar duplicação
     const backupPath = `${oldPath}.bak`;
     renameSync(oldPath, backupPath);
-    console.log(`[Migration] Sucesso! Banco legado movido para: ${backupPath}`);
+    logger.info("DATABASE", "Migration success! Legacy database moved", { path: backupPath });
   } catch (error) {
-    console.warn("[Migration] O arquivo app.db já parece estar no novo formato ou não pôde ser lido pelo motor legado.");
+    logger.warn("DATABASE", "Legacy file app.db might be in new format or unreadable by legacy engine", {
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 }
+
