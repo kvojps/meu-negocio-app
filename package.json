@@ -33,14 +33,15 @@
       "output": "release/"
     },
     "win": {
-      "target": ["nsis", "portable"]
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": false,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "deleteAppDataOnUninstall": false
     },
     "files": [
       "dist/**/*",
