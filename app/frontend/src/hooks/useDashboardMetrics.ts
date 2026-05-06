@@ -51,6 +51,5 @@ export function useDashboardMetrics(
       peakRevenue,
       recentSales
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sales, startMs, endMs]);
 }

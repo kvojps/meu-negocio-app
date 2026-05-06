@@ -41,7 +41,7 @@ export async function extractOldData() {
     const backupPath = `${oldPath}.bak`;
     renameSync(oldPath, backupPath);
     console.log(`[Migration] Sucesso! Banco legado movido para: ${backupPath}`);
-  } catch (error) {
-    console.warn("[Migration] O arquivo app.db já parece estar no novo formato ou não pôde ser lido pelo motor legado.");
+  } catch (e: unknown) {
+    console.warn("[Migration] O arquivo app.db já parece estar no novo formato ou não pôde ser lido pelo motor legado.", e);
   }
 }

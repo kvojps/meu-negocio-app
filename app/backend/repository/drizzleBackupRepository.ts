@@ -1,7 +1,7 @@
-import { asc, inArray, sql } from "drizzle-orm";
+import { asc, sql } from "drizzle-orm";
 import { getDb } from "../infra/database/drizzle";
 import { products, sales, saleItems } from "../infra/database/schema";
-import type { BackupData } from "../../shared";
+import type { BackupData, Product, Sale, SaleItem } from "../../shared";
 
 // NOTE: Repository assumes input already validated
 
@@ -15,9 +15,9 @@ export function exportAllData(): BackupData {
   return {
     version: 1,
     exported_at: new Date().toISOString(),
-    products: allProducts as any[],
-    sales: allSales as any[],
-    sale_items: allItems as any[],
+    products: allProducts as Required<Product>[],
+    sales: allSales as Required<Sale>[],
+    sale_items: allItems as Required<SaleItem>[],
   };
 }
 

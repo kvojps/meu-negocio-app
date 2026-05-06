@@ -6,18 +6,19 @@ import {
   importAllData,
 } from "../repository/drizzleBackupRepository";
 import type { BackupData } from "../../shared";
+import { BrowserWindow } from "electron";
 
 export function registerBackupHandlers() {
   typedIpcMainHandle<void, { path: string }>(
     "dados:exportar",
     async (event) => {
-      const win = require("electron").BrowserWindow.fromWebContents(
+      const win = BrowserWindow.fromWebContents(
         event.sender,
       );
 
       const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const { filePath, canceled } = await dialog.showSaveDialog(
-        win ?? undefined,
+        win!,
         {
           title: "Exportar Backup",
           defaultPath: `backup-${today}.json`,
