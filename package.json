@@ -7,7 +7,7 @@
     "build": "npm run build:frontend && npm run build:main",
     "build:main": "tsc -p tsconfig.json && npm run copy-migrations",
     "build:frontend": "vite build --config app/frontend/vite.config.ts",
-    "copy-migrations": "mkdir -p dist/app/backend/infra/database && cp -r app/backend/infra/database/migrations dist/app/backend/infra/database/",
+    "copy-migrations": "node scripts/copy-migrations.js",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder"
   },
