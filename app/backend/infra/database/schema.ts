@@ -1,4 +1,6 @@
 import type { Database as SqlJsDatabase } from "sql.js";
+export * from "./tables/productTables";
+export * from "./tables/saleTables";
 
 export const DATABASE_SCHEMA = `
 CREATE TABLE IF NOT EXISTS products (

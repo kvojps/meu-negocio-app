@@ -5,22 +5,28 @@
   "main": "dist/app/app.js",
   "scripts": {
     "build": "npm run build:frontend && npm run build:main",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc -p tsconfig.json && npm run copy-migrations",
     "build:frontend": "vite build --config app/frontend/vite.config.ts",
+    "copy-migrations": "mkdir -p dist/app/backend/infra/database && cp -r app/backend/infra/database/migrations dist/app/backend/infra/database/",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder"
   },
   "dependencies": {
+    "better-sqlite3": "^12.9.0",
+    "drizzle-orm": "^0.45.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sql.js": "^1.11.0",
     "zod": "^4.4.2"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.4.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "drizzle-kit": "^0.31.10",
     "electron": "^25.0.0",
     "electron-builder": "^26.8.1",
     "typescript": "^5.1.6",
@@ -33,7 +39,10 @@
       "output": "release/"
     },
     "win": {
-      "target": ["nsis", "portable"]
+      "target": [
+        "nsis",
+        "portable"
+      ]
     },
     "nsis": {
       "oneClick": false,
