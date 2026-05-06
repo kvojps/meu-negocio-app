@@ -46,7 +46,6 @@
     },
     "nsis": {
       "deleteAppDataOnUninstall": false
-      "deleteAppDataOnUninstall": false
     },
     "files": [
       "dist/**/*",
