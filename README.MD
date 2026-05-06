@@ -33,3 +33,5 @@ npm run dist
 | [Visão geral](docs/app-overview.md)           | Objetivo, escopo, funcionalidades e modelo de dados |
 | [Arquitetura](docs/architecture.md)           | Organização do projeto e fluxo de dados             |
 | [Contratos de API IPC](docs/api-contracts.md) | Regras de comunicação entre renderer e main         |
+| [Changelog](CHANGELOG.md)                     | Histórico de versões e notas de release             |
+| [Guia de Contribuição](CONTRIBUTION.md)       | Como contribuir, regras e boas práticas             |
