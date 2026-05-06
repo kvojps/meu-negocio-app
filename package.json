@@ -30,7 +30,7 @@
     "electron": "^25.0.0",
     "electron-builder": "^26.8.1",
     "typescript": "^6.0.3",
-    "vite": "^5.4.8"
+    "vite": "^8.0.10"
   },
   "build": {
     "appId": "com.meunegocio.app",
