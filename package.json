@@ -1,6 +1,6 @@
 {
   "name": "meu-negocio-app",
-  "version": "0.4.24",
+  "version": "0.4.25",
   "private": true,
   "main": "dist/app/app.js",
   "scripts": {
@@ -40,16 +40,12 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
-      ]
+        "nsis"
+      ],
+      "signAndEditExecutable": false
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": false,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "deleteAppDataOnUninstall": false
     },
     "files": [
       "dist/**/*",
