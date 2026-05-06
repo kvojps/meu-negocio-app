@@ -3,22 +3,23 @@ import type {
   Sale,
   SaleItem,
   SaleWithItems,
-} from "../../shared";
-import { getDatabase, persistDatabase } from "../infra/database/sqlite";
+} from "../../../shared";
+import { getDatabase, persistDatabase } from "../../infra/database/sqlite";
 import {
   getLastInsertedId,
   getChangedRowCount,
   ensureRowFound,
-} from "../infra/database/helpers";
+} from "../../infra/database/helpers";
 import {
   mapSaleRow,
   mapSaleItemRow,
   type SaleRow,
   type SaleItemRow,
-} from "../infra/database/tables/saleTables";
+} from "../../infra/database/tables/saleTables";
 
 // NOTE: Repository assumes input already validated
 
+/** @deprecated Use drizzleSaleRepository instead */
 export function createSale(input: CreateSaleInput): Sale {
   const now = new Date().toISOString();
   const db = getDatabase();
@@ -84,6 +85,7 @@ export function createSale(input: CreateSaleInput): Sale {
   }
 }
 
+/** @deprecated Use drizzleSaleRepository instead */
 export function listSales(): Sale[] {
   const db = getDatabase();
   const result = db.exec(
@@ -98,6 +100,7 @@ export function listSales(): Sale[] {
   return table.values.map((row: unknown[]) => mapSaleRow(row as SaleRow));
 }
 
+/** @deprecated Use drizzleSaleRepository instead */
 export function getSaleById(id: number): SaleWithItems {
   const db = getDatabase();
   const saleStmt = db.prepare(
@@ -133,6 +136,7 @@ export function getSaleById(id: number): SaleWithItems {
   };
 }
 
+/** @deprecated Use drizzleSaleRepository instead */
 export function deleteSale(id: number): void {
   const db = getDatabase();
   const stmt = db.prepare(`DELETE FROM sales WHERE id = ?`);

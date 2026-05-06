@@ -15,3 +15,7 @@ export function getDatabaseDirectory(): string {
 export function getDatabasePath(): string {
   return join(getDatabaseDirectory(), "app.db");
 }
+
+export function getDrizzleDatabasePath(): string {
+  return join(getDatabaseDirectory(), "app-drizzle.db");
+}

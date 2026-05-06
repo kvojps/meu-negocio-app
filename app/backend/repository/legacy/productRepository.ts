@@ -1,17 +1,18 @@
-import type { Product, ProductInput } from "../../shared";
-import { getDatabase, persistDatabase } from "../infra/database/sqlite";
+import type { Product, ProductInput } from "../../../shared";
+import { getDatabase, persistDatabase } from "../../infra/database/sqlite";
 import {
   mapProductRow,
   type ProductRow,
-} from "../infra/database/tables/productTables";
+} from "../../infra/database/tables/productTables";
 import {
   getLastInsertedId,
   getChangedRowCount,
   ensureRowFound,
-} from "../infra/database/helpers";
+} from "../../infra/database/helpers";
 
 // NOTE: Repository assumes input already validated
 
+/** @deprecated Use drizzleProductRepository instead */
 export function createProduct(input: ProductInput): Product {
   const now = new Date().toISOString();
   const db = getDatabase();
@@ -34,6 +35,7 @@ export function createProduct(input: ProductInput): Product {
   return { id, created_at: now, updated_at: now, ...input };
 }
 
+/** @deprecated Use drizzleProductRepository instead */
 export function listProducts(): Product[] {
   const db = getDatabase();
   const result = db.exec(
@@ -48,6 +50,7 @@ export function listProducts(): Product[] {
   return table.values.map((row: unknown[]) => mapProductRow(row as ProductRow));
 }
 
+/** @deprecated Use drizzleProductRepository instead */
 export function productExists(id: number): boolean {
   const db = getDatabase();
   const stmt = db.prepare(`SELECT id FROM products WHERE id = ?`);
@@ -59,6 +62,7 @@ export function productExists(id: number): boolean {
   }
 }
 
+/** @deprecated Use drizzleProductRepository instead */
 export function updateProduct(id: number, input: ProductInput): string {
   const now = new Date().toISOString();
   const db = getDatabase();
@@ -86,6 +90,7 @@ export function updateProduct(id: number, input: ProductInput): string {
   return now;
 }
 
+/** @deprecated Use drizzleProductRepository instead */
 export function deleteProduct(id: number): void {
   const db = getDatabase();
   const stmt = db.prepare(`DELETE FROM products WHERE id = ?`);

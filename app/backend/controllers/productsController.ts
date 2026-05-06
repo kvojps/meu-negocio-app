@@ -4,7 +4,7 @@ import {
   deleteProduct,
   listProducts,
   updateProduct,
-} from "../repository/productRepository";
+} from "../repository/drizzleProductRepository";
 import { createProductDto, updateProductDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 

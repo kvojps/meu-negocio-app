@@ -1,10 +1,11 @@
-import type { BackupData } from "../../shared";
-import { getDatabase, persistDatabase } from "../infra/database/sqlite";
+import type { BackupData } from "../../../shared";
+import { getDatabase, persistDatabase } from "../../infra/database/sqlite";
 
 // NOTE: Repository assumes input already validated
 
-export function exportAllData(): BackupData {
-  const db = getDatabase();
+/** @deprecated Use drizzleBackupRepository instead */
+export function exportAllData(dbOverride?: any): BackupData {
+  const db = dbOverride || getDatabase();
 
   const productsResult = db.exec(
     `SELECT id, created_at, updated_at, name, description, price, cost_price FROM products ORDER BY id ASC`,
@@ -16,7 +17,7 @@ export function exportAllData(): BackupData {
     `SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items ORDER BY id ASC`,
   );
 
-  const products = (productsResult[0]?.values ?? []).map((row) => ({
+  const products = (productsResult[0]?.values ?? []).map((row: any) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
@@ -26,7 +27,7 @@ export function exportAllData(): BackupData {
     cost_price: row[6] as number,
   }));
 
-  const sales = (salesResult[0]?.values ?? []).map((row) => ({
+  const sales = (salesResult[0]?.values ?? []).map((row: any) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
@@ -36,7 +37,7 @@ export function exportAllData(): BackupData {
     gross_profit: row[6] as number,
   }));
 
-  const sale_items = (itemsResult[0]?.values ?? []).map((row) => ({
+  const sale_items = (itemsResult[0]?.values ?? []).map((row: any) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
@@ -56,6 +57,7 @@ export function exportAllData(): BackupData {
   };
 }
 
+/** @deprecated Use drizzleBackupRepository instead */
 export function importAllData(data: BackupData): void {
   const db = getDatabase();
 
@@ -68,7 +70,9 @@ export function importAllData(data: BackupData): void {
     db.run("DELETE FROM products");
 
     // Reseta os auto-increment counters
-    db.run("DELETE FROM sqlite_sequence WHERE name IN ('products', 'sales', 'sale_items')");
+    db.run(
+      "DELETE FROM sqlite_sequence WHERE name IN ('products', 'sales', 'sale_items')",
+    );
 
     // Reinsere produtos
     const productStmt = db.prepare(
