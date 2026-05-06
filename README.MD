@@ -26,6 +26,12 @@ npm run dist
 - O instalador `.exe` é gerado em `release/`;
 - O banco local é salvo em `appData/data/app.db` no diretório de dados do usuário do Electron;
 
+> [!IMPORTANT]  
+> O Windows pode bloquear a instalação exibindo o erro **“Fornecedor não confiável”**, pois a aplicação ainda não possui um certificado digital válido.
+>
+> **Como resolver:**  
+> Acesse `Segurança do Windows` → `Controle de apps e navegador` → `Controle inteligente de aplicativos` e defina como `Desativado (temporariamente)`.
+
 ## 3. Documentação
 
 | Documento                                     | Descrição                                           |
