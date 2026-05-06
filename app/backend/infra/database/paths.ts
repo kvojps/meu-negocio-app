@@ -3,15 +3,7 @@ import { existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 export function getDatabaseDirectory(): string {
-  let userDataPath: string;
-  try {
-    // Fallback para o diretório atual se o Electron não estiver disponível (ex: CLI do Drizzle)
-    userDataPath = app?.getPath ? app.getPath("userData") : ".";
-  } catch (error) {
-    userDataPath = ".";
-  }
-
-  const dataDirectory = join(userDataPath, "data");
+  const dataDirectory = join(app.getPath("userData"), "data");
 
   if (!existsSync(dataDirectory)) {
     mkdirSync(dataDirectory, { recursive: true });
