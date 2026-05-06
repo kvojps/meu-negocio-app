@@ -9,7 +9,8 @@
     "build:frontend": "vite build --config app/frontend/vite.config.ts",
     "copy-migrations": "node scripts/copy-migrations.js",
     "start": "npm run build && electron .",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {
     "better-sqlite3": "^12.9.0",
@@ -22,13 +23,13 @@
   "devDependencies": {
     "@electron/rebuild": "^4.0.4",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^20.4.2",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.0.0",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "drizzle-kit": "^0.31.10",
-    "electron": "^42.0.0",
-    "electron-builder": "^26.8.1",
+    "electron": "^28.3.3",
+    "electron-builder": "^26.9.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.10"
   },

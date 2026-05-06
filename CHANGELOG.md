@@ -4,6 +4,10 @@ Todas as mudanças notáveis deste repositório, extraídas das releases do GitH
 
 > Fonte: <https://github.com/kvojps/meu-negocio-app/releases>
 
+## 0.4.26 - Não publicada
+
+- Atualização de dependências;
+
 ## [v0.4.25](https://github.com/kvojps/meu-negocio-app/releases/tag/v0.4.25) - 6 de maio de 2026
 
 - Migração de SqlJs para Drizzle;
