@@ -1,7 +1,10 @@
 import { dialog } from "electron";
 import { writeFileSync } from "fs";
 import { typedIpcMainHandle } from "../infra/typedIpc";
-import { exportAllData, importAllData } from "../repository/backupRepository";
+import {
+  exportAllData,
+  importAllData,
+} from "../repository/drizzleBackupRepository";
 import type { BackupData } from "../../shared";
 
 export function registerBackupHandlers() {

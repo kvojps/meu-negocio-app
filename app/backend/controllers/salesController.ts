@@ -4,8 +4,8 @@ import {
   deleteSale,
   getSaleById,
   listSales,
-} from "../repository/saleRepository";
-import { productExists } from "../repository/productRepository";
+} from "../repository/drizzleSaleRepository";
+import { productExists } from "../repository/drizzleProductRepository";
 import { createSaleDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
 
