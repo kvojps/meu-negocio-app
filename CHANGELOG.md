@@ -2,7 +2,7 @@
 
 Todas as mudanças notáveis deste repositório, extraídas das releases do GitHub.
 
-> Fonte: https://github.com/kvojps/meu-negocio-app/releases
+> Fonte: <https://github.com/kvojps/meu-negocio-app/releases>
 
 ## [v0.4.24](https://github.com/kvojps/meu-negocio-app/releases/tag/v0.4.24) — 5 de maio de 2026
 
