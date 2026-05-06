@@ -1,7 +1,7 @@
 import type { BackupData } from "../../../shared";
 import { getDatabase, persistDatabase } from "../../infra/database/sqlite";
 
-// NOTE: Repository assumes input already validated
+// TODO: Remove this file and all legacy repositories when possible.
 
 /** @deprecated Use drizzleBackupRepository instead */
 export function exportAllData(dbOverride?: any): BackupData {

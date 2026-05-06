@@ -3,6 +3,8 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 import { getDatabasePath } from "./paths";
 import { applyDatabaseMigrations, DATABASE_SCHEMA } from "./schema";
 
+// TODO: This file should be removed when legacy repositories are removed.
+
 let sqlJs: SqlJsStatic | null = null;
 let database: SqlJsDatabase | null = null;
 

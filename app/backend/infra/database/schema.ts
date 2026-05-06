@@ -2,6 +2,8 @@ import type { Database as SqlJsDatabase } from "sql.js";
 export * from "./tables/productTables";
 export * from "./tables/saleTables";
 
+// TODO: This file should be removed when legacy repositories are removed.
+
 export const DATABASE_SCHEMA = `
 CREATE TABLE IF NOT EXISTS products (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

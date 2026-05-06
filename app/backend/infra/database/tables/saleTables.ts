@@ -4,8 +4,12 @@ import type { Sale, SaleItem } from "../../../../shared";
 
 export const sales = sqliteTable("sales", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  created_at: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
-  updated_at: text("updated_at").notNull().$onUpdateFn(() => new Date().toISOString()),
+  created_at: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updated_at: text("updated_at")
+    .notNull()
+    .$onUpdateFn(() => new Date().toISOString()),
   date: text("date").notNull(),
   total_price: real("total_price").notNull(),
   cost_total: real("cost_total").notNull().default(0),
@@ -14,8 +18,12 @@ export const sales = sqliteTable("sales", {
 
 export const saleItems = sqliteTable("sale_items", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  created_at: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
-  updated_at: text("updated_at").notNull().$onUpdateFn(() => new Date().toISOString()),
+  created_at: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updated_at: text("updated_at")
+    .notNull()
+    .$onUpdateFn(() => new Date().toISOString()),
   sale_id: integer("sale_id")
     .notNull()
     .references(() => sales.id, { onDelete: "cascade" }),
@@ -27,6 +35,7 @@ export const saleItems = sqliteTable("sale_items", {
   unit_cost: real("unit_cost").notNull().default(0),
 });
 
+// TODO: Remove instructions above and this type when legacy repositories are removed.
 export type SaleRow = [number, string, string, string, number, number, number];
 export type SaleItemRow = [
   number,

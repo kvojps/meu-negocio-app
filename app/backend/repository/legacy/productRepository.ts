@@ -10,6 +10,7 @@ import {
   ensureRowFound,
 } from "../../infra/database/helpers";
 
+// TODO: Remove this file and all legacy repositories when possible.
 // NOTE: Repository assumes input already validated
 
 /** @deprecated Use drizzleProductRepository instead */

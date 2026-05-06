@@ -17,6 +17,7 @@ import {
   type SaleItemRow,
 } from "../../infra/database/tables/saleTables";
 
+// TODO: Remove this file and all legacy repositories when possible.
 // NOTE: Repository assumes input already validated
 
 /** @deprecated Use drizzleSaleRepository instead */

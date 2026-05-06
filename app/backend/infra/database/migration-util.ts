@@ -4,6 +4,10 @@ import * as BackupSqliteRepository from "../../repository/legacy/backupRepositor
 import * as DrizzleBackupRepository from "../../repository/drizzleBackupRepository";
 import { initializeDatabase } from "./sqlite";
 
+// TODO: Move this function to config.ts and remove this file;
+// TODO: Rename function to migrateLegacyDatabase;
+// TODO: Logs and comments in english;
+
 /**
  * Tenta extrair dados do banco antigo (app.db) se ele existir.
  * E importa para o novo sistema Drizzle (app-drizzle.db).
@@ -21,6 +25,7 @@ export async function extractOldData() {
     // Inicializa o sql.js para ler o arquivo antigo
     await initializeDatabase();
 
+    // TODO: Move this legacy function to a private function and remove legacy repositories when possible.
     const data = BackupSqliteRepository.exportAllData();
 
     // Se não houver dados relevantes, não precisa migrar

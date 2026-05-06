@@ -15,6 +15,7 @@ export const products = sqliteTable("products", {
   cost_price: real("cost_price").notNull().default(0),
 });
 
+// TODO: Remove instructions above and this type when legacy repositories are removed.
 export type ProductRow = [
   number,
   string,

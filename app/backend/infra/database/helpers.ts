@@ -1,5 +1,7 @@
 import type { Database as SqlJsDatabase } from "sql.js";
 
+// TODO: This helpers must be removed when legacy repositories are removed.
+
 /**
  * Extrai o ID da última linha inserida.
  * Deve ser chamado imediatamente após um INSERT.
