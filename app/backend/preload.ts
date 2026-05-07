@@ -6,25 +6,16 @@ function invoke<T>(channel: string, payload?: unknown) {
 }
 
 const api: AppApi = {
-  createProduct: (product) =>
-    invoke("products:create", product),
-  listProducts: () =>
-    invoke("products:list"),
-  updateProduct: (product) =>
-    invoke("products:update", product),
-  deleteProduct: (payload) =>
-    invoke("products:delete", payload),
-  createSale: (sale) =>
-    invoke("sales:create", sale),
+  createProduct: (product) => invoke("products:create", product),
+  listProducts: () => invoke("products:list"),
+  updateProduct: (product) => invoke("products:update", product),
+  deleteProduct: (payload) => invoke("products:delete", payload),
+  createSale: (sale) => invoke("sales:create", sale),
   listSales: () => invoke("sales:list"),
-  getSaleById: (payload) =>
-    invoke("sales:getById", payload),
-  deleteSale: (payload) =>
-    invoke("sales:delete", payload),
-  exportData: () =>
-    invoke("dados:exportar"),
-  importData: (payload) =>
-    invoke("dados:importar", payload),
+  getSaleById: (payload) => invoke("sales:getById", payload),
+  deleteSale: (payload) => invoke("sales:delete", payload),
+  exportData: () => invoke("dados:exportar"),
+  importData: (payload) => invoke("dados:importar", payload),
 };
 
 contextBridge.exposeInMainWorld("api", api);

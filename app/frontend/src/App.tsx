@@ -1,18 +1,19 @@
-import { useState } from 'react';
-import type { ActiveSection } from './utils/ui';
-import { Sidebar } from './components/layout/Sidebar';
-import { ProductModal } from './components/products/ProductModal';
-import { SaleModal } from './components/sales/SaleModal';
-import { SaleDetailsModal } from './components/sales/SaleDetailsModal';
-import { DashboardPage } from './pages/DashboardPage';
-import { ProductsPage } from './pages/ProductsPage';
-import { SalesPage } from './pages/SalesPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { useProducts } from './hooks/useProducts';
-import { useSales } from './hooks/useSales';
+import { useState } from "react";
+import type { ActiveSection } from "./utils/ui";
+import { Sidebar } from "./components/layout/Sidebar";
+import { ProductModal } from "./components/products/ProductModal";
+import { SaleModal } from "./components/sales/SaleModal";
+import { SaleDetailsModal } from "./components/sales/SaleDetailsModal";
+import { DashboardPage } from "./pages/DashboardPage";
+import { ProductsPage } from "./pages/ProductsPage";
+import { SalesPage } from "./pages/SalesPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { useProducts } from "./hooks/useProducts";
+import { useSales } from "./hooks/useSales";
 
 export function App() {
-  const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard');
+  const [activeSection, setActiveSection] =
+    useState<ActiveSection>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const {
@@ -30,7 +31,7 @@ export function App() {
     handleSaveProduct,
     handleDeleteProduct,
     goToPrevProductPage,
-    goToNextProductPage
+    goToNextProductPage,
   } = useProducts();
 
   const {
@@ -51,11 +52,13 @@ export function App() {
     handleSaveSale,
     handleDeleteSale,
     goToPrevSalePage,
-    goToNextSalePage
+    goToNextSalePage,
   } = useSales();
 
   return (
-    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
+    <div
+      className={`app-shell ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}
+    >
       <Sidebar
         open={sidebarOpen}
         activeSection={activeSection}
@@ -64,9 +67,13 @@ export function App() {
       />
 
       <main className="content">
-        {activeSection === 'dashboard' ? (
-          <DashboardPage sales={sales} loading={loadingSales} onOpenSale={openSaleDetails} />
-        ) : activeSection === 'products' ? (
+        {activeSection === "dashboard" ? (
+          <DashboardPage
+            sales={sales}
+            loading={loadingSales}
+            onOpenSale={openSaleDetails}
+          />
+        ) : activeSection === "products" ? (
           <ProductsPage
             products={products}
             paginatedProducts={paginatedProducts}
@@ -80,7 +87,7 @@ export function App() {
             onPreviousPage={goToPrevProductPage}
             onNextPage={goToNextProductPage}
           />
-        ) : activeSection === 'settings' ? (
+        ) : activeSection === "settings" ? (
           <SettingsPage />
         ) : (
           <SalesPage

@@ -1,35 +1,39 @@
-import { useRef, useState } from 'react';
-import type { BackupData } from '../../../shared/models/backup';
+import { useRef, useState } from "react";
+import type { BackupData } from "../../../shared/models/backup";
 
 type ExportStatus =
-  | { type: 'idle' }
-  | { type: 'loading' }
-  | { type: 'success'; path: string }
-  | { type: 'error'; message: string };
+  | { type: "idle" }
+  | { type: "loading" }
+  | { type: "success"; path: string }
+  | { type: "error"; message: string };
 
 type ImportStatus =
-  | { type: 'idle' }
-  | { type: 'confirm'; data: BackupData; filename: string }
-  | { type: 'loading' }
-  | { type: 'error'; message: string };
+  | { type: "idle" }
+  | { type: "confirm"; data: BackupData; filename: string }
+  | { type: "loading" }
+  | { type: "error"; message: string };
 
 export function SettingsPage() {
-  const [exportStatus, setExportStatus] = useState<ExportStatus>({ type: 'idle' });
-  const [importStatus, setImportStatus] = useState<ImportStatus>({ type: 'idle' });
+  const [exportStatus, setExportStatus] = useState<ExportStatus>({
+    type: "idle",
+  });
+  const [importStatus, setImportStatus] = useState<ImportStatus>({
+    type: "idle",
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* ── Export ── */
   async function handleExport() {
-    setExportStatus({ type: 'loading' });
+    setExportStatus({ type: "loading" });
     try {
       const res = await window.api.exportData();
       if (res.success) {
-        setExportStatus({ type: 'success', path: res.data.path });
+        setExportStatus({ type: "success", path: res.data.path });
       } else {
-        setExportStatus({ type: 'error', message: res.error.message });
+        setExportStatus({ type: "error", message: res.error.message });
       }
     } catch (err) {
-      setExportStatus({ type: 'error', message: String(err) });
+      setExportStatus({ type: "error", message: String(err) });
     }
   }
 
@@ -44,42 +48,45 @@ export function SettingsPage() {
         const data = JSON.parse(event.target?.result as string) as BackupData;
         if (!data || data.version !== 1) {
           setImportStatus({
-            type: 'error',
-            message: 'Arquivo inválido ou incompatível com esta versão do app.',
+            type: "error",
+            message: "Arquivo inválido ou incompatível com esta versão do app.",
           });
           return;
         }
-        setImportStatus({ type: 'confirm', data, filename: file.name });
+        setImportStatus({ type: "confirm", data, filename: file.name });
       } catch {
-        setImportStatus({ type: 'error', message: 'Não foi possível ler o arquivo JSON.' });
+        setImportStatus({
+          type: "error",
+          message: "Não foi possível ler o arquivo JSON.",
+        });
       }
     };
     reader.readAsText(file);
 
     // reseta o input para permitir selecionar o mesmo arquivo novamente
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   /* ── Import confirm ── */
   async function handleImportConfirm() {
-    if (importStatus.type !== 'confirm') return;
+    if (importStatus.type !== "confirm") return;
     const { data } = importStatus;
-    setImportStatus({ type: 'loading' });
+    setImportStatus({ type: "loading" });
     try {
       const res = await window.api.importData({ data });
       if (res.success) {
         // Recarrega o renderer para que os hooks busquem os dados novos do banco
         window.location.reload();
       } else {
-        setImportStatus({ type: 'error', message: res.error.message });
+        setImportStatus({ type: "error", message: res.error.message });
       }
     } catch (err) {
-      setImportStatus({ type: 'error', message: String(err) });
+      setImportStatus({ type: "error", message: String(err) });
     }
   }
 
   function handleImportCancel() {
-    setImportStatus({ type: 'idle' });
+    setImportStatus({ type: "idle" });
   }
 
   /* ── Render ── */
@@ -106,20 +113,23 @@ export function SettingsPage() {
           <div className="settings-card-body">
             <h2 className="settings-card-title">Exportar Dados</h2>
             <p className="settings-card-desc">
-              Salva todos os seus produtos, vendas e itens em um arquivo{' '}
-              <code>.json</code>. Guarde-o em um lugar seguro para usar como backup.
+              Salva todos os seus produtos, vendas e itens em um arquivo{" "}
+              <code>.json</code>. Guarde-o em um lugar seguro para usar como
+              backup.
             </p>
 
             <button
               id="btn-export"
               className="settings-btn settings-btn--primary"
               onClick={() => void handleExport()}
-              disabled={exportStatus.type === 'loading'}
+              disabled={exportStatus.type === "loading"}
             >
-              {exportStatus.type === 'loading' ? 'Exportando…' : 'Exportar Backup'}
+              {exportStatus.type === "loading"
+                ? "Exportando…"
+                : "Exportar Backup"}
             </button>
 
-            {exportStatus.type === 'success' && (
+            {exportStatus.type === "success" && (
               <div className="settings-feedback settings-feedback--success">
                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path
@@ -134,7 +144,7 @@ export function SettingsPage() {
               </div>
             )}
 
-            {exportStatus.type === 'error' && (
+            {exportStatus.type === "error" && (
               <div className="settings-feedback settings-feedback--error">
                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path
@@ -164,7 +174,7 @@ export function SettingsPage() {
           <div className="settings-card-body">
             <h2 className="settings-card-title">Importar Dados</h2>
             <p className="settings-card-desc">
-              Restaura dados a partir de um backup exportado anteriormente.{' '}
+              Restaura dados a partir de um backup exportado anteriormente.{" "}
               <strong>Atenção:</strong> os dados atuais serão substituídos.
             </p>
 
@@ -175,26 +185,31 @@ export function SettingsPage() {
               accept=".json"
               className="settings-file-input"
               onChange={handleFileChange}
-              disabled={importStatus.type === 'loading' || importStatus.type === 'confirm'}
+              disabled={
+                importStatus.type === "loading" ||
+                importStatus.type === "confirm"
+              }
             />
             <label
               htmlFor="input-import-file"
               className={`settings-btn settings-btn--secondary ${
-                importStatus.type === 'loading' || importStatus.type === 'confirm'
-                  ? 'settings-btn--disabled'
-                  : ''
+                importStatus.type === "loading" ||
+                importStatus.type === "confirm"
+                  ? "settings-btn--disabled"
+                  : ""
               }`}
             >
               Selecionar arquivo…
             </label>
 
             {/* Modal de confirmação */}
-            {importStatus.type === 'confirm' && (
+            {importStatus.type === "confirm" && (
               <div className="settings-confirm">
                 <div className="settings-confirm-icon">⚠️</div>
                 <p className="settings-confirm-text">
-                  Você está prestes a importar <strong>{importStatus.filename}</strong>.
-                  Todos os dados atuais serão apagados e substituídos. Deseja continuar?
+                  Você está prestes a importar{" "}
+                  <strong>{importStatus.filename}</strong>. Todos os dados
+                  atuais serão apagados e substituídos. Deseja continuar?
                 </p>
                 <div className="settings-confirm-actions">
                   <button
@@ -215,11 +230,13 @@ export function SettingsPage() {
               </div>
             )}
 
-            {importStatus.type === 'loading' && (
-              <p className="settings-loading">Importando dados… O app será recarregado automaticamente.</p>
+            {importStatus.type === "loading" && (
+              <p className="settings-loading">
+                Importando dados… O app será recarregado automaticamente.
+              </p>
             )}
 
-            {importStatus.type === 'error' && (
+            {importStatus.type === "error" && (
               <div className="settings-feedback settings-feedback--error">
                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path

@@ -1,9 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
 import { initializeDrizzle } from "./backend/infra/database/drizzle";
-import {
-  extractOldData,
-} from "./backend/infra/database/migration-util";
+import { extractOldData } from "./backend/infra/database/migration-util";
 import { registerProductHandlers } from "./backend/controllers/productsController";
 import { registerSaleHandlers } from "./backend/controllers/salesController";
 import { registerBackupHandlers } from "./backend/controllers/backupController";

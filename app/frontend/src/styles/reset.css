@@ -10,13 +10,21 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
   font-size: 15px;
   line-height: 1.5;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(31, 111, 120, 0.12), transparent 30%),
-    radial-gradient(circle at 85% 10%, rgba(200, 157, 97, 0.18), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(31, 111, 120, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(200, 157, 97, 0.18),
+      transparent 28%
+    ),
     linear-gradient(180deg, var(--bg), var(--bg-soft));
 }
 
@@ -56,16 +64,32 @@ button:disabled {
 
 /* ── Keyframes ── */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }

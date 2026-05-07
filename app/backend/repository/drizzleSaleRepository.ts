@@ -1,11 +1,7 @@
 import { eq, desc, asc } from "drizzle-orm";
 import { getDb } from "../infra/database/drizzle";
 import { sales, saleItems } from "../infra/database/schema";
-import type {
-  CreateSaleInput,
-  Sale,
-  SaleWithItems,
-} from "../../shared";
+import type { CreateSaleInput, Sale, SaleWithItems } from "../../shared";
 
 // NOTE: Repository assumes input already validated
 

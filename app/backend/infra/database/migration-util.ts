@@ -20,7 +20,9 @@ export async function extractOldData() {
   }
 
   try {
-    console.log("[Migration] Detectado banco de dados legado (app.db). Analisando dados...");
+    console.log(
+      "[Migration] Detectado banco de dados legado (app.db). Analisando dados...",
+    );
 
     // Inicializa o sql.js para ler o arquivo antigo
     await initializeDatabase();
@@ -30,11 +32,15 @@ export async function extractOldData() {
 
     // Se não houver dados relevantes, não precisa migrar
     if (data.products.length === 0 && data.sales.length === 0) {
-      console.log("[Migration] Banco legado está vazio. Nenhuma ação necessária.");
+      console.log(
+        "[Migration] Banco legado está vazio. Nenhuma ação necessária.",
+      );
       return;
     }
 
-    console.log(`[Migration] Iniciando importação de ${data.products.length} produtos e ${data.sales.length} vendas...`);
+    console.log(
+      `[Migration] Iniciando importação de ${data.products.length} produtos e ${data.sales.length} vendas...`,
+    );
     DrizzleBackupRepository.importAllData(data);
 
     // Renomeia o arquivo antigo para marcar como migrado e evitar duplicação
@@ -42,6 +48,9 @@ export async function extractOldData() {
     renameSync(oldPath, backupPath);
     console.log(`[Migration] Sucesso! Banco legado movido para: ${backupPath}`);
   } catch (e: unknown) {
-    console.warn("[Migration] O arquivo app.db já parece estar no novo formato ou não pôde ser lido pelo motor legado.", e);
+    console.warn(
+      "[Migration] O arquivo app.db já parece estar no novo formato ou não pôde ser lido pelo motor legado.",
+      e,
+    );
   }
 }

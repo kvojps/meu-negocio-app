@@ -8,7 +8,11 @@ import type { BackupData, Product, Sale, SaleItem } from "../../shared";
 export function exportAllData(): BackupData {
   const db = getDb();
 
-  const allProducts = db.select().from(products).orderBy(asc(products.id)).all();
+  const allProducts = db
+    .select()
+    .from(products)
+    .orderBy(asc(products.id))
+    .all();
   const allSales = db.select().from(sales).orderBy(asc(sales.id)).all();
   const allItems = db.select().from(saleItems).orderBy(asc(saleItems.id)).all();
 

@@ -19,15 +19,17 @@ export function exportAllData(): BackupData {
     `SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items ORDER BY id ASC`,
   );
 
-  const products = (productsResult[0]?.values ?? []).map((row: DatabaseRow) => ({
-    id: row[0] as number,
-    created_at: row[1] as string,
-    updated_at: row[2] as string,
-    name: row[3] as string,
-    description: (row[4] as string | null) ?? "",
-    price: row[5] as number,
-    cost_price: row[6] as number,
-  }));
+  const products = (productsResult[0]?.values ?? []).map(
+    (row: DatabaseRow) => ({
+      id: row[0] as number,
+      created_at: row[1] as string,
+      updated_at: row[2] as string,
+      name: row[3] as string,
+      description: (row[4] as string | null) ?? "",
+      price: row[5] as number,
+      cost_price: row[6] as number,
+    }),
+  );
 
   const sales = (salesResult[0]?.values ?? []).map((row: DatabaseRow) => ({
     id: row[0] as number,

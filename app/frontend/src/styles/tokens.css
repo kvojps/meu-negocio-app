@@ -2,39 +2,39 @@
   color-scheme: light;
 
   /* ── Background & Surface ── */
-  --bg:           #f5efe7;
-  --bg-soft:      #ebe2d7;
-  --surface-1:    rgba(255, 255, 255, 0.72);   /* panels, cards */
-  --surface-2:    rgba(255, 255, 255, 0.46);   /* nested surfaces */
-  --surface-3:    rgba(255, 255, 255, 0.84);   /* ghost buttons */
-  --panel:        var(--surface-1);
+  --bg: #f5efe7;
+  --bg-soft: #ebe2d7;
+  --surface-1: rgba(255, 255, 255, 0.72); /* panels, cards */
+  --surface-2: rgba(255, 255, 255, 0.46); /* nested surfaces */
+  --surface-3: rgba(255, 255, 255, 0.84); /* ghost buttons */
+  --panel: var(--surface-1);
   --panel-border: rgba(75, 57, 42, 0.14);
 
   /* ── Text ── */
-  --text:   #251814;
-  --muted:  #6c5a50;
+  --text: #251814;
+  --muted: #6c5a50;
 
   /* ── Accent (teal) ── */
-  --accent:      #1f6f78;
+  --accent: #1f6f78;
   --accent-dark: #16494e;
   --accent-soft: rgba(31, 111, 120, 0.12);
 
   /* ── Semantic ── */
-  --danger:  #ab4736;
+  --danger: #ab4736;
   --danger-soft: rgba(171, 71, 54, 0.12);
   --success: #22896a;
   --success-soft: rgba(34, 137, 106, 0.12);
   --warning: #b07d2b;
   --warning-soft: rgba(176, 125, 43, 0.12);
-  --info:    #2563eb;
+  --info: #2563eb;
   --info-soft: rgba(37, 99, 235, 0.12);
 
   /* ── Chart ── */
   --chart-revenue: var(--accent);
-  --chart-profit:  var(--success);
+  --chart-profit: var(--success);
 
   /* ── Shadows ── */
-  --shadow:    0 4px 24px rgba(36, 24, 17, 0.10);
+  --shadow: 0 4px 24px rgba(36, 24, 17, 0.1);
   --shadow-lg: 0 28px 70px rgba(36, 24, 17, 0.14);
 
   /* ── Radius ── */
@@ -45,7 +45,7 @@
   --radius-2xl: 28px;
 
   /* ── Transitions ── */
-  --transition-fast:   120ms ease;
-  --transition-base:   180ms ease;
-  --transition-slow:   260ms ease;
+  --transition-fast: 120ms ease;
+  --transition-base: 180ms ease;
+  --transition-slow: 260ms ease;
 }

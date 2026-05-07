@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ITEMS_PER_PAGE } from '../utils/ui';
+import { useState } from "react";
+import { ITEMS_PER_PAGE } from "../utils/ui";
 
 type UsePaginationResult<T> = {
   page: number;
@@ -12,7 +12,7 @@ type UsePaginationResult<T> = {
 
 export function usePagination<T>(
   items: T[],
-  itemsPerPage: number = ITEMS_PER_PAGE
+  itemsPerPage: number = ITEMS_PER_PAGE,
 ): UsePaginationResult<T> {
   const [page, setPage] = useState(1);
 
@@ -33,5 +33,12 @@ export function usePagination<T>(
     setPage((prev) => Math.min(prev + 1, totalPages));
   }
 
-  return { page: clampedPage, totalPages, paginatedItems, goToFirst, goToPrev, goToNext };
+  return {
+    page: clampedPage,
+    totalPages,
+    paginatedItems,
+    goToFirst,
+    goToPrev,
+    goToNext,
+  };
 }

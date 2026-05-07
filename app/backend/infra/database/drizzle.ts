@@ -24,7 +24,14 @@ export async function initializeDrizzle() {
     // Determina o caminho das migrations baseado se estamos em dev ou prod (dist)
     const migrationsPath = __dirname.includes("dist")
       ? join(__dirname, "migrations")
-      : join(process.cwd(), "app", "backend", "infra", "database", "migrations");
+      : join(
+          process.cwd(),
+          "app",
+          "backend",
+          "infra",
+          "database",
+          "migrations",
+        );
 
     // Aplica as migrações automaticamente ao iniciar
     migrate(dbInstance, { migrationsFolder: migrationsPath });

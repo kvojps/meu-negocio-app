@@ -1,8 +1,8 @@
 export const ITEMS_PER_PAGE = 8;
 
-export type ActiveSection = 'dashboard' | 'products' | 'sales' | 'settings';
+export type ActiveSection = "dashboard" | "products" | "sales" | "settings";
 
-export type DashboardPeriod = 'week' | 'month' | 'custom';
+export type DashboardPeriod = "week" | "month" | "custom";
 
 export type SaleFormItemState = {
   productId: string;

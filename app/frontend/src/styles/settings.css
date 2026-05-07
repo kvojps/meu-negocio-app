@@ -49,7 +49,9 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .settings-card:hover {

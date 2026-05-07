@@ -75,7 +75,7 @@
 }
 
 .danger-button:hover {
-  background: rgba(171, 71, 54, 0.20);
+  background: rgba(171, 71, 54, 0.2);
 }
 
 /* ── Metrics Grid ── */
@@ -98,7 +98,9 @@
   padding: 18px 20px;
   position: relative;
   overflow: hidden;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .metric-card:hover {
@@ -107,9 +109,11 @@
 }
 
 .metric-card::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
@@ -146,17 +150,37 @@
 }
 
 /* Metric card color variants */
-.metric-card--accent::before { background: var(--accent); }
-.metric-card--accent .metric-card-icon { background: var(--accent-soft); color: var(--accent); }
+.metric-card--accent::before {
+  background: var(--accent);
+}
+.metric-card--accent .metric-card-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 
-.metric-card--info::before { background: var(--info); }
-.metric-card--info .metric-card-icon { background: var(--info-soft); color: var(--info); }
+.metric-card--info::before {
+  background: var(--info);
+}
+.metric-card--info .metric-card-icon {
+  background: var(--info-soft);
+  color: var(--info);
+}
 
-.metric-card--warning::before { background: var(--warning); }
-.metric-card--warning .metric-card-icon { background: var(--warning-soft); color: var(--warning); }
+.metric-card--warning::before {
+  background: var(--warning);
+}
+.metric-card--warning .metric-card-icon {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
 
-.metric-card--success::before { background: var(--success); }
-.metric-card--success .metric-card-icon { background: var(--success-soft); color: var(--success); }
+.metric-card--success::before {
+  background: var(--success);
+}
+.metric-card--success .metric-card-icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
 
 /* ── Table Card ── */
 .table-card {

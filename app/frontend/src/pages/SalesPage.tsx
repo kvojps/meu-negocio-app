@@ -1,7 +1,7 @@
-import type { Product, Sale } from '../../../shared';
-import { formatCurrency, formatDate } from '../utils/formatters';
-import { EyeIcon, TrashIcon } from '../components/shared/Icons';
-import { TablePagination } from '../components/shared/TablePagination';
+import type { Product, Sale } from "../../../shared";
+import { formatCurrency, formatDate } from "../utils/formatters";
+import { EyeIcon, TrashIcon } from "../components/shared/Icons";
+import { TablePagination } from "../components/shared/TablePagination";
 
 type SalesPageProps = {
   sales: Sale[];
@@ -30,7 +30,7 @@ export function SalesPage({
   onOpenSaleDetails,
   onDeleteSale,
   onPreviousPage,
-  onNextPage
+  onNextPage,
 }: SalesPageProps) {
   const totalRevenue = sales.reduce((sum, sale) => sum + sale.total_price, 0);
 
@@ -39,19 +39,34 @@ export function SalesPage({
       <section className="metrics sales-metrics">
         <div className="metric-card">
           <span>Total de receitas</span>
-          <strong>{loadingSales ? '...' : sales.length}</strong>
+          <strong>{loadingSales ? "..." : sales.length}</strong>
         </div>
         <div className="metric-card">
           <span>Faturamento acumulado</span>
-          <strong>{loadingSales ? '...' : formatCurrency(totalRevenue)}</strong>
+          <strong>{loadingSales ? "..." : formatCurrency(totalRevenue)}</strong>
         </div>
         <div className="metric-card">
           <span>Custo acumulado</span>
-          <strong>{loadingSales ? '...' : formatCurrency(sales.reduce((sum, sale) => sum + (sale.cost_total ?? 0), 0))}</strong>
+          <strong>
+            {loadingSales
+              ? "..."
+              : formatCurrency(
+                  sales.reduce((sum, sale) => sum + (sale.cost_total ?? 0), 0),
+                )}
+          </strong>
         </div>
         <div className="metric-card">
           <span>Lucro bruto</span>
-          <strong>{loadingSales ? '...' : formatCurrency(sales.reduce((sum, sale) => sum + (sale.gross_profit ?? 0), 0))}</strong>
+          <strong>
+            {loadingSales
+              ? "..."
+              : formatCurrency(
+                  sales.reduce(
+                    (sum, sale) => sum + (sale.gross_profit ?? 0),
+                    0,
+                  ),
+                )}
+          </strong>
         </div>
       </section>
 
@@ -59,9 +74,18 @@ export function SalesPage({
         <div className="table-card-header">
           <div>
             <h3>Receitas registradas</h3>
-            <p>{loadingSales ? 'Carregando...' : `${sales.length} item(ns) no total`}</p>
+            <p>
+              {loadingSales
+                ? "Carregando..."
+                : `${sales.length} item(ns) no total`}
+            </p>
           </div>
-          <button className="primary-button" type="button" onClick={onCreateSale} disabled={products.length === 0}>
+          <button
+            className="primary-button"
+            type="button"
+            onClick={onCreateSale}
+            disabled={products.length === 0}
+          >
             Registrar receita
           </button>
         </div>
@@ -84,7 +108,9 @@ export function SalesPage({
               {paginatedSales.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="empty-state">
-                    {sales.length === 0 ? 'Nenhuma receita registrada ainda.' : 'Nenhuma receita nesta página.'}
+                    {sales.length === 0
+                      ? "Nenhuma receita registrada ainda."
+                      : "Nenhuma receita nesta página."}
                   </td>
                 </tr>
               ) : (
