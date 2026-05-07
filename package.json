@@ -1,19 +1,19 @@
 {
   "name": "meu-negocio-app",
-  "version": "0.4.26",
+  "version": "0.4.27",
   "private": true,
   "main": "dist/app/app.js",
   "scripts": {
     "build": "npm run build:frontend && npm run build:main",
     "build:main": "tsc -p tsconfig.json && npm run copy-migrations",
     "build:frontend": "vite build --config app/frontend/vite.config.ts",
-    "copy-migrations": "node scripts/copy-migrations.js",
-    "lint": "eslint ./app",
-    "lint:fix": "eslint ./app --fix",
-    "typecheck": "tsc --noEmit",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder",
-    "postinstall": "electron-rebuild -f -w better-sqlite3"
+    "copy-migrations": "node scripts/copy-migrations.js",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "lint": "eslint ./app",
+    "lint:fix": "eslint ./app --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "better-sqlite3": "^12.9.0",
