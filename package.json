@@ -1,7 +1,6 @@
 {
   "name": "meu-negocio-app",
-  "version": "0.4.27",
-  "private": true,
+  "version": "0.5.0",
   "main": "dist/app/app.js",
   "scripts": {
     "build": "npm run build:frontend && npm run build:main",
@@ -20,6 +19,8 @@
   "dependencies": {
     "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
+    "electron-log": "5.1.7",
+    "electron-updater": "6.3.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "sql.js": "^1.11.0",
@@ -50,12 +51,13 @@
     "directories": {
       "output": "release/"
     },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "signAndEditExecutable": false
-    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Kvojps",
+        "repo": "meu-negocio-app"
+      }
+    ],
     "nsis": {
       "deleteAppDataOnUninstall": false
     },
