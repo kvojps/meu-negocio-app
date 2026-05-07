@@ -263,7 +263,7 @@ export function DashboardPage({ sales, loading, onOpenSale }: DashboardPageProps
                     <td>{formatCurrency(sale.total_price)}</td>
                     <td>{formatCurrency(sale.gross_profit ?? 0)}</td>
                     <td>
-                      <button className="ghost-button row-action-button" type="button" onClick={(e) => { e.stopPropagation(); sale.id && onOpenSale(sale); }}>
+                      <button className="ghost-button row-action-button" type="button" onClick={(e) => { e.stopPropagation(); if (sale.id) { onOpenSale(sale); } }}>
                         Ver
                       </button>
                     </td>

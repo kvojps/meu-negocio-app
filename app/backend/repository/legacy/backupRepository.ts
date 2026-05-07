@@ -1,11 +1,13 @@
 import type { BackupData } from "../../../shared";
 import { getDatabase, persistDatabase } from "../../infra/database/sqlite";
 
+type DatabaseRow = unknown[];
+
 // TODO: Remove this file and all legacy repositories when possible.
 
 /** @deprecated Use drizzleBackupRepository instead */
-export function exportAllData(dbOverride?: any): BackupData {
-  const db = dbOverride || getDatabase();
+export function exportAllData(): BackupData {
+  const db = getDatabase();
 
   const productsResult = db.exec(
     `SELECT id, created_at, updated_at, name, description, price, cost_price FROM products ORDER BY id ASC`,
@@ -17,7 +19,7 @@ export function exportAllData(dbOverride?: any): BackupData {
     `SELECT id, created_at, updated_at, sale_id, product_id, quantity, unit_price, unit_cost FROM sale_items ORDER BY id ASC`,
   );
 
-  const products = (productsResult[0]?.values ?? []).map((row: any) => ({
+  const products = (productsResult[0]?.values ?? []).map((row: DatabaseRow) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
@@ -27,7 +29,7 @@ export function exportAllData(dbOverride?: any): BackupData {
     cost_price: row[6] as number,
   }));
 
-  const sales = (salesResult[0]?.values ?? []).map((row: any) => ({
+  const sales = (salesResult[0]?.values ?? []).map((row: DatabaseRow) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
@@ -37,7 +39,7 @@ export function exportAllData(dbOverride?: any): BackupData {
     gross_profit: row[6] as number,
   }));
 
-  const sale_items = (itemsResult[0]?.values ?? []).map((row: any) => ({
+  const sale_items = (itemsResult[0]?.values ?? []).map((row: DatabaseRow) => ({
     id: row[0] as number,
     created_at: row[1] as string,
     updated_at: row[2] as string,
