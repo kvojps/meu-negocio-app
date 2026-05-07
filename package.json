@@ -11,9 +11,11 @@
     "dist": "npm run build && electron-builder",
     "copy-migrations": "node scripts/copy-migrations.js",
     "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint ./app",
     "lint:fix": "eslint ./app --fix",
-    "typecheck": "tsc --noEmit"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "better-sqlite3": "^12.9.0",
