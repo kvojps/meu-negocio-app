@@ -69,10 +69,9 @@
 
 .sale-item-row {
   display: grid;
-  grid-template-columns: minmax(0, 2.2fr) minmax(120px, 0.7fr) minmax(
-      140px,
-      0.9fr
-    ) auto;
+  grid-template-columns:
+    minmax(0, 2.2fr) minmax(120px, 0.7fr) minmax(140px, 0.9fr)
+    auto;
   gap: 12px;
   align-items: end;
 }
