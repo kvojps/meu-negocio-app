@@ -40,7 +40,6 @@ export function importAllData(data: BackupData): void {
       sql`DELETE FROM sqlite_sequence WHERE name IN ('products', 'sales', 'sale_items')`,
     );
 
-    // Reinsere produtos
     if (data.products.length > 0) {
       for (const p of data.products) {
         tx.insert(products)
@@ -57,7 +56,6 @@ export function importAllData(data: BackupData): void {
       }
     }
 
-    // Reinsere vendas
     if (data.sales.length > 0) {
       for (const s of data.sales) {
         tx.insert(sales)
@@ -74,7 +72,6 @@ export function importAllData(data: BackupData): void {
       }
     }
 
-    // Reinsere itens de venda
     if (data.sale_items.length > 0) {
       for (const item of data.sale_items) {
         tx.insert(saleItems)
