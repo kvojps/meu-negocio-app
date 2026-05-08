@@ -1,6 +1,6 @@
 import initSqlJs, { Database as SqlJsDatabase, SqlJsStatic } from "sql.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { getDatabasePath } from "./paths";
+import { getLegacyDatabasePath } from "./paths";
 import { applyDatabaseMigrations, DATABASE_SCHEMA } from "./schema";
 
 // TODO: This file should be removed when legacy repositories are removed.
@@ -17,7 +17,7 @@ export async function initializeDatabase(): Promise<void> {
     locateFile: (file: string) => require.resolve(`sql.js/dist/${file}`),
   });
 
-  const dbPath = getDatabasePath();
+  const dbPath = getLegacyDatabasePath();
 
   if (existsSync(dbPath)) {
     const fileBuffer = readFileSync(dbPath);
@@ -49,5 +49,5 @@ function saveDatabase(): void {
     throw new Error("Database not initialized");
   }
 
-  writeFileSync(getDatabasePath(), Buffer.from(database.export()));
+  writeFileSync(getLegacyDatabasePath(), Buffer.from(database.export()));
 }

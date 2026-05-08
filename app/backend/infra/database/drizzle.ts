@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { join } from "path";
-import { getDrizzleDatabasePath } from "./paths";
+import { getDatabasePath } from "./paths";
 import * as schema from "./schema";
 
 let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
@@ -10,7 +10,7 @@ let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 export async function initializeDrizzle() {
   if (dbInstance) return;
 
-  const dbPath = getDrizzleDatabasePath();
+  const dbPath = getDatabasePath();
 
   try {
     const sqlite = new Database(dbPath);

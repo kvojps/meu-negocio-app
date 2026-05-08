@@ -1,11 +1,11 @@
 import { existsSync, renameSync } from "fs";
 import Database from "better-sqlite3";
-import { getDatabasePath } from "./paths";
+import { getLegacyDatabasePath } from "./paths";
 import * as DrizzleBackupRepository from "../../repository/drizzleBackupRepository";
 import type { BackupData } from "../../../shared";
 
 export async function migrateLegacyDatabase() {
-  const oldPath = getDatabasePath();
+  const oldPath = getLegacyDatabasePath();
   if (!existsSync(oldPath)) {
     console.log("[Migration] No legacy DB found. Skipping.");
     return;
