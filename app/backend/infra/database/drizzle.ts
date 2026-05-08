@@ -3,7 +3,10 @@ import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { join } from "path";
 import { getDatabasePath } from "./paths";
-import * as schema from "./schema";
+import { products } from "./tables/productTables";
+import { saleItems, sales } from "./tables/saleTables";
+
+const schema = { products, sales, saleItems };
 
 let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
