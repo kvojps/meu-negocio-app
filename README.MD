@@ -1,4 +1,4 @@
-# Meu Negócio — v0.4.25
+# Meu Negócio — v0.5.1
 
 Aplicativo desktop Electron + React para gestão local de produtos e receitas. O app opera 100% offline, com persistência em SQLite via `sql.js`, e está organizado em três áreas principais dentro de `app/`: `backend/`, `frontend/` e `shared/`.
 
