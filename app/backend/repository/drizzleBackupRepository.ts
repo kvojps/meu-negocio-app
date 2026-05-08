@@ -1,6 +1,7 @@
 import { asc, sql } from "drizzle-orm";
 import { getDb } from "../infra/database/config";
-import { products, sales, saleItems } from "../infra/database/schema";
+import { products } from "../infra/database/tables/productTables";
+import { saleItems, sales } from "../infra/database/tables/saleTables";
 import type { BackupData, Product, Sale, SaleItem } from "../../shared";
 
 // NOTE: Repository assumes input already validated

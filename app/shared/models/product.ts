@@ -3,7 +3,7 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   name: string;
-  description?: string;
+  description?: string | null;
   price: number;
   cost_price: number;
 }
