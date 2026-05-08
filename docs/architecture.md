@@ -93,7 +93,6 @@ sequenceDiagram
 | Arquivo                                   | Função                                                                            |
 | ----------------------------------------- | --------------------------------------------------------------------------------- |
 | `app/backend/infra/database/config.ts`    | Inicializa `better-sqlite3` com Drizzle, abre o banco e persiste `app-drizzle.db` |
-| `app/backend/infra/database/schema.ts`    | Cria as tabelas e aplica migrações simples de colunas                             |
 | `app/backend/infra/database/migration.ts` | Importa o banco legado `app.db` quando existe                                     |
 | `app/backend/repository/*`                | Centraliza as operações de dados e os mapeamentos de domínio                      |
 
