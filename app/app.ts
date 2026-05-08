@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
 import { initializeDrizzle } from "./backend/infra/database/drizzle";
-import { extractOldData } from "./backend/infra/database/migration-util";
+import { migrateLegacyDatabase } from "./backend/infra/database/migration-util";
 import { registerProductHandlers } from "./backend/controllers/productsController";
 import { registerSaleHandlers } from "./backend/controllers/salesController";
 import { registerBackupHandlers } from "./backend/controllers/backupController";
@@ -24,7 +24,7 @@ app.whenReady().then(async () => {
   await initializeDrizzle();
 
   // 2. Extrai dados do banco antigo (se existir) ANTES do Drizzle inicializar
-  await extractOldData();
+  await migrateLegacyDatabase();
 
   // 4. Registra handlers de IPC
   registerProductHandlers();
