@@ -1,5 +1,5 @@
 import { asc, sql } from "drizzle-orm";
-import { getDb } from "../infra/database/drizzle";
+import { getDb } from "../infra/database/config";
 import { products, sales, saleItems } from "../infra/database/schema";
 import type { BackupData, Product, Sale, SaleItem } from "../../shared";
 

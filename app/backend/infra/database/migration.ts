@@ -1,6 +1,6 @@
 import { existsSync, renameSync } from "fs";
 import Database from "better-sqlite3";
-import { getLegacyDatabasePath } from "./drizzle";
+import { getLegacyDatabasePath } from "./config";
 import * as DrizzleBackupRepository from "../../repository/drizzleBackupRepository";
 import type { BackupData } from "../../../shared";
 

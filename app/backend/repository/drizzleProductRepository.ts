@@ -1,5 +1,5 @@
 import { eq, desc } from "drizzle-orm";
-import { getDb } from "../infra/database/drizzle";
+import { getDb } from "../infra/database/config";
 import { products } from "../infra/database/schema";
 import type { Product, ProductInput } from "../../shared";
 

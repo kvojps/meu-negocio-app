@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
-import { initializeDrizzle } from "./backend/infra/database/drizzle";
+import { initializeDrizzle } from "./backend/infra/database/config";
 import { migrateLegacyDatabase } from "./backend/infra/database/migration";
 import { registerProductHandlers } from "./backend/controllers/productsController";
 import { registerSaleHandlers } from "./backend/controllers/salesController";
