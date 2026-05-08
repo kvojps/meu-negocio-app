@@ -2,7 +2,7 @@
 
 ## 1. Visão geral
 
-O sistema é um aplicativo desktop construído com Electron, React, TypeScript e SQLite via `sql.js`. O código-fonte atual está organizado em `app/`, com separação clara entre main process, preload, renderer e tipos compartilhados.
+O sistema é um aplicativo desktop construído com Electron, React, TypeScript e SQLite via Drizzle ORM (`drizzle-orm`). O código-fonte atual está organizado em `app/`, com separação clara entre main process, preload, renderer e tipos compartilhados.
 
 | Camada       | Responsabilidade                                                            |
 | ------------ | --------------------------------------------------------------------------- |
@@ -61,9 +61,10 @@ No build final, o frontend é gerado em `dist/app/renderer/` e o main process em
 ### 1.3. Fluxo de inicialização
 
 1. `app/app.ts` aguarda `app.whenReady()`;
-2. `initializeDatabase()` carrega ou cria `app.db` em `appData/data/`;
-3. `registerProductHandlers()` e `registerSaleHandlers()` registram os canais IPC;
-4. A janela carrega o `index.html` do frontend compilado;
+2. `initializeDrizzle()` abre ou cria `app-drizzle.db` em `appData/data/` e aplica as migrações;
+3. `migrateLegacyDatabase()` importa os dados do banco antigo `app.db`, se ele existir;
+4. `registerProductHandlers()` e `registerSaleHandlers()` registram os canais IPC;
+5. A janela carrega o `index.html` do frontend compilado;
 
 ## 2. Fluxo de dados
 
@@ -89,18 +90,18 @@ sequenceDiagram
 
 ## 3. Persistência
 
-| Arquivo                                | Função                                                         |
-| -------------------------------------- | -------------------------------------------------------------- |
-| `app/backend/infra/database/sqlite.ts` | Inicializa o `sql.js`, abre o banco e persiste o arquivo `.db` |
-| `app/backend/infra/database/schema.ts` | Cria as tabelas e aplica migrações simples de colunas          |
-| `app/backend/infra/database/paths.ts`  | Resolve o diretório `appData/data/` e o arquivo `app.db`       |
-| `app/backend/repository/*`             | Centraliza o SQL e os mapeamentos de domínio                   |
+| Arquivo                                   | Função                                                                            |
+| ----------------------------------------- | --------------------------------------------------------------------------------- |
+| `app/backend/infra/database/config.ts`    | Inicializa `better-sqlite3` com Drizzle, abre o banco e persiste `app-drizzle.db` |
+| `app/backend/infra/database/schema.ts`    | Cria as tabelas e aplica migrações simples de colunas                             |
+| `app/backend/infra/database/migration.ts` | Importa o banco legado `app.db` quando existe                                     |
+| `app/backend/repository/*`                | Centraliza as operações de dados e os mapeamentos de domínio                      |
 
 Regras da camada de persistência:
 
-- Todo SQL fica nos repositories.
-- `created_at` e `updated_at` são gerados no backend.
-- O banco só é acessado pelo main process.
+- O banco é acessado apenas pelo main process.
+- `created_at` e `updated_at` são gerados nas tabelas e atualizados pelo Drizzle.
+- Os repositories usam Drizzle ORM para as operações principais e SQL explícito apenas em pontos auxiliares como backup e migração.
 - `sale_items` usa `ON DELETE CASCADE` para remover itens quando uma venda é excluída.
 
 ## 4. Preload e IPC
