@@ -5,6 +5,7 @@ import { migrateLegacyDatabase } from "./backend/infra/database/migration";
 import { registerProductHandlers } from "./backend/controllers/productsController";
 import { registerSaleHandlers } from "./backend/controllers/salesController";
 import { registerBackupHandlers } from "./backend/controllers/backupController";
+import { logger } from "./backend/infra/logging/logger";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -17,9 +18,12 @@ function createWindow() {
 
   const indexPath = join(__dirname, "renderer", "index.html");
   win.loadFile(indexPath);
+  logger.info("APP", "Main window created");
 }
 
 app.whenReady().then(async () => {
+  logger.info("APP", "Application starting...");
+
   // 1. Inicializa o Drizzle (cria tabelas e aplica migrations)
   await initializeDrizzle();
 
@@ -39,5 +43,10 @@ app.whenReady().then(async () => {
 });
 
 app.on("window-all-closed", () => {
+  logger.info("APP", "All windows closed");
   if (process.platform !== "darwin") app.quit();
+});
+
+app.on("quit", () => {
+  logger.info("APP", "Application quitting");
 });

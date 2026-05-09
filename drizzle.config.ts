@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-import { getDatabasePath } from "./app/backend/infra/database/paths";
+import { getDatabasePath } from "./app/backend/infra/database/config";
 
 export default defineConfig({
   schema: "./app/backend/infra/database/schema.ts",

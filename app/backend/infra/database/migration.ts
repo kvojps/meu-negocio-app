@@ -3,30 +3,36 @@ import Database from "better-sqlite3";
 import { getLegacyDatabasePath } from "./config";
 import * as DrizzleBackupRepository from "../../repository/drizzleBackupRepository";
 import type { BackupData } from "../../../shared";
+import { logger } from "../logging/logger";
 
 export async function migrateLegacyDatabase() {
   const oldPath = getLegacyDatabasePath();
   if (!existsSync(oldPath)) {
-    console.log("[Migration] No legacy DB found. Skipping.");
+    logger.info("DATABASE", "No legacy DB found. Skipping migration.");
     return;
   }
 
   try {
-    console.log("[Migration] Legacy DB found. Checking data...");
+    logger.info("DATABASE", "Legacy DB found. Checking data...");
     const data = exportLegacyData(oldPath);
     if (data.products.length === 0 && data.sales.length === 0) {
-      console.log("[Migration] Legacy DB is empty. Skipping.");
+      logger.info("DATABASE", "Legacy DB is empty. Skipping migration.");
       return;
     }
-    console.log(
-      `[Migration] Importing ${data.products.length} products and ${data.sales.length} sales...`,
+    logger.info(
+      "DATABASE",
+      `Importing ${data.products.length} products and ${data.sales.length} sales from legacy DB...`,
     );
     DrizzleBackupRepository.importAllData(data);
     const backupPath = `${oldPath}.bak`;
     renameSync(oldPath, backupPath);
-    console.log(`[Migration] Done. Legacy DB moved to: ${backupPath}`);
+    logger.info("DATABASE", "Migration done. Legacy DB moved", {
+      path: backupPath,
+    });
   } catch (e: unknown) {
-    console.warn("[Migration] Legacy DB could not be read.", e);
+    logger.warn("DATABASE", "Legacy DB could not be read or migrated", {
+      error: e instanceof Error ? e.message : String(e),
+    });
   }
 }
 

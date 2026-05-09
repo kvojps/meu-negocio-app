@@ -6,6 +6,7 @@ import { products } from "./tables/productTables";
 import { saleItems, sales } from "./tables/saleTables";
 import { app } from "electron";
 import { existsSync, mkdirSync } from "node:fs";
+import { logger } from "../logging/logger";
 
 const schema = { products, sales, saleItems };
 
@@ -33,9 +34,12 @@ export async function initializeDrizzle() {
           "migrations",
         );
     migrate(dbInstance, { migrationsFolder: migrationsPath });
-    console.log(`[Database] Drizzle ORM initialized at: ${dbPath}`);
+    logger.info("DATABASE", "Drizzle ORM initialized", { path: dbPath });
   } catch (error) {
-    console.error("[Database] Failed to initialize Drizzle:", error);
+    logger.error("DATABASE", "Failed to initialize Drizzle", {
+      error: error instanceof Error ? error.message : String(error),
+      path: dbPath,
+    });
     throw error;
   }
 }
@@ -56,7 +60,7 @@ export function getDatabasePath(): string {
   return join(getDatabaseDirectory(), "app-drizzle.db");
 }
 
-function getDatabaseDirectory(): string {
+export function getDatabaseDirectory(): string {
   const dataDirectory = join(app.getPath("userData"), "data");
 
   if (!existsSync(dataDirectory)) {
