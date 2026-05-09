@@ -1,7 +1,7 @@
-declare module 'sql.js' {
+declare module "sql.js" {
   export interface SqlJsStatic {
     Database: {
-      new(data?: Uint8Array | ArrayBuffer | Buffer | number[]): Database;
+      new (data?: Uint8Array | ArrayBuffer | Buffer | number[]): Database;
     };
   }
 

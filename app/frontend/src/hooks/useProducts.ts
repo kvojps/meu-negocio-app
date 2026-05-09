@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import type { Product } from '../../../shared';
-import type { ProductInput } from '../../../shared';
-import { usePagination } from './usePagination';
+import { useEffect, useState } from "react";
+import type { Product } from "../../../shared";
+import type { ProductInput } from "../../../shared";
+import { usePagination } from "./usePagination";
 
 type UseProductsResult = {
   // Estado
@@ -18,7 +18,10 @@ type UseProductsResult = {
   openEditProductModal: (product: Product) => void;
   closeProductModal: () => void;
   // Handlers de CRUD
-  handleSaveProduct: (product: ProductInput, productId?: number) => Promise<void>;
+  handleSaveProduct: (
+    product: ProductInput,
+    productId?: number,
+  ) => Promise<void>;
   handleDeleteProduct: (product: Product) => Promise<void>;
   // Navegação de página
   goToPrevProductPage: () => void;
@@ -28,7 +31,7 @@ type UseProductsResult = {
 export function useProducts(): UseProductsResult {
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [productError, setProductError] = useState('');
+  const [productError, setProductError] = useState("");
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
@@ -38,23 +41,25 @@ export function useProducts(): UseProductsResult {
     paginatedItems: paginatedProducts,
     goToFirst: goToFirstProductPage,
     goToPrev: goToPrevProductPage,
-    goToNext: goToNextProductPage
+    goToNext: goToNextProductPage,
   } = usePagination(products);
 
   async function loadProducts() {
     setLoadingProducts(true);
-    setProductError('');
+    setProductError("");
 
     const response = await window.api.listProducts();
-    const loadedProducts = response.success ? response.data?.products : undefined;
+    const loadedProducts = response.success
+      ? response.data?.products
+      : undefined;
 
     if (response.success && loadedProducts) {
       setProducts(loadedProducts);
     } else {
       setProductError(
         response.success
-          ? 'Erro ao carregar produtos.'
-          : (response.error.message ?? 'Erro ao carregar produtos.')
+          ? "Erro ao carregar produtos."
+          : (response.error.message ?? "Erro ao carregar produtos."),
       );
     }
 
@@ -82,38 +87,47 @@ export function useProducts(): UseProductsResult {
 
   async function handleSaveProduct(product: ProductInput, productId?: number) {
     if (productId) {
-      const response = await window.api.updateProduct({ id: productId, ...product });
-      const updatedAt = response.success ? response.data?.updated_at : undefined;
+      const response = await window.api.updateProduct({
+        id: productId,
+        ...product,
+      });
+      const updatedAt = response.success
+        ? response.data?.updated_at
+        : undefined;
 
       if (!response.success || !updatedAt) {
         throw new Error(
           response.success
-            ? 'Erro ao atualizar produto.'
-            : (response.error.message ?? 'Erro ao atualizar produto.')
+            ? "Erro ao atualizar produto."
+            : (response.error.message ?? "Erro ao atualizar produto."),
         );
       }
 
       setProducts((current) =>
-        current.map((p) => (p.id === productId ? { ...p, ...product, updated_at: updatedAt } : p))
+        current.map((p) =>
+          p.id === productId ? { ...p, ...product, updated_at: updatedAt } : p,
+        ),
       );
-      setProductError('');
+      setProductError("");
       closeProductModal();
       return;
     }
 
     const response = await window.api.createProduct(product);
-    const createdProduct = response.success ? response.data?.product : undefined;
+    const createdProduct = response.success
+      ? response.data?.product
+      : undefined;
 
     if (!response.success || !createdProduct) {
       throw new Error(
         response.success
-          ? 'Erro ao cadastrar produto.'
-          : (response.error.message ?? 'Erro ao cadastrar produto.')
+          ? "Erro ao cadastrar produto."
+          : (response.error.message ?? "Erro ao cadastrar produto."),
       );
     }
 
     setProducts((current) => [createdProduct as Product, ...current]);
-    setProductError('');
+    setProductError("");
     goToFirstProductPage();
     closeProductModal();
   }
@@ -124,11 +138,11 @@ export function useProducts(): UseProductsResult {
     const confirmed = window.confirm(`Excluir o produto "${product.name}"?`);
     if (!confirmed) return;
 
-    setProductError('');
+    setProductError("");
     const response = await window.api.deleteProduct({ id: product.id });
 
     if (!response.success) {
-      setProductError(response.error.message ?? 'Erro ao excluir produto.');
+      setProductError(response.error.message ?? "Erro ao excluir produto.");
       return;
     }
 
@@ -150,6 +164,6 @@ export function useProducts(): UseProductsResult {
     handleSaveProduct,
     handleDeleteProduct,
     goToPrevProductPage,
-    goToNextProductPage
+    goToNextProductPage,
   };
 }

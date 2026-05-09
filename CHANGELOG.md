@@ -4,9 +4,15 @@ Todas as mudanças notáveis deste repositório, extraídas das releases do GitH
 
 > Fonte: <https://github.com/kvojps/meu-negocio-app/releases>
 
-## 0.4.26 - Não publicada
+## v0.5.1 - Não publicado
+
+- Refatoração do código Drizzle e limpeza do código SqlJs;
+
+## [v0.5.0](https://github.com/kvojps/meu-negocio-app/releases/tag/v0.5.0) - 7 de maio de 2026
 
 - Atualização de dependências;
+- Inclusão do EsLint e Prettier;
+- CI Automático para gerar tag e release com artefatos de distribuição;
 
 ## [v0.4.25](https://github.com/kvojps/meu-negocio-app/releases/tag/v0.4.25) - 6 de maio de 2026
 

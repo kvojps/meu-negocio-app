@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-import type { ActiveSection } from '../../utils/ui';
+import type { ReactElement } from "react";
+import type { ActiveSection } from "../../utils/ui";
 
 /* ── SVG Icons ── */
 function IconDashboard() {
@@ -41,7 +41,14 @@ function IconSales() {
 function IconBrand() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path
+        d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 }
@@ -58,11 +65,31 @@ function IconSettings() {
   );
 }
 
-const NAV_ITEMS: { section: ActiveSection; label: string; Icon: () => ReactElement; title: string }[] = [
-  { section: 'dashboard', label: 'Dashboard',     Icon: IconDashboard, title: 'Dashboard' },
-  { section: 'products',  label: 'Produtos',      Icon: IconProducts,  title: 'Produtos' },
-  { section: 'sales',     label: 'Receitas',      Icon: IconSales,     title: 'Receitas' },
-  { section: 'settings',  label: 'Configurações', Icon: IconSettings,  title: 'Configurações' },
+const NAV_ITEMS: {
+  section: ActiveSection;
+  label: string;
+  Icon: () => ReactElement;
+  title: string;
+}[] = [
+  {
+    section: "dashboard",
+    label: "Dashboard",
+    Icon: IconDashboard,
+    title: "Dashboard",
+  },
+  {
+    section: "products",
+    label: "Produtos",
+    Icon: IconProducts,
+    title: "Produtos",
+  },
+  { section: "sales", label: "Receitas", Icon: IconSales, title: "Receitas" },
+  {
+    section: "settings",
+    label: "Configurações",
+    Icon: IconSettings,
+    title: "Configurações",
+  },
 ];
 
 type SidebarProps = {
@@ -72,15 +99,20 @@ type SidebarProps = {
   onSectionChange: (section: ActiveSection) => void;
 };
 
-export function Sidebar({ open, activeSection, onToggle, onSectionChange }: SidebarProps) {
+export function Sidebar({
+  open,
+  activeSection,
+  onToggle,
+  onSectionChange,
+}: SidebarProps) {
   return (
-    <aside className={`sidebar ${open ? 'expanded' : 'collapsed'}`}>
+    <aside className={`sidebar ${open ? "expanded" : "collapsed"}`}>
       {/* Toggle */}
       <button
         className="sidebar-toggle"
         type="button"
         onClick={onToggle}
-        aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+        aria-label={open ? "Fechar menu" : "Abrir menu"}
         aria-expanded={open}
       >
         <span aria-hidden="true" />
@@ -105,10 +137,10 @@ export function Sidebar({ open, activeSection, onToggle, onSectionChange }: Side
         {NAV_ITEMS.map(({ section, label, Icon, title }) => (
           <button
             key={section}
-            className={`sidebar-item ${activeSection === section ? 'active' : ''}`}
+            className={`sidebar-item ${activeSection === section ? "active" : ""}`}
             type="button"
             title={!open ? title : undefined}
-            aria-current={activeSection === section ? 'page' : undefined}
+            aria-current={activeSection === section ? "page" : undefined}
             onClick={() => onSectionChange(section)}
           >
             <span className="sidebar-item-icon">

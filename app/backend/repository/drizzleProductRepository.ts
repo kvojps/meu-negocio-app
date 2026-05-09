@@ -1,19 +1,9 @@
 import { eq, desc } from "drizzle-orm";
-import { getDb } from "../infra/database/drizzle";
-import { products } from "../infra/database/schema";
+import { getDb } from "../infra/database/config";
+import { products } from "../infra/database/tables/productTables";
 import type { Product, ProductInput } from "../../shared";
 
 // NOTE: Repository assumes input already validated
-
-/**
- * Mapeia o resultado do Drizzle (que usa null) para a interface Product (que usa undefined)
- */
-function mapFromDb(row: typeof products.$inferSelect): Product {
-  return {
-    ...row,
-    description: row.description ?? undefined,
-  };
-}
 
 export function createProduct(input: ProductInput): Product {
   const db = getDb();
@@ -32,13 +22,13 @@ export function createProduct(input: ProductInput): Product {
     throw new Error("Falha ao criar produto.");
   }
 
-  return mapFromDb(result);
+  return result;
 }
 
 export function listProducts(): Product[] {
   const db = getDb();
   const rows = db.select().from(products).orderBy(desc(products.id)).all();
-  return rows.map(mapFromDb);
+  return rows;
 }
 
 export function productExists(id: number): boolean {

@@ -103,7 +103,7 @@
 .dashboard-axis-label {
   fill: var(--muted);
   font-size: 11px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .dashboard-line {

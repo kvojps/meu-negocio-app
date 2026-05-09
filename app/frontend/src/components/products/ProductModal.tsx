@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import type { Product } from '../../../../shared';
-import { createProductDto, type ProductInput } from '../../../../shared';
+import { useEffect, useState } from "react";
+import type { Product } from "../../../../shared";
+import { createProductDto, type ProductInput } from "../../../../shared";
 
 type ProductModalProps = {
   open: boolean;
@@ -9,30 +9,35 @@ type ProductModalProps = {
   onSave: (product: ProductInput, productId?: number) => Promise<void>;
 };
 
-export function ProductModal({ open, product, onClose, onSave }: ProductModalProps) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [costPrice, setCostPrice] = useState('');
-  const [status, setStatus] = useState('');
+export function ProductModal({
+  open,
+  product,
+  onClose,
+  onSave,
+}: ProductModalProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [costPrice, setCostPrice] = useState("");
+  const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) {
-      setName('');
-      setDescription('');
-      setPrice('');
-      setCostPrice('');
-      setStatus('');
+      setName("");
+      setDescription("");
+      setPrice("");
+      setCostPrice("");
+      setStatus("");
       setSaving(false);
       return;
     }
 
-    setName(product?.name ?? '');
-    setDescription(product?.description ?? '');
-    setPrice(product ? String(product.price) : '');
-    setCostPrice(product ? String(product.cost_price) : '');
-    setStatus('');
+    setName(product?.name ?? "");
+    setDescription(product?.description ?? "");
+    setPrice(product ? String(product.price) : "");
+    setCostPrice(product ? String(product.cost_price) : "");
+    setStatus("");
     setSaving(false);
   }, [open, product]);
 
@@ -42,13 +47,26 @@ export function ProductModal({ open, product, onClose, onSave }: ProductModalPro
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" onClick={(event) => event.stopPropagation()}>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-modal-title"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
             <p className="section-label">Produtos</p>
-            <h2 id="product-modal-title">{product ? 'Editar produto' : 'Cadastrar produto'}</h2>
+            <h2 id="product-modal-title">
+              {product ? "Editar produto" : "Cadastrar produto"}
+            </h2>
           </div>
-          <button className="ghost-button" type="button" onClick={onClose} aria-label="Fechar modal">
+          <button
+            className="ghost-button"
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar modal"
+          >
             Fechar
           </button>
         </div>
@@ -71,13 +89,25 @@ export function ProductModal({ open, product, onClose, onSave }: ProductModalPro
             }
 
             setSaving(true);
-            setStatus(product ? 'Atualizando produto...' : 'Salvando produto...');
+            setStatus(
+              product ? "Atualizando produto..." : "Salvando produto...",
+            );
 
             try {
               await onSave(parsed.data, product?.id);
-              setStatus(product ? 'Produto atualizado com sucesso.' : 'Produto salvo com sucesso.');
+              setStatus(
+                product
+                  ? "Produto atualizado com sucesso."
+                  : "Produto salvo com sucesso.",
+              );
             } catch (error) {
-              setStatus(error instanceof Error ? error.message : product ? 'Erro ao atualizar produto.' : 'Erro ao salvar produto.');
+              setStatus(
+                error instanceof Error
+                  ? error.message
+                  : product
+                    ? "Erro ao atualizar produto."
+                    : "Erro ao salvar produto.",
+              );
             } finally {
               setSaving(false);
             }
@@ -85,29 +115,61 @@ export function ProductModal({ open, product, onClose, onSave }: ProductModalPro
         >
           <label>
             Nome
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Ex.: Sofá 3 lugares" maxLength={120} />
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Ex.: Sofá 3 lugares"
+              maxLength={120}
+            />
           </label>
 
           <label>
             Descrição
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Detalhes do produto" maxLength={500} />
+            <textarea
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Detalhes do produto"
+              maxLength={500}
+            />
           </label>
 
           <label>
             Preço
-            <input value={price} onChange={(event) => setPrice(event.target.value)} placeholder="0,00" type="number" min="0" step="0.01" />
+            <input
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
+              placeholder="0,00"
+              type="number"
+              min="0"
+              step="0.01"
+            />
           </label>
 
           <label>
             Custo
-            <input value={costPrice} onChange={(event) => setCostPrice(event.target.value)} placeholder="0,00" type="number" min="0" step="0.01" />
+            <input
+              value={costPrice}
+              onChange={(event) => setCostPrice(event.target.value)}
+              placeholder="0,00"
+              type="number"
+              min="0"
+              step="0.01"
+            />
           </label>
 
           <div className="modal-actions">
             <button className="primary-button" type="submit" disabled={saving}>
-              {saving ? 'Salvando...' : product ? 'Atualizar produto' : 'Salvar produto'}
+              {saving
+                ? "Salvando..."
+                : product
+                  ? "Atualizar produto"
+                  : "Salvar produto"}
             </button>
-            <button className="secondary-button" type="button" onClick={onClose}>
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={onClose}
+            >
               Cancelar
             </button>
           </div>

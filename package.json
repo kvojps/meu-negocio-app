@@ -1,21 +1,26 @@
 {
   "name": "meu-negocio-app",
-  "version": "0.4.26",
-  "private": true,
+  "version": "0.5.1",
   "main": "dist/app/app.js",
   "scripts": {
     "build": "npm run build:frontend && npm run build:main",
     "build:main": "tsc -p tsconfig.json && npm run copy-migrations",
     "build:frontend": "vite build --config app/frontend/vite.config.ts",
-    "copy-migrations": "node scripts/copy-migrations.js",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder",
-    "postinstall": "electron-rebuild -f -w better-sqlite3"
+    "copy-migrations": "node scripts/copy-migrations.js",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ./app",
+    "lint:fix": "eslint ./app --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
     "electron-log": "^5.4.3",
+    "electron-updater": "6.3.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "sql.js": "^1.11.0",
@@ -23,6 +28,7 @@
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.4",
+    "@eslint/js": "^10.0.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -31,7 +37,12 @@
     "drizzle-kit": "^0.31.10",
     "electron": "^40.9.3",
     "electron-builder": "^26.9.0",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.3",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2",
     "vite": "^8.0.10"
   },
   "build": {
@@ -40,12 +51,13 @@
     "directories": {
       "output": "release/"
     },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "signAndEditExecutable": false
-    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Kvojps",
+        "repo": "meu-negocio-app"
+      }
+    ],
     "nsis": {
       "deleteAppDataOnUninstall": false
     },

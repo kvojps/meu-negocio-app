@@ -9,7 +9,7 @@ Aplicativo desktop local, offline e voltado à gestão de produtos e vendas. Cen
 | Requisito             | Detalhe                                           |
 | --------------------- | ------------------------------------------------- |
 | Funcionamento offline | 100% local, sem internet                          |
-| Persistência          | SQLite via `sql.js`                               |
+| Persistência          | SQLite via Drizzle ORM (`drizzle-orm`)            |
 | Segurança             | Renderer sem acesso direto ao banco ou filesystem |
 
 ### 1.2. Público-alvo

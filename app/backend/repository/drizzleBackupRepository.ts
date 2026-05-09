@@ -1,23 +1,28 @@
-import { asc, inArray, sql } from "drizzle-orm";
-import { getDb } from "../infra/database/drizzle";
-import { products, sales, saleItems } from "../infra/database/schema";
-import type { BackupData } from "../../shared";
+import { asc, sql } from "drizzle-orm";
+import { getDb } from "../infra/database/config";
+import { products } from "../infra/database/tables/productTables";
+import { saleItems, sales } from "../infra/database/tables/saleTables";
+import type { BackupData, Product, Sale, SaleItem } from "../../shared";
 
 // NOTE: Repository assumes input already validated
 
 export function exportAllData(): BackupData {
   const db = getDb();
 
-  const allProducts = db.select().from(products).orderBy(asc(products.id)).all();
+  const allProducts = db
+    .select()
+    .from(products)
+    .orderBy(asc(products.id))
+    .all();
   const allSales = db.select().from(sales).orderBy(asc(sales.id)).all();
   const allItems = db.select().from(saleItems).orderBy(asc(saleItems.id)).all();
 
   return {
     version: 1,
     exported_at: new Date().toISOString(),
-    products: allProducts as any[],
-    sales: allSales as any[],
-    sale_items: allItems as any[],
+    products: allProducts as Required<Product>[],
+    sales: allSales as Required<Sale>[],
+    sale_items: allItems as Required<SaleItem>[],
   };
 }
 
@@ -35,7 +40,6 @@ export function importAllData(data: BackupData): void {
       sql`DELETE FROM sqlite_sequence WHERE name IN ('products', 'sales', 'sale_items')`,
     );
 
-    // Reinsere produtos
     if (data.products.length > 0) {
       for (const p of data.products) {
         tx.insert(products)
@@ -52,7 +56,6 @@ export function importAllData(data: BackupData): void {
       }
     }
 
-    // Reinsere vendas
     if (data.sales.length > 0) {
       for (const s of data.sales) {
         tx.insert(sales)
@@ -69,7 +72,6 @@ export function importAllData(data: BackupData): void {
       }
     }
 
-    // Reinsere itens de venda
     if (data.sale_items.length > 0) {
       for (const item of data.sale_items) {
         tx.insert(saleItems)

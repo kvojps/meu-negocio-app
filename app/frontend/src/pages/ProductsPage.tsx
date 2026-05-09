@@ -1,7 +1,7 @@
-import type { Product } from '../../../shared';
-import { formatCurrency, formatDate } from '../utils/formatters';
-import { PencilIcon, TrashIcon } from '../components/shared/Icons';
-import { TablePagination } from '../components/shared/TablePagination';
+import type { Product } from "../../../shared";
+import { formatCurrency, formatDate } from "../utils/formatters";
+import { PencilIcon, TrashIcon } from "../components/shared/Icons";
+import { TablePagination } from "../components/shared/TablePagination";
 
 type ProductsPageProps = {
   products: Product[];
@@ -28,20 +28,25 @@ export function ProductsPage({
   onEditProduct,
   onDeleteProduct,
   onPreviousPage,
-  onNextPage
+  onNextPage,
 }: ProductsPageProps) {
-  const totalCatalogValue = products.reduce((sum, product) => sum + product.price, 0);
+  const totalCatalogValue = products.reduce(
+    (sum, product) => sum + product.price,
+    0,
+  );
 
   return (
     <>
       <section className="metrics">
         <div className="metric-card">
           <span>Total de produtos</span>
-          <strong>{loadingProducts ? '...' : products.length}</strong>
+          <strong>{loadingProducts ? "..." : products.length}</strong>
         </div>
         <div className="metric-card">
           <span>Valor total do catálogo</span>
-          <strong>{loadingProducts ? '...' : formatCurrency(totalCatalogValue)}</strong>
+          <strong>
+            {loadingProducts ? "..." : formatCurrency(totalCatalogValue)}
+          </strong>
         </div>
       </section>
 
@@ -49,9 +54,17 @@ export function ProductsPage({
         <div className="table-card-header">
           <div>
             <h3>Produtos cadastrados</h3>
-            <p>{loadingProducts ? 'Carregando...' : `${products.length} item(ns) no total`}</p>
+            <p>
+              {loadingProducts
+                ? "Carregando..."
+                : `${products.length} item(ns) no total`}
+            </p>
           </div>
-          <button className="primary-button" type="button" onClick={onCreateProduct}>
+          <button
+            className="primary-button"
+            type="button"
+            onClick={onCreateProduct}
+          >
             Cadastrar produto
           </button>
         </div>
@@ -73,14 +86,23 @@ export function ProductsPage({
               {paginatedProducts.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="empty-state">
-                    {products.length === 0 ? 'Nenhum produto cadastrado ainda.' : 'Nenhum produto nesta página.'}
+                    {products.length === 0
+                      ? "Nenhum produto cadastrado ainda."
+                      : "Nenhum produto nesta página."}
                   </td>
                 </tr>
               ) : (
                 paginatedProducts.map((product) => (
                   <tr key={product.id}>
-                    <td className="table-cell-truncate" title={product.name}>{product.name}</td>
-                    <td className="table-cell-truncate table-cell-description" title={product.description || '-'}>{product.description || '-'}</td>
+                    <td className="table-cell-truncate" title={product.name}>
+                      {product.name}
+                    </td>
+                    <td
+                      className="table-cell-truncate table-cell-description"
+                      title={product.description || "-"}
+                    >
+                      {product.description || "-"}
+                    </td>
                     <td>{formatCurrency(product.price)}</td>
                     <td>{formatDate(product.created_at)}</td>
                     <td>

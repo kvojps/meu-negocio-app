@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react';
-import type { Product, Sale, SaleWithItems, CreateSaleInput } from '../../../shared';
-import { usePagination } from './usePagination';
+import { useEffect, useState } from "react";
+import type {
+  Product,
+  Sale,
+  SaleWithItems,
+  CreateSaleInput,
+} from "../../../shared";
+import { usePagination } from "./usePagination";
 
 type UseSalesResult = {
   // Estado
@@ -30,11 +35,11 @@ type UseSalesResult = {
 export function useSales(): UseSalesResult {
   const [sales, setSales] = useState<Sale[]>([]);
   const [loadingSales, setLoadingSales] = useState(true);
-  const [salesError, setSalesError] = useState('');
+  const [salesError, setSalesError] = useState("");
   const [saleModalOpen, setSaleModalOpen] = useState(false);
   const [saleDetailsOpen, setSaleDetailsOpen] = useState(false);
   const [saleDetails, setSaleDetails] = useState<SaleWithItems | null>(null);
-  const [saleDetailsStatus, setSaleDetailsStatus] = useState('');
+  const [saleDetailsStatus, setSaleDetailsStatus] = useState("");
 
   const {
     page: salePage,
@@ -42,12 +47,12 @@ export function useSales(): UseSalesResult {
     paginatedItems: paginatedSales,
     goToFirst: goToFirstSalePage,
     goToPrev: goToPrevSalePage,
-    goToNext: goToNextSalePage
+    goToNext: goToNextSalePage,
   } = usePagination(sales);
 
   async function loadSales() {
     setLoadingSales(true);
-    setSalesError('');
+    setSalesError("");
 
     const response = await window.api.listSales();
     const loadedSales = response.success ? response.data?.sales : undefined;
@@ -57,8 +62,8 @@ export function useSales(): UseSalesResult {
     } else {
       setSalesError(
         response.success
-          ? 'Erro ao carregar receitas.'
-          : (response.error.message ?? 'Erro ao carregar receitas.')
+          ? "Erro ao carregar receitas."
+          : (response.error.message ?? "Erro ao carregar receitas."),
       );
     }
 
@@ -80,7 +85,7 @@ export function useSales(): UseSalesResult {
   function closeSaleDetails() {
     setSaleDetailsOpen(false);
     setSaleDetails(null);
-    setSaleDetailsStatus('');
+    setSaleDetailsStatus("");
   }
 
   async function openSaleDetails(sale: Sale) {
@@ -88,21 +93,21 @@ export function useSales(): UseSalesResult {
 
     setSaleDetailsOpen(true);
     setSaleDetails(null);
-    setSaleDetailsStatus('Carregando detalhes...');
+    setSaleDetailsStatus("Carregando detalhes...");
 
     const response = await window.api.getSaleById({ id: sale.id });
     const details = response.success ? response.data?.sale : undefined;
 
     if (response.success && details) {
       setSaleDetails(details);
-      setSaleDetailsStatus('');
+      setSaleDetailsStatus("");
       return;
     }
 
     setSaleDetailsStatus(
       response.success
-        ? 'Erro ao carregar receita.'
-        : (response.error.message ?? 'Erro ao carregar receita.')
+        ? "Erro ao carregar receita."
+        : (response.error.message ?? "Erro ao carregar receita."),
     );
   }
 
@@ -113,13 +118,13 @@ export function useSales(): UseSalesResult {
     if (!response.success || !createdSale) {
       throw new Error(
         response.success
-          ? 'Erro ao registrar receita.'
-          : (response.error.message ?? 'Erro ao registrar receita.')
+          ? "Erro ao registrar receita."
+          : (response.error.message ?? "Erro ao registrar receita."),
       );
     }
 
     setSales((current) => [createdSale as Sale, ...current]);
-    setSalesError('');
+    setSalesError("");
     goToFirstSalePage();
     closeSaleModal();
   }
@@ -130,11 +135,11 @@ export function useSales(): UseSalesResult {
     const confirmed = window.confirm(`Excluir a receita #${sale.id}?`);
     if (!confirmed) return;
 
-    setSalesError('');
+    setSalesError("");
     const response = await window.api.deleteSale({ id: sale.id });
 
     if (!response.success) {
-      setSalesError(response.error.message ?? 'Erro ao excluir receita.');
+      setSalesError(response.error.message ?? "Erro ao excluir receita.");
       return;
     }
 
@@ -164,6 +169,6 @@ export function useSales(): UseSalesResult {
     handleSaveSale,
     handleDeleteSale,
     goToPrevSalePage,
-    goToNextSalePage
+    goToNextSalePage,
   };
 }

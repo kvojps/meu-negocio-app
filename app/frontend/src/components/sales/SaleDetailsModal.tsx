@@ -1,5 +1,5 @@
-import type { Product, SaleWithItems } from '../../../../shared';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import type { Product, SaleWithItems } from "../../../../shared";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 type SaleDetailsModalProps = {
   open: boolean;
@@ -9,22 +9,43 @@ type SaleDetailsModalProps = {
   onClose: () => void;
 };
 
-export function SaleDetailsModal({ open, sale, products, status, onClose }: SaleDetailsModalProps) {
+export function SaleDetailsModal({
+  open,
+  sale,
+  products,
+  status,
+  onClose,
+}: SaleDetailsModalProps) {
   if (!open) {
     return null;
   }
 
-  const productNameById = new Map(products.map((product) => [product.id, product.name]));
+  const productNameById = new Map(
+    products.map((product) => [product.id, product.name]),
+  );
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
-      <div className="modal sale-details-modal" role="dialog" aria-modal="true" aria-labelledby="sale-details-title" onClick={(event) => event.stopPropagation()}>
+      <div
+        className="modal sale-details-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sale-details-title"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
             <p className="section-label">Receitas</p>
-            <h2 id="sale-details-title">{sale ? `Receita #${sale.id}` : 'Detalhes da receita'}</h2>
+            <h2 id="sale-details-title">
+              {sale ? `Receita #${sale.id}` : "Detalhes da receita"}
+            </h2>
           </div>
-          <button className="ghost-button" type="button" onClick={onClose} aria-label="Fechar modal">
+          <button
+            className="ghost-button"
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar modal"
+          >
             Fechar
           </button>
         </div>
@@ -62,13 +83,18 @@ export function SaleDetailsModal({ open, sale, products, status, onClose }: Sale
               <h3>Itens</h3>
               <div className="sale-details-items">
                 {sale.items.length === 0 ? (
-                  <p className="empty-state">Nenhum item encontrado para esta receita.</p>
+                  <p className="empty-state">
+                    Nenhum item encontrado para esta receita.
+                  </p>
                 ) : (
                   sale.items.map((item) => (
                     <div className="sale-detail-item" key={item.id}>
                       <div>
                         <span>Produto</span>
-                        <strong>{productNameById.get(item.product_id) ?? `Produto #${item.product_id}`}</strong>
+                        <strong>
+                          {productNameById.get(item.product_id) ??
+                            `Produto #${item.product_id}`}
+                        </strong>
                       </div>
                       <div>
                         <span>Quantidade</span>
@@ -84,7 +110,11 @@ export function SaleDetailsModal({ open, sale, products, status, onClose }: Sale
                       </div>
                       <div>
                         <span>Lucro do item</span>
-                        <strong>{formatCurrency((item.unit_price - item.unit_cost) * item.quantity)}</strong>
+                        <strong>
+                          {formatCurrency(
+                            (item.unit_price - item.unit_cost) * item.quantity,
+                          )}
+                        </strong>
                       </div>
                     </div>
                   ))
@@ -93,7 +123,7 @@ export function SaleDetailsModal({ open, sale, products, status, onClose }: Sale
             </div>
           </div>
         ) : (
-          <p className="form-status">{status || 'Carregando detalhes...'}</p>
+          <p className="form-status">{status || "Carregando detalhes..."}</p>
         )}
       </div>
     </div>

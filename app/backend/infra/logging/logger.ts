@@ -26,7 +26,7 @@ const formatPayload = (payload: unknown) => {
   if (payload === undefined) return undefined;
   try {
     return JSON.stringify(payload);
-  } catch (err) {
+  } catch {
     return "[Unserializable Payload]";
   }
 };
@@ -45,6 +45,5 @@ export const logger = {
     log.debug(`[${module}] ${event} | Payload: ${formatPayload(payload)}`);
   },
 };
-
 
 export default logger;

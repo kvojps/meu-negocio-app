@@ -40,4 +40,3 @@ export function typedIpcMainHandle<Req, Res>(
 }
 
 export default typedIpcMainHandle;
-

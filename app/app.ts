@@ -1,9 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
-import { initializeDrizzle } from "./backend/infra/database/drizzle";
-import {
-  extractOldData,
-} from "./backend/infra/database/migration-util";
+import { initializeDrizzle } from "./backend/infra/database/config";
+import { migrateLegacyDatabase } from "./backend/infra/database/migration";
 import { registerProductHandlers } from "./backend/controllers/productsController";
 import { registerSaleHandlers } from "./backend/controllers/salesController";
 import { registerBackupHandlers } from "./backend/controllers/backupController";
@@ -25,12 +23,12 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   logger.info("APP", "Application starting...");
-  
+
   // 1. Inicializa o Drizzle (cria tabelas e aplica migrations)
   await initializeDrizzle();
 
   // 2. Extrai dados do banco antigo (se existir) ANTES do Drizzle inicializar
-  await extractOldData();
+  await migrateLegacyDatabase();
 
   // 4. Registra handlers de IPC
   registerProductHandlers();
@@ -52,4 +50,3 @@ app.on("window-all-closed", () => {
 app.on("quit", () => {
   logger.info("APP", "Application quitting");
 });
-
