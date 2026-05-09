@@ -17,6 +17,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.9",
     "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
     "electron-log": "5.1.7",

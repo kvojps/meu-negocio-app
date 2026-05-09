@@ -10,6 +10,9 @@ import { SalesPage } from "./pages/SalesPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { useProducts } from "./hooks/useProducts";
 import { useSales } from "./hooks/useSales";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export function App() {
   const [activeSection, setActiveSection] =
@@ -55,77 +58,82 @@ export function App() {
     goToNextSalePage,
   } = useSales();
 
+  const Routes = {
+    dashboard: () => (
+      <DashboardPage
+        sales={sales}
+        loading={loadingSales}
+        onOpenSale={openSaleDetails}
+      />
+    ),
+    products: () => (
+      <ProductsPage
+        products={products}
+        paginatedProducts={paginatedProducts}
+        loadingProducts={loadingProducts}
+        productError={productError}
+        productPage={productPage}
+        totalProductPages={totalProductPages}
+        onCreateProduct={openCreateProductModal}
+        onEditProduct={openEditProductModal}
+        onDeleteProduct={(p) => void handleDeleteProduct(p)}
+        onPreviousPage={goToPrevProductPage}
+        onNextPage={goToNextProductPage}
+      />
+    ),
+    sales: () => (
+      <SalesPage
+        sales={sales}
+        paginatedSales={paginatedSales}
+        loadingSales={loadingSales}
+        salesError={salesError}
+        products={products}
+        salePage={salePage}
+        totalSalePages={totalSalePages}
+        onCreateSale={openSaleModal}
+        onOpenSaleDetails={(s) => void openSaleDetails(s)}
+        onDeleteSale={(s) => void handleDeleteSale(s, products)}
+        onPreviousPage={goToPrevSalePage}
+        onNextPage={goToNextSalePage}
+      />
+    ),
+    settings: () => <SettingsPage />,
+  };
+
   return (
-    <div
-      className={`app-shell ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}
-    >
-      <Sidebar
-        open={sidebarOpen}
-        activeSection={activeSection}
-        onToggle={() => setSidebarOpen((current) => !current)}
-        onSectionChange={setActiveSection}
-      />
+    <QueryClientProvider client={queryClient}>
+      <div
+        className={`app-shell ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}
+      >
+        <Sidebar
+          open={sidebarOpen}
+          activeSection={activeSection}
+          onToggle={() => setSidebarOpen((current) => !current)}
+          onSectionChange={setActiveSection}
+        />
 
-      <main className="content">
-        {activeSection === "dashboard" ? (
-          <DashboardPage
-            sales={sales}
-            loading={loadingSales}
-            onOpenSale={openSaleDetails}
-          />
-        ) : activeSection === "products" ? (
-          <ProductsPage
-            products={products}
-            paginatedProducts={paginatedProducts}
-            loadingProducts={loadingProducts}
-            productError={productError}
-            productPage={productPage}
-            totalProductPages={totalProductPages}
-            onCreateProduct={openCreateProductModal}
-            onEditProduct={openEditProductModal}
-            onDeleteProduct={(p) => void handleDeleteProduct(p)}
-            onPreviousPage={goToPrevProductPage}
-            onNextPage={goToNextProductPage}
-          />
-        ) : activeSection === "settings" ? (
-          <SettingsPage />
-        ) : (
-          <SalesPage
-            sales={sales}
-            paginatedSales={paginatedSales}
-            loadingSales={loadingSales}
-            salesError={salesError}
-            products={products}
-            salePage={salePage}
-            totalSalePages={totalSalePages}
-            onCreateSale={openSaleModal}
-            onOpenSaleDetails={(s) => void openSaleDetails(s)}
-            onDeleteSale={(s) => void handleDeleteSale(s, products)}
-            onPreviousPage={goToPrevSalePage}
-            onNextPage={goToNextSalePage}
-          />
-        )}
-      </main>
+        <main className="content">{Routes[activeSection]()}</main>
 
-      <ProductModal
-        open={productModalOpen}
-        product={editingProduct}
-        onClose={closeProductModal}
-        onSave={handleSaveProduct}
-      />
-      <SaleModal
-        open={saleModalOpen}
-        products={products}
-        onClose={closeSaleModal}
-        onSave={handleSaveSale}
-      />
-      <SaleDetailsModal
-        open={saleDetailsOpen}
-        sale={saleDetails}
-        products={products}
-        status={saleDetailsStatus}
-        onClose={closeSaleDetails}
-      />
-    </div>
+        <ProductModal
+          open={productModalOpen}
+          product={editingProduct}
+          onClose={closeProductModal}
+          onSave={handleSaveProduct}
+        />
+        <SaleModal
+          open={saleModalOpen}
+          products={products}
+          onClose={closeSaleModal}
+          onSave={handleSaveSale}
+        />
+        <SaleDetailsModal
+          open={saleDetailsOpen}
+          sale={saleDetails}
+          products={products}
+          status={saleDetailsStatus}
+          onClose={closeSaleDetails}
+        />
+      </div>
+    </QueryClientProvider>
   );
 }
