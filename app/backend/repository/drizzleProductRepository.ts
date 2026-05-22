@@ -1,7 +1,7 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { getDb } from "../infra/database/config";
 import { products } from "../infra/database/tables/productTables";
-import type { Product, ProductInput } from "../../shared";
+import type { Product, ProductInput, ProductStats } from "../../shared";
 
 // NOTE: Repository assumes input already validated
 
@@ -29,6 +29,24 @@ export function listProducts(): Product[] {
   const db = getDb();
   const rows = db.select().from(products).orderBy(desc(products.id)).all();
   return rows;
+}
+
+export function getProductStats(): ProductStats {
+  const db = getDb();
+  const row = db
+    .select({
+      totalCost: sql<number>`COALESCE(SUM(${products.cost_price}), 0)`,
+      totalValue: sql<number>`COALESCE(SUM(${products.price}), 0)`,
+    })
+    .from(products)
+    .get();
+
+  const totalCost = Number(row?.totalCost ?? 0);
+  const totalValue = Number(row?.totalValue ?? 0);
+  const profitMargin =
+    totalValue > 0 ? ((totalValue - totalCost) / totalValue) * 100 : 0;
+
+  return { totalCost, totalValue, profitMargin };
 }
 
 export function productExists(id: number): boolean {

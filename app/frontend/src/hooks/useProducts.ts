@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import type { Product } from "../../../shared";
+import type { Product, ProductStats } from "../../../shared";
 import type { ProductInput } from "../../../shared";
 import { usePagination } from "./usePagination";
 
 type UseProductsResult = {
   // Estado
   products: Product[];
+  productStats: ProductStats | null;
   paginatedProducts: Product[];
   loadingProducts: boolean;
   productError: string;
@@ -30,6 +31,7 @@ type UseProductsResult = {
 
 export function useProducts(): UseProductsResult {
   const [products, setProducts] = useState<Product[]>([]);
+  const [productStats, setProductStats] = useState<ProductStats | null>(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productError, setProductError] = useState("");
   const [productModalOpen, setProductModalOpen] = useState(false);
@@ -44,23 +46,38 @@ export function useProducts(): UseProductsResult {
     goToNext: goToNextProductPage,
   } = usePagination(products);
 
+  async function refreshStats() {
+    const statsResponse = await window.api.getProductStats();
+    if (statsResponse.success && statsResponse.data?.stats) {
+      setProductStats(statsResponse.data.stats);
+    }
+  }
+
   async function loadProducts() {
     setLoadingProducts(true);
     setProductError("");
 
-    const response = await window.api.listProducts();
-    const loadedProducts = response.success
-      ? response.data?.products
+    const [listResponse, statsResponse] = await Promise.all([
+      window.api.listProducts(),
+      window.api.getProductStats(),
+    ]);
+
+    const loadedProducts = listResponse.success
+      ? listResponse.data?.products
       : undefined;
 
-    if (response.success && loadedProducts) {
+    if (listResponse.success && loadedProducts) {
       setProducts(loadedProducts);
     } else {
       setProductError(
-        response.success
+        listResponse.success
           ? "Erro ao carregar produtos."
-          : (response.error.message ?? "Erro ao carregar produtos."),
+          : (listResponse.error.message ?? "Erro ao carregar produtos."),
       );
+    }
+
+    if (statsResponse.success && statsResponse.data?.stats) {
+      setProductStats(statsResponse.data.stats);
     }
 
     setLoadingProducts(false);
@@ -109,6 +126,7 @@ export function useProducts(): UseProductsResult {
         ),
       );
       setProductError("");
+      void refreshStats();
       closeProductModal();
       return;
     }
@@ -128,6 +146,7 @@ export function useProducts(): UseProductsResult {
 
     setProducts((current) => [createdProduct as Product, ...current]);
     setProductError("");
+    void refreshStats();
     goToFirstProductPage();
     closeProductModal();
   }
@@ -151,6 +170,7 @@ export function useProducts(): UseProductsResult {
 
   return {
     products,
+    productStats,
     paginatedProducts,
     loadingProducts,
     productError,

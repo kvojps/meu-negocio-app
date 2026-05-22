@@ -1,10 +1,11 @@
-import type { Product } from "../../../shared";
+import type { Product, ProductStats } from "../../../shared";
 import { formatCurrency, formatDate } from "../utils/formatters";
 import { PencilIcon, TrashIcon } from "../components/shared/Icons";
 import { TablePagination } from "../components/shared/TablePagination";
 
 type ProductsPageProps = {
   products: Product[];
+  productStats: ProductStats | null;
   paginatedProducts: Product[];
   loadingProducts: boolean;
   productError: string;
@@ -19,6 +20,7 @@ type ProductsPageProps = {
 
 export function ProductsPage({
   products,
+  productStats,
   paginatedProducts,
   loadingProducts,
   productError,
@@ -30,22 +32,35 @@ export function ProductsPage({
   onPreviousPage,
   onNextPage,
 }: ProductsPageProps) {
-  const totalCatalogValue = products.reduce(
-    (sum, product) => sum + product.price,
-    0,
-  );
-
   return (
     <>
-      <section className="metrics">
+      <section className="metrics products-metrics">
         <div className="metric-card">
           <span>Total de produtos</span>
           <strong>{loadingProducts ? "..." : products.length}</strong>
         </div>
         <div className="metric-card">
+          <span>Custo total do catálogo</span>
+          <strong>
+            {loadingProducts
+              ? "..."
+              : formatCurrency(productStats?.totalCost ?? 0)}
+          </strong>
+        </div>
+        <div className="metric-card">
           <span>Valor total do catálogo</span>
           <strong>
-            {loadingProducts ? "..." : formatCurrency(totalCatalogValue)}
+            {loadingProducts
+              ? "..."
+              : formatCurrency(productStats?.totalValue ?? 0)}
+          </strong>
+        </div>
+        <div className="metric-card">
+          <span>Margem bruta do catálogo</span>
+          <strong>
+            {loadingProducts
+              ? "..."
+              : `${(productStats?.profitMargin ?? 0).toFixed(1)}%`}
           </strong>
         </div>
       </section>

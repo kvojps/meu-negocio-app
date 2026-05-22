@@ -8,6 +8,7 @@ function invoke<T>(channel: string, payload?: unknown) {
 const api: AppApi = {
   createProduct: (product) => invoke("products:create", product),
   listProducts: () => invoke("products:list"),
+  getProductStats: () => invoke("products:stats"),
   updateProduct: (product) => invoke("products:update", product),
   deleteProduct: (payload) => invoke("products:delete", payload),
   createSale: (sale) => invoke("sales:create", sale),

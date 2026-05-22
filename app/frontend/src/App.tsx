@@ -18,6 +18,7 @@ export function App() {
 
   const {
     products,
+    productStats,
     paginatedProducts,
     loadingProducts,
     productError,
@@ -76,6 +77,7 @@ export function App() {
         ) : activeSection === "products" ? (
           <ProductsPage
             products={products}
+            productStats={productStats}
             paginatedProducts={paginatedProducts}
             loadingProducts={loadingProducts}
             productError={productError}
