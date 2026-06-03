@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import type { Product } from "../../../shared";
-import type { ProductInput } from "../../../shared";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Product, ProductInput } from "../../../shared";
 import { usePagination } from "./usePagination";
 
 type UseProductsResult = {
-  // Estado
   products: Product[];
   paginatedProducts: Product[];
   loadingProducts: boolean;
@@ -13,27 +12,40 @@ type UseProductsResult = {
   totalProductPages: number;
   productModalOpen: boolean;
   editingProduct: Product | null;
-  // Ações de modal
   openCreateProductModal: () => void;
   openEditProductModal: (product: Product) => void;
   closeProductModal: () => void;
-  // Handlers de CRUD
   handleSaveProduct: (
     product: ProductInput,
     productId?: number,
   ) => Promise<void>;
   handleDeleteProduct: (product: Product) => Promise<void>;
-  // Navegação de página
   goToPrevProductPage: () => void;
   goToNextProductPage: () => void;
 };
 
 export function useProducts(): UseProductsResult {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [productError, setProductError] = useState("");
+  const queryClient = useQueryClient();
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const {
+    data: products = [],
+    isLoading: loadingProducts,
+    error: productsQueryError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await window.api.listProducts();
+      if (!response.success) {
+        throw new Error(response.error.message ?? "Erro ao carregar produtos.");
+      }
+      return response.data?.products ?? [];
+    },
+  });
+
+  const productError =
+    productsQueryError instanceof Error ? productsQueryError.message : "";
 
   const {
     page: productPage,
@@ -44,31 +56,53 @@ export function useProducts(): UseProductsResult {
     goToNext: goToNextProductPage,
   } = usePagination(products);
 
-  async function loadProducts() {
-    setLoadingProducts(true);
-    setProductError("");
+  const createProductMutation = useMutation({
+    mutationFn: async (product: ProductInput) => {
+      const response = await window.api.createProduct(product);
+      if (!response.success || !response.data?.product) {
+        throw new Error(
+          response.success
+            ? "Erro ao cadastrar produto."
+            : (response.error.message ?? "Erro ao cadastrar produto."),
+        );
+      }
+      return response.data.product;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["products"] });
+      goToFirstProductPage();
+      closeProductModal();
+    },
+  });
 
-    const response = await window.api.listProducts();
-    const loadedProducts = response.success
-      ? response.data?.products
-      : undefined;
+  const updateProductMutation = useMutation({
+    mutationFn: async ({ id, ...product }: { id: number } & ProductInput) => {
+      const response = await window.api.updateProduct({ id, ...product });
+      if (!response.success || !response.data?.updated_at) {
+        throw new Error(
+          response.success
+            ? "Erro ao atualizar produto."
+            : (response.error.message ?? "Erro ao atualizar produto."),
+        );
+      }
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["products"] });
+      closeProductModal();
+    },
+  });
 
-    if (response.success && loadedProducts) {
-      setProducts(loadedProducts);
-    } else {
-      setProductError(
-        response.success
-          ? "Erro ao carregar produtos."
-          : (response.error.message ?? "Erro ao carregar produtos."),
-      );
-    }
-
-    setLoadingProducts(false);
-  }
-
-  useEffect(() => {
-    void loadProducts();
-  }, []);
+  const deleteProductMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await window.api.deleteProduct({ id });
+      if (!response.success) {
+        throw new Error(response.error.message ?? "Erro ao excluir produto.");
+      }
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
 
   function openCreateProductModal() {
     setEditingProduct(null);
@@ -87,66 +121,17 @@ export function useProducts(): UseProductsResult {
 
   async function handleSaveProduct(product: ProductInput, productId?: number) {
     if (productId) {
-      const response = await window.api.updateProduct({
-        id: productId,
-        ...product,
-      });
-      const updatedAt = response.success
-        ? response.data?.updated_at
-        : undefined;
-
-      if (!response.success || !updatedAt) {
-        throw new Error(
-          response.success
-            ? "Erro ao atualizar produto."
-            : (response.error.message ?? "Erro ao atualizar produto."),
-        );
-      }
-
-      setProducts((current) =>
-        current.map((p) =>
-          p.id === productId ? { ...p, ...product, updated_at: updatedAt } : p,
-        ),
-      );
-      setProductError("");
-      closeProductModal();
-      return;
+      await updateProductMutation.mutateAsync({ id: productId, ...product });
+    } else {
+      await createProductMutation.mutateAsync(product);
     }
-
-    const response = await window.api.createProduct(product);
-    const createdProduct = response.success
-      ? response.data?.product
-      : undefined;
-
-    if (!response.success || !createdProduct) {
-      throw new Error(
-        response.success
-          ? "Erro ao cadastrar produto."
-          : (response.error.message ?? "Erro ao cadastrar produto."),
-      );
-    }
-
-    setProducts((current) => [createdProduct as Product, ...current]);
-    setProductError("");
-    goToFirstProductPage();
-    closeProductModal();
   }
 
   async function handleDeleteProduct(product: Product) {
     if (!product.id) return;
-
     const confirmed = window.confirm(`Excluir o produto "${product.name}"?`);
     if (!confirmed) return;
-
-    setProductError("");
-    const response = await window.api.deleteProduct({ id: product.id });
-
-    if (!response.success) {
-      setProductError(response.error.message ?? "Erro ao excluir produto.");
-      return;
-    }
-
-    await loadProducts();
+    await deleteProductMutation.mutateAsync(product.id);
   }
 
   return {
