@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Product, ProductInput } from "../../../shared";
+import type { Product, ProductInput, ProductStats } from "../../../shared";
 import { usePagination } from "./usePagination";
 
 type UseProductsResult = {
   products: Product[];
+  productStats: ProductStats | null;
   paginatedProducts: Product[];
   loadingProducts: boolean;
   productError: string;
@@ -30,20 +31,34 @@ export function useProducts(): UseProductsResult {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const {
-    data: products = [],
+    data,
     isLoading: loadingProducts,
     error: productsQueryError,
   } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const response = await window.api.listProducts();
-      if (!response.success) {
-        throw new Error(response.error.message ?? "Erro ao carregar produtos.");
+      const [listResponse, statsResponse] = await Promise.all([
+        window.api.listProducts(),
+        window.api.getProductStats(),
+      ]);
+
+      if (!listResponse.success) {
+        throw new Error(
+          listResponse.error.message ?? "Erro ao carregar produtos.",
+        );
       }
-      return response.data?.products ?? [];
+
+      return {
+        products: listResponse.data?.products ?? [],
+        stats: statsResponse.success
+          ? (statsResponse.data?.stats ?? null)
+          : null,
+      };
     },
   });
 
+  const products = data?.products ?? [];
+  const productStats = data?.stats ?? null;
   const productError =
     productsQueryError instanceof Error ? productsQueryError.message : "";
 
@@ -136,6 +151,7 @@ export function useProducts(): UseProductsResult {
 
   return {
     products,
+    productStats,
     paginatedProducts,
     loadingProducts,
     productError,

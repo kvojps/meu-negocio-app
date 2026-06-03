@@ -1,9 +1,10 @@
-import type { ProductInput, Product } from "../../shared";
+import type { ProductInput, Product, ProductStats } from "../../shared";
 import {
   createProduct,
   deleteProduct,
   listProducts,
   updateProduct,
+  getProductStats,
 } from "../repository/drizzleProductRepository";
 import { createProductDto, updateProductDto } from "../../shared";
 import { typedIpcMainHandle } from "../infra/typedIpc";
@@ -23,6 +24,14 @@ export function registerProductHandlers() {
     async () => {
       const items = listProducts();
       return { products: items };
+    },
+  );
+
+  typedIpcMainHandle<void, { stats: ProductStats }>(
+    "products:stats",
+    async () => {
+      const stats = getProductStats();
+      return { stats };
     },
   );
 

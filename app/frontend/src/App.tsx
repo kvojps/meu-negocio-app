@@ -26,6 +26,7 @@ function AppContent() {
 
   const {
     products,
+    productStats,
     paginatedProducts,
     loadingProducts,
     productError,
@@ -76,6 +77,7 @@ function AppContent() {
 
       <main className="content">
         <AppRoutes
+          productStats={productStats}
           activeSection={activeSection}
           products={products}
           paginatedProducts={paginatedProducts}

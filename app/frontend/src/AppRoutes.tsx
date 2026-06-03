@@ -1,4 +1,4 @@
-import type { Product, Sale } from "../../shared";
+import type { Product, ProductStats, Sale } from "../../shared";
 import type { ActiveSection } from "./utils/ui";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProductsPage } from "./pages/ProductsPage";
@@ -8,6 +8,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 type AppRoutesProps = {
   activeSection: ActiveSection;
   products: Product[];
+  productStats: ProductStats | null;
   paginatedProducts: Product[];
   loadingProducts: boolean;
   productError: string;
@@ -34,6 +35,7 @@ type AppRoutesProps = {
 export function AppRoutes({
   activeSection,
   products,
+  productStats,
   paginatedProducts,
   loadingProducts,
   productError,
@@ -80,6 +82,7 @@ export function AppRoutes({
         onDeleteProduct={onDeleteProduct}
         onPreviousPage={onPreviousProductPage}
         onNextPage={onNextProductPage}
+        productStats={productStats}
       />
     );
   }

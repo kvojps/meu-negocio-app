@@ -1,4 +1,5 @@
 import type { Product } from "../models/product";
+import type { ProductStats } from "../models/productStats";
 import type { CreateSaleInput } from "../models/dtos/saleDto";
 import type { Sale, SaleWithItems } from "../models/sale";
 import type { ApiResponse } from "../contracts/ipcContracts";
@@ -10,6 +11,7 @@ export type AppApi = {
     product: ProductDtoInput,
   ) => Promise<ApiResponse<{ product: Product }>>;
   listProducts: () => Promise<ApiResponse<{ products: Product[] }>>;
+  getProductStats: () => Promise<ApiResponse<{ stats: ProductStats }>>;
   updateProduct: (
     product: ProductDtoInput & { id: number },
   ) => Promise<ApiResponse<{ updated_at: string }>>;
