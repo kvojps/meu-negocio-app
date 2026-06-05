@@ -19,4 +19,23 @@
   color: #102033;
   font: inherit;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 0;
+}
+
+.sidebar-toggle span {
+  display: block;
+  width: 1.25rem;
+  height: 0.125rem;
+  border-radius: 6.188rem;
+  background: #000;
+  transform: translateZ(0);
+  will-change: transform;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }

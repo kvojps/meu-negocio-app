@@ -12,8 +12,9 @@ export function Sidebar() {
         onClick={() => setIsOpen((current) => !current)}
         aria-label={isOpen ? "Fechar sidebar" : "Abrir sidebar"}
       >
-        {/* Trocar por ícones */}
-        {isOpen ? "Fechar" : "Abrir"}
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
       </button>
     </aside>
   );
