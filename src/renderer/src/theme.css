@@ -1,0 +1,7 @@
+:root {
+  --color-primary: linear-gradient(
+    180deg,
+    rgba(24, 73, 78, 0.99),
+    rgba(16, 50, 54, 0.99)
+  );
+}
