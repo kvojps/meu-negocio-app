@@ -1,13 +1,41 @@
 .sidebar-container {
-  background: var(--color-primary);
+  background: #fff;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
-  transition: width 0.2s ease;
-  width: 20rem;
+  justify-content: flex-start;
+  width: 17rem;
 }
 
-.sidebar-container.is-closed {
-  width: 5rem;
+/* Sidebar Brand */
+.sidebar-brand {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.sidebar-brand-logo {
+  flex: 0 0 auto;
+}
+
+.sidebar-brand-texts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sidebar-brand-title {
+  color: #141b34;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sidebar-brand-subtitle {
+  color: #141b34;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  opacity: 0.6;
 }
