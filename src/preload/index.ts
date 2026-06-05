@@ -1,6 +1,6 @@
-import { contextBridge } from "electron";
+import { contextBridge } from 'electron';
 
-contextBridge.exposeInMainWorld("appInfo", {
+contextBridge.exposeInMainWorld('appInfo', {
   electronVersion: process.versions.electron,
   chromeVersion: process.versions.chrome,
 });

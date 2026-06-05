@@ -1,4 +1,4 @@
-import { Sidebar } from "./components/sidebar/Index";
+import { Sidebar } from './components/sidebar/Index';
 
 export function App() {
   const appInfo = window.appInfo;
