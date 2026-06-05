@@ -1,0 +1,22 @@
+.sidebar-container {
+  background-color: red;
+  width: 280px;
+  height: 100vh;
+  transition: width 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar-container.is-closed {
+  width: 72px;
+}
+
+.sidebar-toggle {
+  margin: 16px;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #102033;
+  font: inherit;
+  cursor: pointer;
+}
