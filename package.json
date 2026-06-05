@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "preview": "electron-vite preview"
+    "preview": "electron-vite preview",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css:fix": "stylelint \"src/**/*.css\" --fix"
   },
   "dependencies": {
     "electron": "^35.0.0",
@@ -18,6 +22,9 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.4.0",
     "electron-vite": "^5.0.0",
+    "prettier": "^3.8.3",
+    "stylelint": "^17.12.0",
+    "stylelint-order": "^8.1.1",
     "typescript": "^5.8.0"
   }
 }

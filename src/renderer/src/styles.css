@@ -1,4 +1,8 @@
 :root {
+  background:
+    radial-gradient(circle at top, rgba(52, 152, 219, 0.2), transparent 34%),
+    linear-gradient(180deg, #f7fafc 0%, #edf3f8 100%);
+  color: #102033;
   color-scheme: light;
   font-family:
     Inter,
@@ -7,10 +11,6 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  color: #102033;
-  background:
-    radial-gradient(circle at top, rgba(52, 152, 219, 0.2), transparent 34%),
-    linear-gradient(180deg, #f7fafc 0%, #edf3f8 100%);
 }
 
 * {
@@ -20,9 +20,9 @@
 html,
 body,
 #root {
-  width: 100%;
   height: 100%;
   margin: 0;
+  width: 100%;
 }
 
 body {
@@ -31,8 +31,8 @@ body {
 
 .app {
   display: flex;
-  width: 100%;
   min-height: 100vh;
+  width: 100%;
 }
 
 .app main {
