@@ -6,6 +6,13 @@ import settingIcon from '../../assets/setting-icon.svg';
 import orderIcon from '../../assets/order-icon.svg';
 
 import './Styles.css';
+const navItems = [
+  { key: 'dashboard', icon: dashboardIcon, label: 'Dashboard', active: true },
+  { key: 'products', icon: productIcon, label: 'Produtos' },
+  { key: 'orders', icon: orderIcon, label: 'Pedidos' },
+  { key: 'sales', icon: saleIcon, label: 'Vendas' },
+  { key: 'settings', icon: settingIcon, label: 'Configurações' },
+];
 
 export function Sidebar() {
   return (
@@ -24,77 +31,25 @@ export function Sidebar() {
           <span className="sidebar-brand-subtitle">Free plan</span>
         </div>
       </div>
+
       <nav aria-label="Sidebar navigation" className="sidebar-nav">
-        <button
-          className="sidebar-nav-item sidebar-nav-item--active"
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="sidebar-nav-icon"
-            src={dashboardIcon}
-            width="24"
-            height="24"
-          />
-          <span className="sidebar-nav-label">Dashboard</span>
-        </button>
-        <button
-          className="sidebar-nav-item sidebar-nav-item--active"
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="sidebar-nav-icon"
-            src={productIcon}
-            width="24"
-            height="24"
-          />
-          <span className="sidebar-nav-label">Produtos</span>
-        </button>
-        <button
-          className="sidebar-nav-item sidebar-nav-item--active"
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="sidebar-nav-icon"
-            src={orderIcon}
-            width="24"
-            height="24"
-          />
-          <span className="sidebar-nav-label">Pedidos</span>
-        </button>
-        <button
-          className="sidebar-nav-item sidebar-nav-item--active"
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="sidebar-nav-icon"
-            src={saleIcon}
-            width="24"
-            height="24"
-          />
-          <span className="sidebar-nav-label">Vendas</span>
-        </button>
-        <button
-          className="sidebar-nav-item sidebar-nav-item--active"
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="sidebar-nav-icon"
-            src={settingIcon}
-            width="24"
-            height="24"
-          />
-          <span className="sidebar-nav-label">Configurações</span>
-        </button>
+        {navItems.map((item) => (
+          <button
+            key={item.key}
+            className={`sidebar-nav-item ${item.active ? 'sidebar-nav-item--active' : ''}`}
+            type="button"
+          >
+            <img
+              alt=""
+              aria-hidden="true"
+              className="sidebar-nav-icon"
+              src={item.icon}
+              width="24"
+              height="24"
+            />
+            <span className="sidebar-nav-label">{item.label}</span>
+          </button>
+        ))}
       </nav>
     </aside>
   );
