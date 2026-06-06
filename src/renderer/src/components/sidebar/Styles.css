@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  justify-content: flex-start;
   padding: 1rem;
   width: 17rem;
 }
@@ -42,11 +41,22 @@
 }
 
 /* Sidebar Navigation */
+.sidebar-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1rem;
+}
+
+.sidebar-nav--bottom {
+  margin-top: auto;
 }
 
 .sidebar-nav-item {

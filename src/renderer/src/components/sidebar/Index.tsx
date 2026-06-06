@@ -1,5 +1,6 @@
 import logo32x32 from '../../assets/logo-32x32.svg';
 import dashboardIcon from '../../assets/dashboard-icon.svg';
+import helpIcon from '../../assets/help-icon.svg';
 import productIcon from '../../assets/product-icon.svg';
 import saleIcon from '../../assets/sale-icon.svg';
 import settingIcon from '../../assets/setting-icon.svg';
@@ -13,6 +14,8 @@ const navItems = [
   { key: 'sales', icon: saleIcon, label: 'Vendas' },
   { key: 'settings', icon: settingIcon, label: 'Configurações' },
 ];
+
+const bottomNavItems = [{ key: 'help', icon: helpIcon, label: 'Ajuda' }];
 
 export function Sidebar() {
   return (
@@ -32,25 +35,46 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav aria-label="Sidebar navigation" className="sidebar-nav">
-        {navItems.map((item) => (
-          <button
-            key={item.key}
-            className={`sidebar-nav-item ${item.active ? 'sidebar-nav-item--active' : ''}`}
-            type="button"
-          >
-            <img
-              alt=""
-              aria-hidden="true"
-              className="sidebar-nav-icon"
-              src={item.icon}
-              width="24"
-              height="24"
-            />
-            <span className="sidebar-nav-label">{item.label}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="sidebar-content">
+        <nav aria-label="Sidebar navigation" className="sidebar-nav">
+          {navItems.map((item) => (
+            <button
+              key={item.key}
+              className={`sidebar-nav-item ${item.active ? 'sidebar-nav-item--active' : ''}`}
+              type="button"
+            >
+              <img
+                alt=""
+                aria-hidden="true"
+                className="sidebar-nav-icon"
+                src={item.icon}
+                width="24"
+                height="24"
+              />
+              <span className="sidebar-nav-label">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <nav
+          aria-label="Sidebar support"
+          className="sidebar-nav sidebar-nav--bottom"
+        >
+          {bottomNavItems.map((item) => (
+            <button key={item.key} className="sidebar-nav-item" type="button">
+              <img
+                alt=""
+                aria-hidden="true"
+                className="sidebar-nav-icon"
+                src={item.icon}
+                width="24"
+                height="24"
+              />
+              <span className="sidebar-nav-label">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
     </aside>
   );
 }
