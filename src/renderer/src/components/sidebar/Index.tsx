@@ -2,6 +2,7 @@ import logo32x32 from '../../assets/logo-32x32.svg';
 import dashboardIcon from '../../assets/dashboard-icon.svg';
 import helpIcon from '../../assets/help-icon.svg';
 import productIcon from '../../assets/product-icon.svg';
+import logoutIcon from '../../assets/logout-icon.svg';
 import saleIcon from '../../assets/sale-icon.svg';
 import settingIcon from '../../assets/setting-icon.svg';
 import orderIcon from '../../assets/order-icon.svg';
@@ -15,7 +16,10 @@ const navItems = [
   { key: 'settings', icon: settingIcon, label: 'Configurações' },
 ];
 
-const bottomNavItems = [{ key: 'help', icon: helpIcon, label: 'Ajuda' }];
+const bottomNavItems = [
+  { key: 'help', icon: helpIcon, label: 'Ajuda' },
+  { key: 'logout', icon: logoutIcon, label: 'Sair' },
+];
 
 export function Sidebar() {
   return (
