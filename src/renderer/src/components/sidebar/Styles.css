@@ -40,3 +40,34 @@
   line-height: 1.2;
   opacity: 0.6;
 }
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.sidebar-nav-item {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.875rem;
+  color: #141b34;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0rem; /* Remove default padding */
+  text-align: left;
+}
+
+.sidebar-nav-icon {
+  flex: 0 0 auto;
+}
+
+.sidebar-nav-label {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
