@@ -6,19 +6,30 @@ import logoutIcon from '../../assets/logout-icon.svg';
 import saleIcon from '../../assets/sale-icon.svg';
 import settingIcon from '../../assets/setting-icon.svg';
 import orderIcon from '../../assets/order-icon.svg';
+import { NavLink } from 'react-router-dom';
 
 import './Styles.css';
 const navItems = [
-  { key: 'dashboard', icon: dashboardIcon, label: 'Dashboard', active: true },
-  { key: 'products', icon: productIcon, label: 'Produtos' },
-  { key: 'orders', icon: orderIcon, label: 'Pedidos' },
-  { key: 'sales', icon: saleIcon, label: 'Vendas' },
-  { key: 'settings', icon: settingIcon, label: 'Configurações' },
+  {
+    key: 'dashboard',
+    icon: dashboardIcon,
+    label: 'Dashboard',
+    to: '/dashboard',
+  },
+  { key: 'products', icon: productIcon, label: 'Produtos', to: '/products' },
+  { key: 'orders', icon: orderIcon, label: 'Pedidos', to: '/orders' },
+  { key: 'sales', icon: saleIcon, label: 'Vendas', to: '/sales' },
+  {
+    key: 'settings',
+    icon: settingIcon,
+    label: 'Configurações',
+    to: '/settings',
+  },
 ];
 
 const bottomNavItems = [
-  { key: 'help', icon: helpIcon, label: 'Ajuda' },
-  { key: 'logout', icon: logoutIcon, label: 'Sair' },
+  { key: 'help', icon: helpIcon, label: 'Ajuda', to: '/help' },
+  { key: 'logout', icon: logoutIcon, label: 'Sair', to: '/logout' },
 ];
 
 export function Sidebar() {
@@ -42,10 +53,12 @@ export function Sidebar() {
       <div className="sidebar-content">
         <nav aria-label="Sidebar navigation" className="sidebar-nav">
           {navItems.map((item) => (
-            <button
+            <NavLink
               key={item.key}
-              className={`sidebar-nav-item ${item.active ? 'sidebar-nav-item--active' : ''}`}
-              type="button"
+              className={({ isActive }) =>
+                `sidebar-nav-item ${isActive ? 'sidebar-nav-item--active' : ''}`
+              }
+              to={item.to}
             >
               <img
                 alt=""
@@ -56,7 +69,7 @@ export function Sidebar() {
                 height="24"
               />
               <span className="sidebar-nav-label">{item.label}</span>
-            </button>
+            </NavLink>
           ))}
         </nav>
 
@@ -65,7 +78,7 @@ export function Sidebar() {
           className="sidebar-nav sidebar-nav--bottom"
         >
           {bottomNavItems.map((item) => (
-            <button key={item.key} className="sidebar-nav-item" type="button">
+            <NavLink key={item.key} className="sidebar-nav-item" to={item.to}>
               <img
                 alt=""
                 aria-hidden="true"
@@ -75,7 +88,7 @@ export function Sidebar() {
                 height="24"
               />
               <span className="sidebar-nav-label">{item.label}</span>
-            </button>
+            </NavLink>
           ))}
         </nav>
       </div>
