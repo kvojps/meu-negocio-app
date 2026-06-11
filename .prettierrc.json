@@ -1,4 +1,16 @@
 {
   "singleQuote": true,
-  "semi": true
+  "semi": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^\\.\\.?/.*routes",
+    "^\\.\\.?/.*pages",
+    "^\\.\\.?/.*components",
+    "^\\.\\.?/.*assets",
+    "\\.css$",
+    "^[.]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }
