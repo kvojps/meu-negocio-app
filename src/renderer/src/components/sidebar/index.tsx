@@ -10,9 +10,16 @@ import settingIcon from '../../assets/setting-icon.svg';
 import orderIcon from '../../assets/order-icon.svg';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import './styles.css';
 
-import './Styles.css';
-const navItems = [
+interface NavItem {
+  key: string;
+  icon: string;
+  label: string;
+  to: string;
+}
+
+const navItems: NavItem[] = [
   {
     key: 'dashboard',
     icon: dashboardIcon,
@@ -30,10 +37,41 @@ const navItems = [
   },
 ];
 
-const bottomNavItems = [
+const bottomNavItems: NavItem[] = [
   { key: 'help', icon: helpIcon, label: 'Ajuda', to: '/help' },
   { key: 'logout', icon: logoutIcon, label: 'Sair', to: '/logout' },
 ];
+
+function SidebarNavItem({
+  item,
+  isExpanded,
+}: {
+  item: NavItem;
+  isExpanded: boolean;
+}) {
+  return (
+    <NavLink
+      className={({ isActive }) =>
+        `sidebar-nav-item ${isActive ? 'sidebar-nav-item--active' : ''} ${isExpanded ? '' : 'sidebar-nav-item--collapsed'}`
+      }
+      to={item.to}
+    >
+      <img
+        alt=""
+        aria-hidden="true"
+        className="sidebar-nav-icon"
+        src={item.icon}
+        width="24"
+        height="24"
+      />
+      <span
+        className={`sidebar-nav-label ${isExpanded ? '' : 'sidebar-nav-label--collapsed'}`}
+      >
+        {item.label}
+      </span>
+    </NavLink>
+  );
+}
 
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -101,27 +139,11 @@ export function Sidebar() {
       <div className="sidebar-content">
         <nav aria-label="Sidebar navigation" className="sidebar-nav">
           {navItems.map((item) => (
-            <NavLink
+            <SidebarNavItem
               key={item.key}
-              className={({ isActive }) =>
-                `sidebar-nav-item ${isActive ? 'sidebar-nav-item--active' : ''} ${isExpanded ? '' : 'sidebar-nav-item--collapsed'}`
-              }
-              to={item.to}
-            >
-              <img
-                alt=""
-                aria-hidden="true"
-                className="sidebar-nav-icon"
-                src={item.icon}
-                width="24"
-                height="24"
-              />
-              <span
-                className={`sidebar-nav-label ${isExpanded ? '' : 'sidebar-nav-label--collapsed'}`}
-              >
-                {item.label}
-              </span>
-            </NavLink>
+              item={item}
+              isExpanded={isExpanded}
+            />
           ))}
         </nav>
 
@@ -130,25 +152,11 @@ export function Sidebar() {
           className="sidebar-nav sidebar-nav--bottom"
         >
           {bottomNavItems.map((item) => (
-            <NavLink
+            <SidebarNavItem
               key={item.key}
-              className={`sidebar-nav-item ${isExpanded ? '' : 'sidebar-nav-item--collapsed'}`}
-              to={item.to}
-            >
-              <img
-                alt=""
-                aria-hidden="true"
-                className="sidebar-nav-icon"
-                src={item.icon}
-                width="24"
-                height="24"
-              />
-              <span
-                className={`sidebar-nav-label ${isExpanded ? '' : 'sidebar-nav-label--collapsed'}`}
-              >
-                {item.label}
-              </span>
-            </NavLink>
+              item={item}
+              isExpanded={isExpanded}
+            />
           ))}
         </nav>
       </div>

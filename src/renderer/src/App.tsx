@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Sidebar } from './components/sidebar/Index';
+import { Sidebar } from './components/sidebar';
 import { DashboardPage } from './pages/dashboard';
 import { HelpPage } from './pages/help';
 import { LogoutPage } from './pages/logout';
