@@ -73,6 +73,12 @@
   background: var(--color-hover-bg);
 }
 
+.sidebar-brand-toggle:focus-visible,
+.sidebar-nav-item:focus-visible {
+  outline: 2px solid var(--color-active-text);
+  outline-offset: 2px;
+}
+
 .sidebar-brand-toggle:last-child {
   margin-left: auto;
 }
@@ -160,7 +166,6 @@
 }
 
 .sidebar-nav-item--active .sidebar-nav-icon {
-  /* Approximate #2CBA7A tint */
   filter: invert(39%) sepia(72%) saturate(600%) hue-rotate(85deg)
     brightness(95%) contrast(90%);
 }
