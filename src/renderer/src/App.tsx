@@ -7,6 +7,7 @@ import { OrdersPage } from './pages/orders';
 import { ProductsPage } from './pages/products';
 import { SalesPage } from './pages/sales';
 import { SettingsPage } from './pages/settings';
+import { ROUTES } from './routes';
 
 export function App() {
   return (
@@ -14,14 +15,17 @@ export function App() {
       <Sidebar />
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<Navigate replace to="/dashboard" />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/sales" element={<SalesPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/help" element={<HelpPage />} />
-          <Route path="/logout" element={<LogoutPage />} />
+          <Route
+            path="/"
+            element={<Navigate replace to={ROUTES.DASHBOARD} />}
+          />
+          <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+          <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
+          <Route path={ROUTES.SALES} element={<SalesPage />} />
+          <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+          <Route path={ROUTES.HELP} element={<HelpPage />} />
+          <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
         </Routes>
       </main>
     </div>

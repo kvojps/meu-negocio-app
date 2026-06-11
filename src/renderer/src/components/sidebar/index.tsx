@@ -10,6 +10,7 @@ import settingIcon from '../../assets/setting-icon.svg';
 import orderIcon from '../../assets/order-icon.svg';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { ROUTES } from '../../routes';
 import './styles.css';
 
 interface NavItem {
@@ -24,22 +25,27 @@ const navItems: NavItem[] = [
     key: 'dashboard',
     icon: dashboardIcon,
     label: 'Dashboard',
-    to: '/dashboard',
+    to: ROUTES.DASHBOARD,
   },
-  { key: 'products', icon: productIcon, label: 'Produtos', to: '/products' },
-  { key: 'orders', icon: orderIcon, label: 'Pedidos', to: '/orders' },
-  { key: 'sales', icon: saleIcon, label: 'Vendas', to: '/sales' },
+  {
+    key: 'products',
+    icon: productIcon,
+    label: 'Produtos',
+    to: ROUTES.PRODUCTS,
+  },
+  { key: 'orders', icon: orderIcon, label: 'Pedidos', to: ROUTES.ORDERS },
+  { key: 'sales', icon: saleIcon, label: 'Vendas', to: ROUTES.SALES },
   {
     key: 'settings',
     icon: settingIcon,
     label: 'Configurações',
-    to: '/settings',
+    to: ROUTES.SETTINGS,
   },
 ];
 
 const bottomNavItems: NavItem[] = [
-  { key: 'help', icon: helpIcon, label: 'Ajuda', to: '/help' },
-  { key: 'logout', icon: logoutIcon, label: 'Sair', to: '/logout' },
+  { key: 'help', icon: helpIcon, label: 'Ajuda', to: ROUTES.HELP },
+  { key: 'logout', icon: logoutIcon, label: 'Sair', to: ROUTES.LOGOUT },
 ];
 
 function SidebarNavItem({
