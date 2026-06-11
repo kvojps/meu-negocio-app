@@ -9,6 +9,7 @@
 }
 
 .sidebar-container--collapsed {
+  overflow: hidden;
   width: var(--sidebar-width-collapsed);
 }
 
