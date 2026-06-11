@@ -82,58 +82,36 @@ export function Sidebar() {
     >
       <div className="sidebar-brand">
         <div className="sidebar-brand-main">
-          {isExpanded ? (
-            <img
-              alt=""
-              aria-hidden="true"
-              className="sidebar-brand-logo"
-              src={logo32x32}
-              width="32"
-              height="32"
-            />
-          ) : (
-            <button
-              aria-label="Expandir sidebar"
-              className="sidebar-brand-toggle"
-              onClick={() => setIsExpanded(true)}
-              type="button"
-            >
-              <img
-                alt=""
-                aria-hidden="true"
-                className="sidebar-brand-toggle-icon"
-                src={openSidebarIcon}
-                width="24"
-                height="24"
-              />
-            </button>
-          )}
-
+          <img
+            alt=""
+            aria-hidden="true"
+            className="sidebar-brand-logo"
+            src={logo32x32}
+            width="32"
+            height="32"
+          />
           <div
             className={`sidebar-brand-texts ${isExpanded ? '' : 'sidebar-brand-texts--collapsed'}`}
           >
             <strong className="sidebar-brand-title">Meu Negócio</strong>
             <span className="sidebar-brand-subtitle">Free plan</span>
           </div>
-        </div>
-
-        {isExpanded ? (
           <button
-            aria-label="Recolher sidebar"
+            aria-label={isExpanded ? 'Recolher sidebar' : 'Expandir sidebar'}
             className="sidebar-brand-toggle"
-            onClick={() => setIsExpanded(false)}
+            onClick={() => setIsExpanded((prev) => !prev)}
             type="button"
           >
             <img
               alt=""
               aria-hidden="true"
               className="sidebar-brand-toggle-icon"
-              src={closeSidebarIcon}
+              src={isExpanded ? closeSidebarIcon : openSidebarIcon}
               width="24"
               height="24"
             />
           </button>
-        ) : null}
+        </div>
       </div>
 
       <div className="sidebar-content">

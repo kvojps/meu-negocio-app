@@ -43,6 +43,10 @@
   flex: 0 0 auto;
 }
 
+.sidebar-container--collapsed .sidebar-brand-logo {
+  display: none;
+}
+
 .sidebar-brand-toggle {
   align-items: center;
   background: transparent;
