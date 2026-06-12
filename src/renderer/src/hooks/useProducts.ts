@@ -95,6 +95,20 @@ export function useProducts() {
     return products.find((p) => p.id === id);
   }
 
+  function adjustStock(productId: string, delta: number) {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === productId
+          ? {
+              ...p,
+              stock: Math.max(0, p.stock + delta),
+              updatedAt: new Date().toISOString(),
+            }
+          : p,
+      ),
+    );
+  }
+
   function toggleSort(key: SortKey) {
     setSort((prev) => {
       if (prev.key !== key) return { key, direction: 'asc' };
@@ -114,5 +128,6 @@ export function useProducts() {
     updateProduct,
     deleteProduct,
     getProductById,
+    adjustStock,
   };
 }

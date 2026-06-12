@@ -37,9 +37,18 @@ function SortIndicator({ direction }: { direction: 'asc' | 'desc' | null }) {
 }
 
 export function OrdersPage() {
-  const { products } = useProducts();
-  const { orders, filtered, filters, sort, setFilters, toggleSort, addOrder } =
-    useOrders(() => {});
+  const { products, adjustStock } = useProducts();
+  const {
+    orders,
+    filtered,
+    filters,
+    sort,
+    setFilters,
+    toggleSort,
+    addOrder,
+    setOrderStatus,
+    deleteOrder,
+  } = useOrders(adjustStock);
 
   const [formOpen, setFormOpen] = useState(false);
   const [formCustomer, setFormCustomer] = useState('');
@@ -49,12 +58,17 @@ export function OrdersPage() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<{
+    type: 'advance' | 'cancel' | 'reopen' | 'delete';
+    order: Order;
+  } | null>(null);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         setViewTarget(null);
         setFormOpen(false);
+        setConfirmTarget(null);
       }
     }
     document.addEventListener('keydown', handleKeyDown);
@@ -102,6 +116,31 @@ export function OrdersPage() {
   function handleCloseForm() {
     setFormOpen(false);
     setFormErrors({});
+  }
+
+  function handleConfirmAction() {
+    if (!confirmTarget) return;
+
+    const { type, order } = confirmTarget;
+
+    switch (type) {
+      case 'advance':
+        if (order.status === 'pending') setOrderStatus(order.id, 'in_progress');
+        else if (order.status === 'in_progress')
+          setOrderStatus(order.id, 'completed');
+        break;
+      case 'cancel':
+        setOrderStatus(order.id, 'cancelled');
+        break;
+      case 'reopen':
+        setOrderStatus(order.id, 'in_progress');
+        break;
+      case 'delete':
+        deleteOrder(order.id);
+        break;
+    }
+
+    setConfirmTarget(null);
   }
 
   function handleAddItem() {
@@ -448,6 +487,89 @@ export function OrdersPage() {
     );
   }
 
+  function renderConfirmModal() {
+    if (!confirmTarget) return null;
+
+    const { type, order } = confirmTarget;
+
+    let title = '';
+    let message = '';
+    let confirmLabel = '';
+
+    switch (type) {
+      case 'advance': {
+        const next = order.status === 'pending' ? 'Em andamento' : 'Concluído';
+        title = `Avançar para "${next}"`;
+        message = `Tem certeza que deseja avançar o pedido de ${order.customerName} para "${next}"?`;
+        confirmLabel = `Avançar para "${next}"`;
+        break;
+      }
+      case 'cancel':
+        title = 'Cancelar Pedido';
+        message = `Tem certeza que deseja cancelar o pedido de ${order.customerName}?`;
+        confirmLabel = 'Confirmar Cancelamento';
+        break;
+      case 'reopen':
+        title = 'Reabrir Pedido';
+        message = `Tem certeza que deseja reabrir o pedido de ${order.customerName}? O estoque será devolvido.`;
+        confirmLabel = 'Reabrir Pedido';
+        break;
+      case 'delete':
+        title = 'Excluir Pedido';
+        message = `Tem certeza que deseja excluir o pedido de ${order.customerName}? Esta ação não pode ser desfeita.`;
+        confirmLabel = 'Confirmar Exclusão';
+        break;
+    }
+
+    return (
+      <div
+        className="orders-modal-overlay"
+        onClick={() => setConfirmTarget(null)}
+        role="presentation"
+      >
+        <div
+          className="orders-modal"
+          onClick={(e) => e.stopPropagation()}
+          role="alertdialog"
+        >
+          <div className="orders-modal-header">
+            <h2 className="orders-modal-title">{title}</h2>
+            <button
+              className="orders-modal-close"
+              onClick={() => setConfirmTarget(null)}
+              type="button"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="orders-modal-body">
+            <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6 }}>
+              {message}
+            </p>
+          </div>
+
+          <div className="orders-modal-footer">
+            <button
+              className="orders-modal-btn orders-modal-btn--cancel"
+              onClick={() => setConfirmTarget(null)}
+              type="button"
+            >
+              Cancelar
+            </button>
+            <button
+              className={`orders-modal-btn ${type === 'delete' ? 'orders-modal-btn--danger' : 'orders-modal-btn--confirm'}`}
+              onClick={handleConfirmAction}
+              type="button"
+            >
+              {confirmLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="orders-page">
       <div className="orders-header">
@@ -528,6 +650,72 @@ export function OrdersPage() {
                   >
                     Ver
                   </button>
+                  {order.status === 'pending' && (
+                    <>
+                      <button
+                        className="orders-table-btn orders-table-btn--advance"
+                        onClick={() =>
+                          setConfirmTarget({ type: 'advance', order })
+                        }
+                        type="button"
+                      >
+                        Avançar
+                      </button>
+                      <button
+                        className="orders-table-btn orders-table-btn--cancel-order"
+                        onClick={() =>
+                          setConfirmTarget({ type: 'cancel', order })
+                        }
+                        type="button"
+                      >
+                        Cancelar
+                      </button>
+                    </>
+                  )}
+                  {order.status === 'in_progress' && (
+                    <>
+                      <button
+                        className="orders-table-btn orders-table-btn--advance"
+                        onClick={() =>
+                          setConfirmTarget({ type: 'advance', order })
+                        }
+                        type="button"
+                      >
+                        Concluir
+                      </button>
+                      <button
+                        className="orders-table-btn orders-table-btn--cancel-order"
+                        onClick={() =>
+                          setConfirmTarget({ type: 'cancel', order })
+                        }
+                        type="button"
+                      >
+                        Cancelar
+                      </button>
+                    </>
+                  )}
+                  {order.status === 'completed' && (
+                    <button
+                      className="orders-table-btn orders-table-btn--revert"
+                      onClick={() =>
+                        setConfirmTarget({ type: 'reopen', order })
+                      }
+                      type="button"
+                    >
+                      Reabrir
+                    </button>
+                  )}
+                  {order.status === 'pending' && (
+                    <button
+                      className="orders-table-btn orders-table-btn--cancel-order"
+                      onClick={() =>
+                        setConfirmTarget({ type: 'delete', order })
+                      }
+                      type="button"
+                    >
+                      Excluir
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -540,6 +728,7 @@ export function OrdersPage() {
 
       {renderFormModal()}
       {renderViewModal()}
+      {renderConfirmModal()}
     </div>
   );
 }
