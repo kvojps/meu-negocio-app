@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import './styles.css';
 
 import type { SortKey } from '../../hooks/useProducts';
@@ -6,7 +7,9 @@ import { useProducts } from '../../hooks/useProducts';
 
 function SortIndicator({ direction }: { direction: 'asc' | 'desc' | null }) {
   if (!direction) return null;
-  return <span style={{ marginLeft: 4 }}>{direction === 'asc' ? '▲' : '▼'}</span>;
+  return (
+    <span style={{ marginLeft: 4 }}>{direction === 'asc' ? '▲' : '▼'}</span>
+  );
 }
 
 function StockBadge({ stock, minStock }: { stock: number; minStock: number }) {
@@ -25,14 +28,8 @@ function StockBadge({ stock, minStock }: { stock: number; minStock: number }) {
 }
 
 export function ProductsPage() {
-  const {
-    products,
-    filtered,
-    filters,
-    sort,
-    setFilters,
-    toggleSort,
-  } = useProducts();
+  const { products, filtered, filters, sort, setFilters, toggleSort } =
+    useProducts();
 
   const categories = useMemo(() => {
     const unique = new Set(products.map((p) => p.category));
@@ -68,16 +65,12 @@ export function ProductsPage() {
           placeholder="Buscar por nome..."
           type="text"
           value={filters.search}
-          onChange={(e) =>
-            setFilters({ ...filters, search: e.target.value })
-          }
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
         />
         <select
           className="products-filters-select"
           value={filters.category}
-          onChange={(e) =>
-            setFilters({ ...filters, category: e.target.value })
-          }
+          onChange={(e) => setFilters({ ...filters, category: e.target.value })}
         >
           <option value="">Todas as categorias</option>
           {categories.map((cat) => (
@@ -129,7 +122,10 @@ export function ProductsPage() {
                 <td>{formatCurrency(product.salePrice)}</td>
                 <td>
                   <span style={{ marginRight: 8 }}>{product.stock}</span>
-                  <StockBadge stock={product.stock} minStock={product.minStock} />
+                  <StockBadge
+                    stock={product.stock}
+                    minStock={product.minStock}
+                  />
                 </td>
                 <td className="products-table-cell--actions">
                   <button

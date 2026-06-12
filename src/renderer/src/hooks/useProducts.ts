@@ -1,7 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { Product } from '../../../shared/types/product';
-
 import { mockProducts } from '../mocks/products';
 
 export type SortKey = 'name' | 'category' | 'supplier' | 'salePrice' | 'stock';
@@ -66,9 +65,7 @@ export function useProducts() {
     return result;
   }, [products, filters, sort]);
 
-  function addProduct(
-    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) {
+  function addProduct(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) {
     const now = new Date().toISOString();
     const product: Product = {
       ...data,
@@ -83,7 +80,9 @@ export function useProducts() {
   function updateProduct(id: string, data: Partial<Product>) {
     setProducts((prev) =>
       prev.map((p) =>
-        p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString() } : p,
+        p.id === id
+          ? { ...p, ...data, updatedAt: new Date().toISOString() }
+          : p,
       ),
     );
   }
