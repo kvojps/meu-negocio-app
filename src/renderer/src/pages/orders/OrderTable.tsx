@@ -12,6 +12,7 @@ import type {
 interface OrderTableProps {
   filtered: Order[];
   totalCount: number;
+  start: number;
   sort: OrderSortState;
   onToggleSort: (key: OrderSortKey) => void;
   onView: (order: Order) => void;
@@ -40,6 +41,7 @@ const formatDate = (dateStr: string) =>
 export function OrderTable({
   filtered,
   totalCount,
+  start,
   sort,
   onToggleSort,
   onView,
@@ -149,7 +151,9 @@ export function OrderTable({
         </tbody>
       </table>
       <div className="orders-table-footer">
-        Mostrando {filtered.length} de {totalCount} pedidos
+        {totalCount > 0
+          ? `Mostrando ${start + 1}–${start + filtered.length} de ${totalCount} pedidos`
+          : 'Mostrando 0 de 0 pedidos'}
       </div>
     </div>
   );

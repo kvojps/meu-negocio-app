@@ -6,6 +6,7 @@ import type { SortKey, SortState } from '../../hooks/products/useProducts';
 interface ProductTableProps {
   filtered: Product[];
   totalCount: number;
+  start: number;
   sort: SortState;
   onToggleSort: (key: SortKey) => void;
   onEdit: (product: Product) => void;
@@ -29,6 +30,7 @@ const formatCurrency = (value: number) =>
 export function ProductTable({
   filtered,
   totalCount,
+  start,
   sort,
   onToggleSort,
   onEdit,
@@ -90,7 +92,9 @@ export function ProductTable({
         </tbody>
       </table>
       <div className="products-table-footer">
-        Mostrando {filtered.length} de {totalCount} produtos
+        {totalCount > 0
+          ? `Mostrando ${start + 1}–${start + filtered.length} de ${totalCount} produtos`
+          : 'Mostrando 0 de 0 produtos'}
       </div>
     </div>
   );

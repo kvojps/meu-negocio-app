@@ -1,129 +1,60 @@
 import type { Order } from '../../../shared/types/order';
 
-export const mockOrders: Order[] = [
-  {
-    id: crypto.randomUUID(),
-    customerName: 'João Silva',
-    status: 'pending',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p1',
-        productName: 'Camiseta Algodão',
-        quantity: 2,
-        unitPrice: 59.9,
-      },
-      {
-        id: crypto.randomUUID(),
-        productId: 'p2',
-        productName: 'Caneca Personalizada',
-        quantity: 1,
-        unitPrice: 29.9,
-      },
-    ],
-    createdAt: '2025-06-10T14:30:00.000Z',
-    updatedAt: '2025-06-10T14:30:00.000Z',
-  },
-  {
-    id: crypto.randomUUID(),
-    customerName: 'Maria Oliveira',
-    status: 'completed',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p3',
-        productName: 'Boné Aba Curva',
-        quantity: 3,
-        unitPrice: 49.9,
-      },
-    ],
-    manualTotal: 130,
-    createdAt: '2025-06-08T09:15:00.000Z',
-    updatedAt: '2025-06-09T11:00:00.000Z',
-  },
-  {
-    id: crypto.randomUUID(),
-    customerName: 'Carlos Santos',
-    status: 'in_progress',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p4',
-        productName: 'Carregador Portátil',
-        quantity: 2,
-        unitPrice: 99.9,
-      },
-      {
-        id: crypto.randomUUID(),
-        productId: 'p6',
-        productName: 'Café Gourmet 250g',
-        quantity: 4,
-        unitPrice: 34.9,
-      },
-      {
-        id: crypto.randomUUID(),
-        productId: 'p7',
-        productName: 'Mochila Executiva',
-        quantity: 1,
-        unitPrice: 129.9,
-      },
-    ],
-    createdAt: '2025-06-07T10:00:00.000Z',
-    updatedAt: '2025-06-09T08:30:00.000Z',
-  },
-  {
-    id: crypto.randomUUID(),
-    customerName: 'Ana Costa',
-    status: 'cancelled',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p5',
-        productName: 'Vaso Decorativo',
-        quantity: 1,
-        unitPrice: 44.9,
-      },
-    ],
-    createdAt: '2025-06-05T16:45:00.000Z',
-    updatedAt: '2025-06-06T09:00:00.000Z',
-  },
-  {
-    id: crypto.randomUUID(),
-    customerName: 'Pedro Almeida',
-    status: 'pending',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p8',
-        productName: 'Chaveiro Personalizado',
-        quantity: 10,
-        unitPrice: 9.9,
-      },
-      {
-        id: crypto.randomUUID(),
-        productId: 'p2',
-        productName: 'Caneca Personalizada',
-        quantity: 5,
-        unitPrice: 29.9,
-      },
-    ],
-    createdAt: '2025-06-11T08:00:00.000Z',
-    updatedAt: '2025-06-11T08:00:00.000Z',
-  },
-  {
-    id: crypto.randomUUID(),
-    customerName: 'Lucia Ferreira',
-    status: 'in_progress',
-    items: [
-      {
-        id: crypto.randomUUID(),
-        productId: 'p1',
-        productName: 'Camiseta Algodão',
-        quantity: 1,
-        unitPrice: 59.9,
-      },
-    ],
-    createdAt: '2025-06-09T13:20:00.000Z',
-    updatedAt: '2025-06-10T10:00:00.000Z',
-  },
+const now = new Date();
+const daysAgo = (d: number) => {
+  const date = new Date(now);
+  date.setDate(date.getDate() - d);
+  return date.toISOString();
+};
+
+const names = [
+  'João Silva', 'Maria Oliveira', 'Carlos Santos', 'Ana Costa', 'Pedro Almeida',
+  'Lucia Ferreira', 'Rafael Souza', 'Juliana Lima', 'Fernando Rocha', 'Patrícia Gomes',
+  'Lucas Martins', 'Camila Barbosa', 'Thiago Ribeiro', 'Amanda Carvalho', 'Gustavo Nunes',
+  'Larissa Dias', 'Eduardo Azevedo', 'Fernanda Castro', 'Rodrigo Moreira', 'Vanessa Araújo',
 ];
+
+const itemsPool = [
+  { productId: 'p1', productName: 'Camiseta Algodão', unitPrice: 59.9 },
+  { productId: 'p2', productName: 'Caneca Personalizada', unitPrice: 29.9 },
+  { productId: 'p3', productName: 'Boné Aba Curva', unitPrice: 49.9 },
+  { productId: 'p4', productName: 'Carregador Portátil', unitPrice: 99.9 },
+  { productId: 'p5', productName: 'Vaso Decorativo', unitPrice: 44.9 },
+  { productId: 'p6', productName: 'Café Gourmet 250g', unitPrice: 34.9 },
+  { productId: 'p7', productName: 'Mochila Executiva', unitPrice: 129.9 },
+  { productId: 'p8', productName: 'Chaveiro Personalizado', unitPrice: 9.9 },
+];
+
+function pickItems(): Order['items'] {
+  const count = Math.floor(Math.random() * 3) + 1;
+  const picked = new Set<number>();
+  const items: Order['items'] = [];
+  for (let i = 0; i < count; i++) {
+    let idx: number;
+    do { idx = Math.floor(Math.random() * itemsPool.length); } while (picked.has(idx));
+    picked.add(idx);
+    const pool = itemsPool[idx];
+    items.push({
+      id: crypto.randomUUID(),
+      productId: pool.productId,
+      productName: pool.productName,
+      quantity: Math.floor(Math.random() * 8) + 1,
+      unitPrice: pool.unitPrice,
+    });
+  }
+  return items;
+}
+
+const statuses: Order['status'][] = ['pending', 'in_progress', 'completed', 'cancelled'];
+
+export const mockOrders: Order[] = Array.from({ length: 20 }, (_, i) => {
+  const createdAt = daysAgo(20 - i);
+  return {
+    id: crypto.randomUUID(),
+    customerName: names[i],
+    status: statuses[Math.floor(Math.random() * statuses.length)],
+    items: pickItems(),
+    createdAt,
+    updatedAt: createdAt,
+  };
+});

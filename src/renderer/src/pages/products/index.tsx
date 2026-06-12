@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { Pagination } from '../../components/Pagination';
 import './styles.css';
 import type { Product } from '../../../../shared/types/product';
+import { usePagination } from '../../hooks/usePagination';
 import { useProductConfirm } from '../../hooks/products/useProductConfirm';
 import { useProductForm } from '../../hooks/products/useProductForm';
 import { useProducts } from '../../hooks/products/useProducts';
@@ -24,6 +26,9 @@ export function ProductsPage() {
 
   const form = useProductForm(addProduct, updateProduct);
   const confirm = useProductConfirm(deleteProduct);
+
+  const { page, setPage, totalPages, paginatedItems, start } =
+    usePagination(filtered, 10);
 
   const categories = useMemo(() => {
     const unique = new Set(products.map((p) => p.category));
@@ -50,12 +55,19 @@ export function ProductsPage() {
       />
 
       <ProductTable
-        filtered={filtered}
-        totalCount={products.length}
+        filtered={paginatedItems}
+        totalCount={filtered.length}
+        start={start}
         sort={sort}
         onToggleSort={toggleSort}
         onEdit={form.openEdit}
         onDelete={confirm.setDeleteTarget}
+      />
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
       />
 
       <ProductFormModal
