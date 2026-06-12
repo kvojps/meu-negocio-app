@@ -1,5 +1,3 @@
-import './styles.css';
-
 export function DashboardPage() {
   return <h1 className="page-title">Dashboard</h1>;
 }

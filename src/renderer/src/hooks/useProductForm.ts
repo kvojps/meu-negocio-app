@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { Product } from '../../../../shared/types/product';
+import type { Product } from '../../../shared/types/product';
 
 export type FormData = {
   name: string;
@@ -26,7 +26,10 @@ const emptyForm: FormData = {
   minStock: '',
 };
 
-export function useProductForm() {
+export function useProductForm(
+  addProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void,
+  updateProduct: (id: string, data: Partial<Product>) => void,
+) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
@@ -79,10 +82,7 @@ export function useProductForm() {
     return Object.keys(errors).length === 0;
   }
 
-  function save(
-    addProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void,
-    updateProduct: (id: string, data: Partial<Product>) => void,
-  ) {
+  function save() {
     if (!validate()) return;
 
     const data = {
@@ -114,7 +114,6 @@ export function useProductForm() {
     openEdit,
     close,
     save,
-    validate,
     setForm,
   };
 }

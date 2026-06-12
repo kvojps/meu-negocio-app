@@ -10,7 +10,7 @@ import { ProductsPage } from './pages/products';
 import { SalesPage } from './pages/sales';
 import { SettingsPage } from './pages/settings';
 
-import { Sidebar } from './components/sidebar';
+import { Sidebar } from './components/Sidebar';
 
 export function App() {
   return (

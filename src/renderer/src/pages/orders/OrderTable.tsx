@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { SortIndicator } from '../../components/SortIndicator';
 
 import type { Order } from '../../../../shared/types/order';
 import {
@@ -6,7 +6,6 @@ import {
   getOrderTotal,
 } from '../../../../shared/types/order';
 import type { OrderSortKey, OrderSortState } from '../../hooks/useOrders';
-import { SortIndicator } from '../../components/SortIndicator';
 
 interface OrderTableProps {
   filtered: Order[];
@@ -73,9 +72,7 @@ export function OrderTable({
                 <strong>{order.customerName}</strong>
               </td>
               <td>
-                <span
-                  className={`status-badge status-badge--${order.status}`}
-                >
+                <span className={`status-badge status-badge--${order.status}`}>
                   {ORDER_STATUS_LABELS[order.status]}
                 </span>
               </td>

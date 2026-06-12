@@ -1,17 +1,18 @@
 import { useState } from 'react';
 
+import { ConfirmDialog } from '../../components/ConfirmDialog';
+
 import './styles.css';
 
 import type { Order } from '../../../../shared/types/order';
+import { useOrderConfirm } from '../../hooks/useOrderConfirm';
+import { useOrderForm } from '../../hooks/useOrderForm';
 import { useOrders } from '../../hooks/useOrders';
 import { useProducts } from '../../hooks/useProducts';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { OrderFilters } from './OrderFilters';
-import { OrderTable } from './OrderTable';
 import { OrderFormModal } from './OrderFormModal';
+import { OrderTable } from './OrderTable';
 import { OrderViewModal } from './OrderViewModal';
-import { useOrderForm } from './useOrderForm';
-import { useOrderConfirm } from './useOrderConfirm';
 
 export function OrdersPage() {
   const { products, adjustStock } = useProducts();
@@ -64,8 +65,7 @@ export function OrdersPage() {
 
       {confirm.confirmTarget &&
         (() => {
-          const { title, message, confirmLabel, danger } =
-            confirm.buildProps();
+          const { title, message, confirmLabel, danger } = confirm.buildProps();
           return (
             <ConfirmDialog
               open

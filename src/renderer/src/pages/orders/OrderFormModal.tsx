@@ -1,7 +1,8 @@
-import type { Product } from '../../../../shared/types/product';
-import { Modal } from '../../components/Modal';
 import { FormField } from '../../components/FormField';
-import type { UseOrderFormReturn } from './useOrderForm';
+import { Modal } from '../../components/Modal';
+
+import type { Product } from '../../../../shared/types/product';
+import type { UseOrderFormReturn } from '../../hooks/useOrderForm';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -108,8 +109,7 @@ export function OrderFormModal({ form, products }: OrderFormModalProps) {
               </div>
               <span className="orders-item-row-price">
                 {formatCurrency(
-                  (Number(item.quantity) || 0) *
-                    (Number(item.unitPrice) || 0),
+                  (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0),
                 )}
               </span>
               <button

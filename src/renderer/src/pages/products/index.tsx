@@ -5,11 +5,12 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import './styles.css';
 
 import type { Product } from '../../../../shared/types/product';
+import { useProductConfirm } from '../../hooks/useProductConfirm';
+import { useProductForm } from '../../hooks/useProductForm';
 import { useProducts } from '../../hooks/useProducts';
 import { ProductFilters } from './ProductFilters';
 import { ProductFormModal } from './ProductFormModal';
 import { ProductTable } from './ProductTable';
-import { useProductForm } from './useProductForm';
 
 export function ProductsPage() {
   const {
@@ -24,8 +25,8 @@ export function ProductsPage() {
     deleteProduct,
   } = useProducts();
 
-  const form = useProductForm();
-  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const form = useProductForm(addProduct, updateProduct);
+  const confirm = useProductConfirm(deleteProduct);
 
   const categories = useMemo(() => {
     const unique = new Set(products.map((p) => p.category));
@@ -57,7 +58,7 @@ export function ProductsPage() {
         sort={sort}
         onToggleSort={toggleSort}
         onEdit={form.openEdit}
-        onDelete={setDeleteTarget}
+        onDelete={confirm.setDeleteTarget}
       />
 
       <ProductFormModal
@@ -65,27 +66,27 @@ export function ProductsPage() {
         editingId={form.editingId}
         form={form.form}
         formErrors={form.formErrors}
-        onSave={() => form.save(addProduct, updateProduct)}
+        onSave={form.save}
         onClose={form.close}
         onChange={form.setForm}
       />
 
-      <ConfirmDialog
-        open={!!deleteTarget}
-        title="Excluir Produto"
-        onConfirm={() => {
-          if (deleteTarget) {
-            deleteProduct(deleteTarget.id);
-            setDeleteTarget(null);
-          }
-        }}
-        onCancel={() => setDeleteTarget(null)}
-        confirmLabel="Confirmar Exclusão"
-        danger
-      >
-        Tem certeza que deseja excluir <strong>{deleteTarget?.name}</strong>?
-        Esta ação não pode ser desfeita.
-      </ConfirmDialog>
+      {confirm.deleteTarget &&
+        (() => {
+          const { title, message, confirmLabel, danger } = confirm.buildProps();
+          return (
+            <ConfirmDialog
+              open
+              title={title}
+              onConfirm={confirm.handleAction}
+              onCancel={() => confirm.setDeleteTarget(null)}
+              confirmLabel={confirmLabel}
+              danger={danger}
+            >
+              {message}
+            </ConfirmDialog>
+          );
+        })()}
     </div>
   );
 }

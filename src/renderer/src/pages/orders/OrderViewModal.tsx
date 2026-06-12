@@ -1,9 +1,10 @@
+import { Modal } from '../../components/Modal';
+
 import type { Order } from '../../../../shared/types/order';
 import {
   ORDER_STATUS_LABELS,
   getOrderTotal,
 } from '../../../../shared/types/order';
-import { Modal } from '../../components/Modal';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -19,10 +20,7 @@ interface OrderViewModalProps {
   onClose: () => void;
 }
 
-export function OrderViewModal({
-  viewTarget,
-  onClose,
-}: OrderViewModalProps) {
+export function OrderViewModal({ viewTarget, onClose }: OrderViewModalProps) {
   return (
     <Modal
       open={!!viewTarget}

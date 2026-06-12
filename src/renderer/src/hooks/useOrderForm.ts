@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import type { Product } from '../../../../shared/types/product';
-import type { Order } from '../../../../shared/types/order';
+import type { Order } from '../../../shared/types/order';
+import type { Product } from '../../../shared/types/product';
 
 interface FormItem {
   productId: string;
