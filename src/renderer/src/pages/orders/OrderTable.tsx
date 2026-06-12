@@ -59,7 +59,22 @@ export function OrderTable({
       <table className="orders-table">
         <thead>
           <tr>
-            {sortableColumns.map((col) => (
+            {sortableColumns.slice(0, 2).map((col) => (
+              <th
+                key={col.key}
+                className={
+                  sort.key === col.key ? 'orders-table-th--sorted' : ''
+                }
+                onClick={() => onToggleSort(col.key)}
+              >
+                {col.label}
+                {sort.key === col.key && (
+                  <SortIndicator direction={sort.direction} />
+                )}
+              </th>
+            ))}
+            <th>Itens</th>
+            {sortableColumns.slice(2).map((col) => (
               <th
                 key={col.key}
                 className={
