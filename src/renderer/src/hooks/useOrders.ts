@@ -1,8 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { Order, OrderStatus } from '../../../shared/types/order';
 import { getOrderTotal } from '../../../shared/types/order';
-
 import { mockOrders } from '../mocks/orders';
 
 export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
@@ -35,9 +34,7 @@ export function useOrders(
 
     if (filters.search) {
       const q = filters.search.toLowerCase();
-      result = result.filter((o) =>
-        o.customerName.toLowerCase().includes(q),
-      );
+      result = result.filter((o) => o.customerName.toLowerCase().includes(q));
     }
 
     if (filters.status) {
@@ -52,7 +49,8 @@ export function useOrders(
         if (key === 'total') {
           cmp = getOrderTotal(a) - getOrderTotal(b);
         } else if (key === 'createdAt') {
-          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          cmp =
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         } else {
           const aVal = a[key] ?? '';
           const bVal = b[key] ?? '';
@@ -66,9 +64,7 @@ export function useOrders(
     return result;
   }, [orders, filters, sort]);
 
-  function addOrder(
-    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>,
-  ) {
+  function addOrder(data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) {
     const now = new Date().toISOString();
     const order: Order = {
       ...data,
@@ -89,9 +85,13 @@ export function useOrders(
         const isNowCompleted = newStatus === 'completed';
 
         if (wasCompleted && !isNowCompleted) {
-          order.items.forEach((item) => adjustStock(item.productId, item.quantity));
+          order.items.forEach((item) =>
+            adjustStock(item.productId, item.quantity),
+          );
         } else if (!wasCompleted && isNowCompleted) {
-          order.items.forEach((item) => adjustStock(item.productId, -item.quantity));
+          order.items.forEach((item) =>
+            adjustStock(item.productId, -item.quantity),
+          );
         }
 
         return {

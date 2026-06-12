@@ -1,10 +1,33 @@
+import { useMemo } from 'react';
+
 import './styles.css';
 
-import { ORDER_STATUS_LABELS, getOrderTotal } from '../../../../shared/types/order';
+import type { OrderStatus } from '../../../../shared/types/order';
+import {
+  ORDER_STATUS_LABELS,
+  getOrderTotal,
+} from '../../../../shared/types/order';
+import type { OrderSortKey } from '../../hooks/useOrders';
 import { useOrders } from '../../hooks/useOrders';
 
+const statusOptions: OrderStatus[] = [
+  'pending',
+  'in_progress',
+  'completed',
+  'cancelled',
+];
+
+function SortIndicator({ direction }: { direction: 'asc' | 'desc' | null }) {
+  if (!direction) return null;
+  return (
+    <span style={{ marginLeft: 4 }}>{direction === 'asc' ? '▲' : '▼'}</span>
+  );
+}
+
 export function OrdersPage() {
-  const { orders, filtered } = useOrders(() => {});
+  const { orders, filtered, filters, sort, setFilters, toggleSort } = useOrders(
+    () => {},
+  );
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', {
@@ -14,6 +37,16 @@ export function OrdersPage() {
 
   const formatDate = (dateStr: string) =>
     new Intl.DateTimeFormat('pt-BR').format(new Date(dateStr));
+
+  const sortableColumns: { key: OrderSortKey; label: string }[] = useMemo(
+    () => [
+      { key: 'customerName', label: 'Cliente' },
+      { key: 'status', label: 'Status' },
+      { key: 'total', label: 'Total' },
+      { key: 'createdAt', label: 'Data' },
+    ],
+    [],
+  );
 
   return (
     <div className="orders-page">
@@ -29,9 +62,20 @@ export function OrdersPage() {
           className="orders-filters-search"
           placeholder="Buscar cliente..."
           type="text"
+          value={filters.search}
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
         />
-        <select className="orders-filters-select">
+        <select
+          className="orders-filters-select"
+          value={filters.status}
+          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+        >
           <option value="">Todos os status</option>
+          {statusOptions.map((s) => (
+            <option key={s} value={s}>
+              {ORDER_STATUS_LABELS[s]}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -39,11 +83,20 @@ export function OrdersPage() {
         <table className="orders-table">
           <thead>
             <tr>
-              <th>Cliente</th>
-              <th>Status</th>
-              <th>Itens</th>
-              <th>Total</th>
-              <th>Data</th>
+              {sortableColumns.map((col) => (
+                <th
+                  key={col.key}
+                  className={
+                    sort.key === col.key ? 'orders-table-th--sorted' : ''
+                  }
+                  onClick={() => toggleSort(col.key)}
+                >
+                  {col.label}
+                  {sort.key === col.key && (
+                    <SortIndicator direction={sort.direction} />
+                  )}
+                </th>
+              ))}
               <th className="orders-table-th--actions">Ações</th>
             </tr>
           </thead>
@@ -63,7 +116,14 @@ export function OrdersPage() {
                 <td>{order.items.length}</td>
                 <td>{formatCurrency(getOrderTotal(order))}</td>
                 <td>{formatDate(order.createdAt)}</td>
-                <td className="orders-table-cell--actions">—</td>
+                <td className="orders-table-cell--actions">
+                  <button
+                    className="orders-table-btn orders-table-btn--view"
+                    type="button"
+                  >
+                    Ver
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
