@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+
+import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { Modal } from '../../components/Modal';
+import { SortIndicator } from '../../components/SortIndicator';
 
 import './styles.css';
 
@@ -29,13 +33,6 @@ function emptyFormItem(): FormItem {
   return { productId: '', productName: '', quantity: '1', unitPrice: '' };
 }
 
-function SortIndicator({ direction }: { direction: 'asc' | 'desc' | null }) {
-  if (!direction) return null;
-  return (
-    <span style={{ marginLeft: 4 }}>{direction === 'asc' ? '▲' : '▼'}</span>
-  );
-}
-
 export function OrdersPage() {
   const { products, adjustStock } = useProducts();
   const {
@@ -62,18 +59,6 @@ export function OrdersPage() {
     type: 'advance' | 'cancel' | 'reopen' | 'delete';
     order: Order;
   } | null>(null);
-
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        setViewTarget(null);
-        setFormOpen(false);
-        setConfirmTarget(null);
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', {
@@ -215,359 +200,46 @@ export function OrdersPage() {
     handleCloseForm();
   }
 
-  function renderFormModal() {
-    if (!formOpen) return null;
-
-    return (
-      <div
-        className="orders-modal-overlay"
-        onClick={handleCloseForm}
-        role="presentation"
-      >
-        <div
-          className="orders-modal"
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-        >
-          <div className="orders-modal-header">
-            <h2 className="orders-modal-title">Novo Pedido</h2>
-            <button
-              className="orders-modal-close"
-              onClick={handleCloseForm}
-              type="button"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="orders-modal-body">
-            <div className="orders-form">
-              <div className="orders-form-field">
-                <label className="orders-form-label orders-form-label--required">
-                  Cliente
-                </label>
-                <input
-                  className={`orders-form-input ${formErrors.customer ? 'orders-form-input--error' : ''}`}
-                  placeholder="Nome do cliente"
-                  type="text"
-                  value={formCustomer}
-                  onChange={(e) => setFormCustomer(e.target.value)}
-                />
-                {formErrors.customer && (
-                  <span className="orders-form-error">
-                    {formErrors.customer}
-                  </span>
-                )}
-              </div>
-
-              <div className="orders-items-section">
-                <div className="orders-items-header">
-                  <h3 className="orders-items-title">Itens</h3>
-                  <button
-                    className="orders-items-add"
-                    onClick={handleAddItem}
-                    type="button"
-                  >
-                    + Adicionar Item
-                  </button>
-                </div>
-
-                {formItems.map((item, index) => (
-                  <div className="orders-item-row" key={index}>
-                    <div className="orders-item-row-select">
-                      <select
-                        className={`orders-form-input ${formErrors[`item_${index}_product`] ? 'orders-form-input--error' : ''}`}
-                        style={{ width: '100%' }}
-                        value={item.productId}
-                        onChange={(e) =>
-                          handleItemChange(index, 'productId', e.target.value)
-                        }
-                      >
-                        <option value="">Selecionar produto...</option>
-                        {products.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} — {formatCurrency(p.salePrice)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="orders-item-row-input">
-                      <input
-                        className={`orders-form-input ${formErrors[`item_${index}_qty`] ? 'orders-form-input--error' : ''}`}
-                        min="1"
-                        step="1"
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleItemChange(index, 'quantity', e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="orders-item-row-input">
-                      <input
-                        className={`orders-form-input ${formErrors[`item_${index}_price`] ? 'orders-form-input--error' : ''}`}
-                        min="0"
-                        step="0.01"
-                        type="number"
-                        value={item.unitPrice}
-                        onChange={(e) =>
-                          handleItemChange(index, 'unitPrice', e.target.value)
-                        }
-                      />
-                    </div>
-                    <span className="orders-item-row-price">
-                      {formatCurrency(
-                        (Number(item.quantity) || 0) *
-                          (Number(item.unitPrice) || 0),
-                      )}
-                    </span>
-                    <button
-                      className="orders-item-row-remove"
-                      disabled={formItems.length <= 1}
-                      onClick={() => handleRemoveItem(index)}
-                      style={{
-                        opacity: formItems.length <= 1 ? 0.3 : 1,
-                      }}
-                      type="button"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-                {formErrors.items && (
-                  <span className="orders-form-error">{formErrors.items}</span>
-                )}
-              </div>
-
-              <div className="orders-total-row">
-                <div className="orders-manual-toggle">
-                  <input
-                    checked={formManualEnabled}
-                    id="manual-total-toggle"
-                    type="checkbox"
-                    onChange={(e) => setFormManualEnabled(e.target.checked)}
-                  />
-                  <label htmlFor="manual-total-toggle">
-                    Valor personalizado
-                  </label>
-                </div>
-
-                {formManualEnabled ? (
-                  <input
-                    className={`orders-form-input orders-manual-input ${formErrors.manualTotal ? 'orders-form-input--error' : ''}`}
-                    min="0"
-                    step="0.01"
-                    type="number"
-                    value={formManualTotal}
-                    onChange={(e) => setFormManualTotal(e.target.value)}
-                  />
-                ) : null}
-
-                <span className="orders-total-label">Total:</span>
-                <span className="orders-total-value">
-                  {formatCurrency(formDisplayTotal)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="orders-modal-footer">
-            <button
-              className="orders-modal-btn orders-modal-btn--cancel"
-              onClick={handleCloseForm}
-              type="button"
-            >
-              Cancelar
-            </button>
-            <button
-              className="orders-modal-btn orders-modal-btn--confirm"
-              onClick={handleSaveOrder}
-              type="button"
-            >
-              Criar Pedido
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function renderViewModal() {
-    if (!viewTarget) return null;
-
-    return (
-      <div
-        className="orders-modal-overlay"
-        onClick={() => setViewTarget(null)}
-        role="presentation"
-      >
-        <div
-          className="orders-modal"
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-        >
-          <div className="orders-modal-header">
-            <h2 className="orders-modal-title">Detalhes do Pedido</h2>
-            <button
-              className="orders-modal-close"
-              onClick={() => setViewTarget(null)}
-              type="button"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="orders-modal-body">
-            <div className="orders-details-info">
-              <span>
-                <strong>Cliente:</strong> {viewTarget.customerName}
-              </span>
-              <span>
-                <strong>Status:</strong>{' '}
-                <span
-                  className={`status-badge status-badge--${viewTarget.status}`}
-                >
-                  {ORDER_STATUS_LABELS[viewTarget.status]}
-                </span>
-              </span>
-              <span>
-                <strong>Data:</strong> {formatDate(viewTarget.createdAt)}
-              </span>
-            </div>
-
-            <table className="orders-details-table">
-              <thead>
-                <tr>
-                  <th>Produto</th>
-                  <th>Qtd</th>
-                  <th>Preço Unit.</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {viewTarget.items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.productName}</td>
-                    <td>{item.quantity}</td>
-                    <td>{formatCurrency(item.unitPrice)}</td>
-                    <td>{formatCurrency(item.quantity * item.unitPrice)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="orders-details-total">
-              {viewTarget.manualTotal !== undefined && (
-                <span
-                  style={{
-                    color: '#9ca3af',
-                    fontSize: '0.75rem',
-                    fontWeight: 400,
-                    marginRight: 8,
-                  }}
-                >
-                  (valor personalizado)
-                </span>
-              )}
-              Total: {formatCurrency(getOrderTotal(viewTarget))}
-            </div>
-          </div>
-
-          <div className="orders-modal-footer">
-            <button
-              className="orders-modal-btn orders-modal-btn--cancel"
-              onClick={() => setViewTarget(null)}
-              type="button"
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function renderConfirmModal() {
-    if (!confirmTarget) return null;
-
-    const { type, order } = confirmTarget;
-
-    let title = '';
-    let message = '';
-    let confirmLabel = '';
+  function buildConfirmProps(): {
+    title: string;
+    message: string;
+    confirmLabel: string;
+    danger: boolean;
+  } {
+    const { type, order } = confirmTarget!;
 
     switch (type) {
       case 'advance': {
         const next = order.status === 'pending' ? 'Em andamento' : 'Concluído';
-        title = `Avançar para "${next}"`;
-        message = `Tem certeza que deseja avançar o pedido de ${order.customerName} para "${next}"?`;
-        confirmLabel = `Avançar para "${next}"`;
-        break;
+        return {
+          title: `Avançar para "${next}"`,
+          message: `Tem certeza que deseja avançar o pedido de ${order.customerName} para "${next}"?`,
+          confirmLabel: `Avançar para "${next}"`,
+          danger: false,
+        };
       }
       case 'cancel':
-        title = 'Cancelar Pedido';
-        message = `Tem certeza que deseja cancelar o pedido de ${order.customerName}?`;
-        confirmLabel = 'Confirmar Cancelamento';
-        break;
+        return {
+          title: 'Cancelar Pedido',
+          message: `Tem certeza que deseja cancelar o pedido de ${order.customerName}?`,
+          confirmLabel: 'Confirmar Cancelamento',
+          danger: false,
+        };
       case 'reopen':
-        title = 'Reabrir Pedido';
-        message = `Tem certeza que deseja reabrir o pedido de ${order.customerName}? O estoque será devolvido.`;
-        confirmLabel = 'Reabrir Pedido';
-        break;
+        return {
+          title: 'Reabrir Pedido',
+          message: `Tem certeza que deseja reabrir o pedido de ${order.customerName}? O estoque será devolvido.`,
+          confirmLabel: 'Reabrir Pedido',
+          danger: false,
+        };
       case 'delete':
-        title = 'Excluir Pedido';
-        message = `Tem certeza que deseja excluir o pedido de ${order.customerName}? Esta ação não pode ser desfeita.`;
-        confirmLabel = 'Confirmar Exclusão';
-        break;
+        return {
+          title: 'Excluir Pedido',
+          message: `Tem certeza que deseja excluir o pedido de ${order.customerName}? Esta ação não pode ser desfeita.`,
+          confirmLabel: 'Confirmar Exclusão',
+          danger: true,
+        };
     }
-
-    return (
-      <div
-        className="orders-modal-overlay"
-        onClick={() => setConfirmTarget(null)}
-        role="presentation"
-      >
-        <div
-          className="orders-modal"
-          onClick={(e) => e.stopPropagation()}
-          role="alertdialog"
-        >
-          <div className="orders-modal-header">
-            <h2 className="orders-modal-title">{title}</h2>
-            <button
-              className="orders-modal-close"
-              onClick={() => setConfirmTarget(null)}
-              type="button"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="orders-modal-body">
-            <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6 }}>
-              {message}
-            </p>
-          </div>
-
-          <div className="orders-modal-footer">
-            <button
-              className="orders-modal-btn orders-modal-btn--cancel"
-              onClick={() => setConfirmTarget(null)}
-              type="button"
-            >
-              Cancelar
-            </button>
-            <button
-              className={`orders-modal-btn ${type === 'delete' ? 'orders-modal-btn--danger' : 'orders-modal-btn--confirm'}`}
-              onClick={handleConfirmAction}
-              type="button"
-            >
-              {confirmLabel}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -726,9 +398,246 @@ export function OrdersPage() {
         </div>
       </div>
 
-      {renderFormModal()}
-      {renderViewModal()}
-      {renderConfirmModal()}
+      <Modal
+        open={formOpen}
+        onClose={handleCloseForm}
+        title="Novo Pedido"
+        maxWidth="600px"
+        footer={
+          <>
+            <button
+              className="modal-btn modal-btn--cancel"
+              onClick={handleCloseForm}
+              type="button"
+            >
+              Cancelar
+            </button>
+            <button
+              className="modal-btn modal-btn--confirm"
+              onClick={handleSaveOrder}
+              type="button"
+            >
+              Criar Pedido
+            </button>
+          </>
+        }
+      >
+        <div className="orders-form">
+          <div className="orders-form-field">
+            <label className="orders-form-label orders-form-label--required">
+              Cliente
+            </label>
+            <input
+              className={`orders-form-input ${formErrors.customer ? 'orders-form-input--error' : ''}`}
+              placeholder="Nome do cliente"
+              type="text"
+              value={formCustomer}
+              onChange={(e) => setFormCustomer(e.target.value)}
+            />
+            {formErrors.customer && (
+              <span className="orders-form-error">{formErrors.customer}</span>
+            )}
+          </div>
+
+          <div className="orders-items-section">
+            <div className="orders-items-header">
+              <h3 className="orders-items-title">Itens</h3>
+              <button
+                className="orders-items-add"
+                onClick={handleAddItem}
+                type="button"
+              >
+                + Adicionar Item
+              </button>
+            </div>
+
+            {formItems.map((item, index) => (
+              <div className="orders-item-row" key={index}>
+                <div className="orders-item-row-select">
+                  <select
+                    className={`orders-form-input ${formErrors[`item_${index}_product`] ? 'orders-form-input--error' : ''}`}
+                    style={{ width: '100%' }}
+                    value={item.productId}
+                    onChange={(e) =>
+                      handleItemChange(index, 'productId', e.target.value)
+                    }
+                  >
+                    <option value="">Selecionar produto...</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} — {formatCurrency(p.salePrice)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="orders-item-row-input">
+                  <input
+                    className={`orders-form-input ${formErrors[`item_${index}_qty`] ? 'orders-form-input--error' : ''}`}
+                    min="1"
+                    step="1"
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleItemChange(index, 'quantity', e.target.value)
+                    }
+                  />
+                </div>
+                <div className="orders-item-row-input">
+                  <input
+                    className={`orders-form-input ${formErrors[`item_${index}_price`] ? 'orders-form-input--error' : ''}`}
+                    min="0"
+                    step="0.01"
+                    type="number"
+                    value={item.unitPrice}
+                    onChange={(e) =>
+                      handleItemChange(index, 'unitPrice', e.target.value)
+                    }
+                  />
+                </div>
+                <span className="orders-item-row-price">
+                  {formatCurrency(
+                    (Number(item.quantity) || 0) *
+                      (Number(item.unitPrice) || 0),
+                  )}
+                </span>
+                <button
+                  className="orders-item-row-remove"
+                  disabled={formItems.length <= 1}
+                  onClick={() => handleRemoveItem(index)}
+                  style={{
+                    opacity: formItems.length <= 1 ? 0.3 : 1,
+                  }}
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {formErrors.items && (
+              <span className="orders-form-error">{formErrors.items}</span>
+            )}
+          </div>
+
+          <div className="orders-total-row">
+            <div className="orders-manual-toggle">
+              <input
+                checked={formManualEnabled}
+                id="manual-total-toggle"
+                type="checkbox"
+                onChange={(e) => setFormManualEnabled(e.target.checked)}
+              />
+              <label htmlFor="manual-total-toggle">Valor personalizado</label>
+            </div>
+
+            {formManualEnabled ? (
+              <input
+                className={`orders-form-input orders-manual-input ${formErrors.manualTotal ? 'orders-form-input--error' : ''}`}
+                min="0"
+                step="0.01"
+                type="number"
+                value={formManualTotal}
+                onChange={(e) => setFormManualTotal(e.target.value)}
+              />
+            ) : null}
+
+            <span className="orders-total-label">Total:</span>
+            <span className="orders-total-value">
+              {formatCurrency(formDisplayTotal)}
+            </span>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={!!viewTarget}
+        onClose={() => setViewTarget(null)}
+        title="Detalhes do Pedido"
+        maxWidth="600px"
+        footer={
+          <button
+            className="modal-btn modal-btn--cancel"
+            onClick={() => setViewTarget(null)}
+            type="button"
+          >
+            Fechar
+          </button>
+        }
+      >
+        {viewTarget && (
+          <>
+            <div className="orders-details-info">
+              <span>
+                <strong>Cliente:</strong> {viewTarget.customerName}
+              </span>
+              <span>
+                <strong>Status:</strong>{' '}
+                <span
+                  className={`status-badge status-badge--${viewTarget.status}`}
+                >
+                  {ORDER_STATUS_LABELS[viewTarget.status]}
+                </span>
+              </span>
+              <span>
+                <strong>Data:</strong> {formatDate(viewTarget.createdAt)}
+              </span>
+            </div>
+
+            <table className="orders-details-table">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Qtd</th>
+                  <th>Preço Unit.</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {viewTarget.items.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.productName}</td>
+                    <td>{item.quantity}</td>
+                    <td>{formatCurrency(item.unitPrice)}</td>
+                    <td>{formatCurrency(item.quantity * item.unitPrice)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="orders-details-total">
+              {viewTarget.manualTotal !== undefined && (
+                <span
+                  style={{
+                    color: '#9ca3af',
+                    fontSize: '0.75rem',
+                    fontWeight: 400,
+                    marginRight: 8,
+                  }}
+                >
+                  (valor personalizado)
+                </span>
+              )}
+              Total: {formatCurrency(getOrderTotal(viewTarget))}
+            </div>
+          </>
+        )}
+      </Modal>
+
+      {confirmTarget &&
+        (() => {
+          const { title, message, confirmLabel, danger } = buildConfirmProps();
+          return (
+            <ConfirmDialog
+              open
+              title={title}
+              onConfirm={handleConfirmAction}
+              onCancel={() => setConfirmTarget(null)}
+              confirmLabel={confirmLabel}
+              danger={danger}
+            >
+              {message}
+            </ConfirmDialog>
+          );
+        })()}
     </div>
   );
 }
