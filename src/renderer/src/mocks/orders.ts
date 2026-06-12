@@ -8,10 +8,26 @@ const daysAgo = (d: number) => {
 };
 
 const names = [
-  'João Silva', 'Maria Oliveira', 'Carlos Santos', 'Ana Costa', 'Pedro Almeida',
-  'Lucia Ferreira', 'Rafael Souza', 'Juliana Lima', 'Fernando Rocha', 'Patrícia Gomes',
-  'Lucas Martins', 'Camila Barbosa', 'Thiago Ribeiro', 'Amanda Carvalho', 'Gustavo Nunes',
-  'Larissa Dias', 'Eduardo Azevedo', 'Fernanda Castro', 'Rodrigo Moreira', 'Vanessa Araújo',
+  'João Silva',
+  'Maria Oliveira',
+  'Carlos Santos',
+  'Ana Costa',
+  'Pedro Almeida',
+  'Lucia Ferreira',
+  'Rafael Souza',
+  'Juliana Lima',
+  'Fernando Rocha',
+  'Patrícia Gomes',
+  'Lucas Martins',
+  'Camila Barbosa',
+  'Thiago Ribeiro',
+  'Amanda Carvalho',
+  'Gustavo Nunes',
+  'Larissa Dias',
+  'Eduardo Azevedo',
+  'Fernanda Castro',
+  'Rodrigo Moreira',
+  'Vanessa Araújo',
 ];
 
 const itemsPool = [
@@ -31,7 +47,9 @@ function pickItems(): Order['items'] {
   const items: Order['items'] = [];
   for (let i = 0; i < count; i++) {
     let idx: number;
-    do { idx = Math.floor(Math.random() * itemsPool.length); } while (picked.has(idx));
+    do {
+      idx = Math.floor(Math.random() * itemsPool.length);
+    } while (picked.has(idx));
     picked.add(idx);
     const pool = itemsPool[idx];
     items.push({
@@ -45,7 +63,12 @@ function pickItems(): Order['items'] {
   return items;
 }
 
-const statuses: Order['status'][] = ['pending', 'in_progress', 'completed', 'cancelled'];
+const statuses: Order['status'][] = [
+  'pending',
+  'in_progress',
+  'completed',
+  'cancelled',
+];
 
 export const mockOrders: Order[] = Array.from({ length: 20 }, (_, i) => {
   const createdAt = daysAgo(20 - i);

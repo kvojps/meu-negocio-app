@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { OrderStatus } from '../../../../shared/types/order';
+import { ORDER_STATUS_LABELS } from '../../../../shared/types/order';
 import type { Order } from '../../../../shared/types/order';
 
 interface ConfirmTarget {
-  type: 'advance' | 'cancel' | 'reopen' | 'delete';
+  type: 'advance' | 'cancel' | 'reopen' | 'delete' | 'status_change';
   order: Order;
+  newStatus?: OrderStatus;
 }
 
 interface ConfirmProps {
@@ -63,6 +65,15 @@ export function useOrderConfirm(
           confirmLabel: 'Confirmar Exclusão',
           danger: true,
         };
+      case 'status_change': {
+        const label = ORDER_STATUS_LABELS[confirmTarget!.newStatus!];
+        return {
+          title: 'Alterar Status',
+          message: `Tem certeza que deseja alterar o status do pedido de ${order.customerName} para "${label}"?`,
+          confirmLabel: `Alterar para "${label}"`,
+          danger: confirmTarget!.newStatus === 'cancelled',
+        };
+      }
     }
   }
 
@@ -85,6 +96,9 @@ export function useOrderConfirm(
         break;
       case 'delete':
         deleteOrder(order.id);
+        break;
+      case 'status_change':
+        setOrderStatus(order.id, confirmTarget.newStatus!);
         break;
     }
 

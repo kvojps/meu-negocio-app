@@ -3,10 +3,10 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Pagination } from '../../components/Pagination';
 import './styles.css';
 import type { Product } from '../../../../shared/types/product';
-import { usePagination } from '../../hooks/usePagination';
 import { useProductConfirm } from '../../hooks/products/useProductConfirm';
 import { useProductForm } from '../../hooks/products/useProductForm';
 import { useProducts } from '../../hooks/products/useProducts';
+import { usePagination } from '../../hooks/usePagination';
 import { ProductFilters } from './ProductFilters';
 import { ProductFormModal } from './ProductFormModal';
 import { ProductTable } from './ProductTable';
@@ -27,8 +27,10 @@ export function ProductsPage() {
   const form = useProductForm(addProduct, updateProduct);
   const confirm = useProductConfirm(deleteProduct);
 
-  const { page, setPage, totalPages, paginatedItems, start } =
-    usePagination(filtered, 10);
+  const { page, setPage, totalPages, paginatedItems, start } = usePagination(
+    filtered,
+    10,
+  );
 
   const categories = useMemo(() => {
     const unique = new Set(products.map((p) => p.category));

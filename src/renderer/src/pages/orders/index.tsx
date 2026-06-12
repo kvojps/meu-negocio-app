@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Pagination } from '../../components/Pagination';
 import './styles.css';
-import type { Order } from '../../../../shared/types/order';
+import type { Order, OrderStatus } from '../../../../shared/types/order';
 import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
 import { useOrderForm } from '../../hooks/orders/useOrderForm';
 import { useOrders } from '../../hooks/orders/useOrders';
-import { usePagination } from '../../hooks/usePagination';
 import { useProducts } from '../../hooks/products/useProducts';
+import { usePagination } from '../../hooks/usePagination';
 import { OrderFilters } from './OrderFilters';
 import { OrderFormModal } from './OrderFormModal';
 import { OrderTable } from './OrderTable';
@@ -31,8 +31,15 @@ export function OrdersPage() {
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
 
-  const { page, setPage, totalPages, paginatedItems, start } =
-    usePagination(filtered, 10);
+  const { page, setPage, totalPages, paginatedItems, start } = usePagination(
+    filtered,
+    10,
+  );
+
+  function handleStatusChange(order: Order, newStatus: OrderStatus) {
+    if (newStatus === order.status) return;
+    confirm.setConfirmTarget({ type: 'status_change', order, newStatus });
+  }
 
   return (
     <div className="orders-page">
@@ -56,6 +63,7 @@ export function OrdersPage() {
         sort={sort}
         onToggleSort={toggleSort}
         onView={setViewTarget}
+        onStatusChange={handleStatusChange}
         onConfirm={confirm.setConfirmTarget}
       />
 
