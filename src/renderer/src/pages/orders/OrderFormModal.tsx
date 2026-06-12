@@ -126,7 +126,7 @@ export function OrderFormModal({ form, products }: OrderFormModalProps) {
             </div>
           ))}
           {form.errors.items && (
-            <span className="orders-form-error">{form.errors.items}</span>
+            <span className="form-field-error">{form.errors.items}</span>
           )}
         </div>
 
