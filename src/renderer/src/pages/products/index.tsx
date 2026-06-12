@@ -1,9 +1,6 @@
 import { useMemo, useState } from 'react';
-
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-
 import './styles.css';
-
 import type { Product } from '../../../../shared/types/product';
 import { useProductConfirm } from '../../hooks/products/useProductConfirm';
 import { useProductForm } from '../../hooks/products/useProductForm';

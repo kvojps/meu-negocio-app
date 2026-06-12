@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-
 import { ROUTES } from '../../routes';
-
 import closeSidebarIcon from '../../assets/close-sidebar-icon.svg';
 import dashboardIcon from '../../assets/dashboard-icon.svg';
 import helpIcon from '../../assets/help-icon.svg';
@@ -13,7 +11,6 @@ import orderIcon from '../../assets/order-icon.svg';
 import productIcon from '../../assets/product-icon.svg';
 import saleIcon from '../../assets/sale-icon.svg';
 import settingIcon from '../../assets/setting-icon.svg';
-
 import './styles.css';
 
 interface NavItem {

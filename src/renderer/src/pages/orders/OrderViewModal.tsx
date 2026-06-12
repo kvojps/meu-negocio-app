@@ -1,5 +1,4 @@
 import { Modal } from '../../components/Modal';
-
 import type { Order } from '../../../../shared/types/order';
 import {
   ORDER_STATUS_LABELS,

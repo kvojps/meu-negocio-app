@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import type { OrderStatus } from '../../../../shared/types/order';
 import type { Order } from '../../../../shared/types/order';
 
@@ -35,8 +34,7 @@ export function useOrderConfirm(
 
     switch (type) {
       case 'advance': {
-        const next =
-          order.status === 'pending' ? 'Em andamento' : 'Concluído';
+        const next = order.status === 'pending' ? 'Em andamento' : 'Concluído';
         return {
           title: `Avançar para "${next}"`,
           message: `Tem certeza que deseja avançar o pedido de ${order.customerName} para "${next}"?`,
@@ -75,8 +73,7 @@ export function useOrderConfirm(
 
     switch (type) {
       case 'advance':
-        if (order.status === 'pending')
-          setOrderStatus(order.id, 'in_progress');
+        if (order.status === 'pending') setOrderStatus(order.id, 'in_progress');
         else if (order.status === 'in_progress')
           setOrderStatus(order.id, 'completed');
         break;

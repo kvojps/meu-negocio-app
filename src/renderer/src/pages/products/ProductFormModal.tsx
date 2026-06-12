@@ -1,6 +1,5 @@
 import { FormField } from '../../components/FormField';
 import { Modal } from '../../components/Modal';
-
 import type { FormData, FormErrors } from '../../hooks/products/useProductForm';
 
 interface ProductFormModalProps {

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-
 import type { Order, OrderStatus } from '../../../../shared/types/order';
 import { getOrderTotal } from '../../../../shared/types/order';
 import { mockOrders } from '../../mocks/orders';

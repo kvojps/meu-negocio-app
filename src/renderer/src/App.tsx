@@ -1,7 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-
 import { ROUTES } from './routes';
-
 import { DashboardPage } from './pages/dashboard';
 import { HelpPage } from './pages/help';
 import { LogoutPage } from './pages/logout';
@@ -9,7 +7,6 @@ import { OrdersPage } from './pages/orders';
 import { ProductsPage } from './pages/products';
 import { SalesPage } from './pages/sales';
 import { SettingsPage } from './pages/settings';
-
 import { Sidebar } from './components/Sidebar';
 
 export function App() {

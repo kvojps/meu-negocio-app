@@ -1,9 +1,6 @@
 import { useState } from 'react';
-
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-
 import './styles.css';
-
 import type { Order } from '../../../../shared/types/order';
 import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
 import { useOrderForm } from '../../hooks/orders/useOrderForm';

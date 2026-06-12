@@ -1,11 +1,13 @@
 import { SortIndicator } from '../../components/SortIndicator';
-
 import type { Order } from '../../../../shared/types/order';
 import {
   ORDER_STATUS_LABELS,
   getOrderTotal,
 } from '../../../../shared/types/order';
-import type { OrderSortKey, OrderSortState } from '../../hooks/orders/useOrders';
+import type {
+  OrderSortKey,
+  OrderSortState,
+} from '../../hooks/orders/useOrders';
 
 interface OrderTableProps {
   filtered: Order[];

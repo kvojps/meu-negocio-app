@@ -1,6 +1,5 @@
 import { FormField } from '../../components/FormField';
 import { Modal } from '../../components/Modal';
-
 import type { Product } from '../../../../shared/types/product';
 import type { UseOrderFormReturn } from '../../hooks/orders/useOrderForm';
 

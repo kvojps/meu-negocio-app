@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-
 import type { Product } from '../../../../shared/types/product';
 import { mockProducts } from '../../mocks/products';
 

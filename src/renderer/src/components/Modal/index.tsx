@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 import './styles.css';
 
 interface ModalProps {

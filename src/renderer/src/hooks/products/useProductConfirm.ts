@@ -1,10 +1,7 @@
 import { useState } from 'react';
-
 import type { Product } from '../../../../shared/types/product';
 
-export function useProductConfirm(
-  deleteProduct: (id: string) => void,
-) {
+export function useProductConfirm(deleteProduct: (id: string) => void) {
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
   function buildProps() {

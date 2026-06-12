@@ -1,6 +1,5 @@
 import { SortIndicator } from '../../components/SortIndicator';
 import { StockBadge } from '../../components/StockBadge';
-
 import type { Product } from '../../../../shared/types/product';
 import type { SortKey, SortState } from '../../hooks/products/useProducts';
 

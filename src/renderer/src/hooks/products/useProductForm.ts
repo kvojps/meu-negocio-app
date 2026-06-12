@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import type { Product } from '../../../../shared/types/product';
 
 export type FormData = {
