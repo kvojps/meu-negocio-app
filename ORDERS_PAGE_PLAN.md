@@ -5,29 +5,32 @@
 **`src/shared/types/order.ts`**
 
 ```ts
-export type OrderStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled'
+export type OrderStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
 
 export interface OrderItem {
-  id: string
-  productId: string
-  productName: string
-  quantity: number
-  unitPrice: number
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
 }
 
 export interface Order {
-  id: string
-  customerName: string
-  status: OrderStatus
-  items: OrderItem[]
-  manualTotal?: number    // se preenchido, substitui soma dos itens
-  createdAt: string
-  updatedAt: string
+  id: string;
+  customerName: string;
+  status: OrderStatus;
+  items: OrderItem[];
+  manualTotal?: number; // se preenchido, substitui soma dos itens
+  createdAt: string;
+  updatedAt: string;
 }
 
 export function getOrderTotal(order: Order): number {
-  if (order.manualTotal !== undefined) return order.manualTotal
-  return order.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
+  if (order.manualTotal !== undefined) return order.manualTotal;
+  return order.items.reduce(
+    (sum, item) => sum + item.quantity * item.unitPrice,
+    0,
+  );
 }
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
@@ -35,21 +38,22 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   in_progress: 'Em andamento',
   completed: 'Concluído',
   cancelled: 'Cancelado',
-}
+};
 ```
 
 ---
 
 ## Mapeamento de Status
 
-| Status | Label | Cor | Ação disponível |
-|---|---|---|---|
-| `pending` | Pendente | Amarelo | Avançar p/ "Em andamento" ou Cancelar |
-| `in_progress` | Em andamento | Azul | Avançar p/ "Concluído" ou Cancelar |
-| `completed` | Concluído | Verde | Estornar p/ "Em andamento" (reverte estoque) |
-| `cancelled` | Cancelado | Vermelho | — (finalizado) |
+| Status        | Label        | Cor      | Ação disponível                              |
+| ------------- | ------------ | -------- | -------------------------------------------- |
+| `pending`     | Pendente     | Amarelo  | Avançar p/ "Em andamento" ou Cancelar        |
+| `in_progress` | Em andamento | Azul     | Avançar p/ "Concluído" ou Cancelar           |
+| `completed`   | Concluído    | Verde    | Estornar p/ "Em andamento" (reverte estoque) |
+| `cancelled`   | Cancelado    | Vermelho | — (finalizado)                               |
 
 **Regra de estoque:**
+
 - Ao mudar para `completed`: deduzir `quantity` do estoque de cada item
 - Ao sair de `completed` (estorno): devolver `quantity` ao estoque
 
@@ -74,19 +78,19 @@ Mostrando X de Y pedidos
 
 ## Funcionalidades por Tarefa
 
-| # | Tarefa | Descrição |
-|---|---|---|
-| 1 | `shared/types/order.ts` | Interface Order, OrderItem, OrderStatus, helpers |
-| 2 | `mocks/orders.ts` | 6 pedidos mockados com itens variados |
-| 3 | `hooks/useOrders.ts` | CRUD + filtro + sort + atualização de estoque (recebe `adjustStock` via parâmetro) |
-| 4 | `pages/orders/styles.css` | Todos os estilos (tabela, badges status, modais) |
-| 5 | `pages/orders/index.tsx` — Estrutura base | Header, botão Novo, filtros placeholder |
-| 6 | `pages/orders/index.tsx` — Tabela + sort | Renderizar pedidos, sort cíclico, badge de status colorido |
-| 7 | `pages/orders/index.tsx` — Filtros | Busca por cliente, select de status |
-| 8 | `pages/orders/index.tsx` — Modal Novo Pedido | Nome do cliente + adicionar itens (select de produto + qtd) + preço automático ou manual |
-| 9 | `pages/orders/index.tsx` — Modal Ver Itens | Detalhamento dos itens do pedido |
-| 10 | `pages/orders/index.tsx` — Ações de status | Botões para avançar/reverter status (com confirmação) + exclusão |
-| 11 | Integrar hooks | Na página, `useProducts` + `useOrders` com `adjustStock` conectado |
+| #   | Tarefa                                       | Descrição                                                                                |
+| --- | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | `shared/types/order.ts`                      | Interface Order, OrderItem, OrderStatus, helpers                                         |
+| 2   | `mocks/orders.ts`                            | 6 pedidos mockados com itens variados                                                    |
+| 3   | `hooks/useOrders.ts`                         | CRUD + filtro + sort + atualização de estoque (recebe `adjustStock` via parâmetro)       |
+| 4   | `pages/orders/styles.css`                    | Todos os estilos (tabela, badges status, modais)                                         |
+| 5   | `pages/orders/index.tsx` — Estrutura base    | Header, botão Novo, filtros placeholder                                                  |
+| 6   | `pages/orders/index.tsx` — Tabela + sort     | Renderizar pedidos, sort cíclico, badge de status colorido                               |
+| 7   | `pages/orders/index.tsx` — Filtros           | Busca por cliente, select de status                                                      |
+| 8   | `pages/orders/index.tsx` — Modal Novo Pedido | Nome do cliente + adicionar itens (select de produto + qtd) + preço automático ou manual |
+| 9   | `pages/orders/index.tsx` — Modal Ver Itens   | Detalhamento dos itens do pedido                                                         |
+| 10  | `pages/orders/index.tsx` — Ações de status   | Botões para avançar/reverter status (com confirmação) + exclusão                         |
+| 11  | Integrar hooks                               | Na página, `useProducts` + `useOrders` com `adjustStock` conectado                       |
 
 ---
 
