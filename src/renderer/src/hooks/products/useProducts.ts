@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import type { Product } from '../../../shared/types/product';
-import { mockProducts } from '../mocks/products';
+import type { Product } from '../../../../shared/types/product';
+import { mockProducts } from '../../mocks/products';
 
 export type SortKey = 'name' | 'category' | 'supplier' | 'salePrice' | 'stock';
 

@@ -1,4 +1,4 @@
-import type { FilterState } from '../../hooks/useProducts';
+import type { FilterState } from '../../hooks/products/useProducts';
 
 interface ProductFiltersProps {
   filters: FilterState;

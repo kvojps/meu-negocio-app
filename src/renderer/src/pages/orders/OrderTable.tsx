@@ -5,7 +5,7 @@ import {
   ORDER_STATUS_LABELS,
   getOrderTotal,
 } from '../../../../shared/types/order';
-import type { OrderSortKey, OrderSortState } from '../../hooks/useOrders';
+import type { OrderSortKey, OrderSortState } from '../../hooks/orders/useOrders';
 
 interface OrderTableProps {
   filtered: Order[];

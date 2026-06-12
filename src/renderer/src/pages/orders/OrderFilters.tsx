@@ -1,6 +1,6 @@
 import type { OrderStatus } from '../../../../shared/types/order';
 import { ORDER_STATUS_LABELS } from '../../../../shared/types/order';
-import type { OrderFilterState } from '../../hooks/useOrders';
+import type { OrderFilterState } from '../../hooks/orders/useOrders';
 
 const statusOptions: OrderStatus[] = [
   'pending',

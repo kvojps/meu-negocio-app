@@ -5,9 +5,9 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import './styles.css';
 
 import type { Product } from '../../../../shared/types/product';
-import { useProductConfirm } from '../../hooks/useProductConfirm';
-import { useProductForm } from '../../hooks/useProductForm';
-import { useProducts } from '../../hooks/useProducts';
+import { useProductConfirm } from '../../hooks/products/useProductConfirm';
+import { useProductForm } from '../../hooks/products/useProductForm';
+import { useProducts } from '../../hooks/products/useProducts';
 import { ProductFilters } from './ProductFilters';
 import { ProductFormModal } from './ProductFormModal';
 import { ProductTable } from './ProductTable';

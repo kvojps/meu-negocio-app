@@ -5,10 +5,10 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import './styles.css';
 
 import type { Order } from '../../../../shared/types/order';
-import { useOrderConfirm } from '../../hooks/useOrderConfirm';
-import { useOrderForm } from '../../hooks/useOrderForm';
-import { useOrders } from '../../hooks/useOrders';
-import { useProducts } from '../../hooks/useProducts';
+import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
+import { useOrderForm } from '../../hooks/orders/useOrderForm';
+import { useOrders } from '../../hooks/orders/useOrders';
+import { useProducts } from '../../hooks/products/useProducts';
 import { OrderFilters } from './OrderFilters';
 import { OrderFormModal } from './OrderFormModal';
 import { OrderTable } from './OrderTable';

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import type { Order, OrderStatus } from '../../../shared/types/order';
-import { getOrderTotal } from '../../../shared/types/order';
-import { mockOrders } from '../mocks/orders';
+import type { Order, OrderStatus } from '../../../../shared/types/order';
+import { getOrderTotal } from '../../../../shared/types/order';
+import { mockOrders } from '../../mocks/orders';
 
 export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
 
