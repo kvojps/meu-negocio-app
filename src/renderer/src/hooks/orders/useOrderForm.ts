@@ -15,6 +15,7 @@ function emptyFormItem(): FormItem {
 
 export type UseOrderFormReturn = {
   isOpen: boolean;
+  isEditing: boolean;
   customer: string;
   items: FormItem[];
   manualEnabled: boolean;
@@ -22,6 +23,7 @@ export type UseOrderFormReturn = {
   errors: Record<string, string>;
   displayTotal: number;
   open: () => void;
+  openForEdit: (order: Order) => void;
   close: () => void;
   save: () => void;
   addItem: () => void;
@@ -35,8 +37,13 @@ export type UseOrderFormReturn = {
 export function useOrderForm(
   products: Product[],
   addOrder: (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => void,
+  updateOrder?: (
+    id: string,
+    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
+  ) => void,
 ): UseOrderFormReturn {
   const [isOpen, setIsOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Order | null>(null);
   const [customer, setCustomer] = useState('');
   const [items, setItems] = useState<FormItem[]>([emptyFormItem()]);
   const [manualEnabled, setManualEnabled] = useState(false);
@@ -53,18 +60,43 @@ export function useOrderForm(
     ? Number(manualTotal) || 0
     : calculatedTotal;
 
-  function open() {
+  function resetForm() {
     setCustomer('');
     setItems([emptyFormItem()]);
     setManualEnabled(false);
     setManualTotal('');
     setErrors({});
+    setEditTarget(null);
+  }
+
+  function open() {
+    resetForm();
+    setIsOpen(true);
+  }
+
+  function openForEdit(order: Order) {
+    setCustomer(order.customerName);
+    setItems(
+      order.items.map((item) => ({
+        productId: item.productId,
+        productName: item.productName,
+        quantity: String(item.quantity),
+        unitPrice: String(item.unitPrice),
+      })),
+    );
+    setManualEnabled(order.manualTotal !== undefined);
+    setManualTotal(
+      order.manualTotal !== undefined ? String(order.manualTotal) : '',
+    );
+    setErrors({});
+    setEditTarget(order);
     setIsOpen(true);
   }
 
   function close() {
     setIsOpen(false);
     setErrors({});
+    setEditTarget(null);
   }
 
   function validate(): boolean {
@@ -90,9 +122,8 @@ export function useOrderForm(
   function save() {
     if (!validate()) return;
 
-    addOrder({
+    const data = {
       customerName: customer.trim(),
-      status: 'pending',
       items: items.map((item) => ({
         id: crypto.randomUUID(),
         productId: item.productId,
@@ -101,7 +132,13 @@ export function useOrderForm(
         unitPrice: Number(item.unitPrice),
       })),
       manualTotal: manualEnabled ? Number(manualTotal) : undefined,
-    });
+    };
+
+    if (editTarget && updateOrder) {
+      updateOrder(editTarget.id, data);
+    } else {
+      addOrder({ ...data, status: 'pending' });
+    }
 
     close();
   }
@@ -137,6 +174,7 @@ export function useOrderForm(
 
   return {
     isOpen,
+    isEditing: !!editTarget,
     customer,
     items,
     manualEnabled,
@@ -144,6 +182,7 @@ export function useOrderForm(
     errors,
     displayTotal,
     open,
+    openForEdit,
     close,
     save,
     addItem,

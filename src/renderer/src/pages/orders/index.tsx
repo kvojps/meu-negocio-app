@@ -23,11 +23,12 @@ export function OrdersPage() {
     setFilters,
     toggleSort,
     addOrder,
+    updateOrder,
     setOrderStatus,
     deleteOrder,
   } = useOrders(adjustStock);
 
-  const form = useOrderForm(products, addOrder);
+  const form = useOrderForm(products, addOrder, updateOrder);
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
 
@@ -72,6 +73,7 @@ export function OrdersPage() {
         sort={sort}
         onToggleSort={toggleSort}
         onView={setViewTarget}
+        onEdit={form.openForEdit}
         onStatusChange={handleStatusChange}
         onConfirm={confirm.setConfirmTarget}
       />

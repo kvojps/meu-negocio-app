@@ -16,6 +16,7 @@ interface OrderTableProps {
   sort: OrderSortState;
   onToggleSort: (key: OrderSortKey) => void;
   onView: (order: Order) => void;
+  onEdit?: (order: Order) => void;
   onStatusChange: (order: Order, newStatus: OrderStatus) => void;
   onConfirm: (target: {
     type: 'advance' | 'cancel' | 'reopen' | 'delete';
@@ -53,6 +54,7 @@ export function OrderTable({
   sort,
   onToggleSort,
   onView,
+  onEdit,
   onStatusChange,
   onConfirm,
   readOnly = false,
@@ -154,13 +156,22 @@ export function OrderTable({
                   Ver
                 </button>
                 {!readOnly && order.status === 'pending' && (
-                  <button
-                    className="orders-table-btn orders-table-btn--cancel-order"
-                    onClick={() => onConfirm({ type: 'delete', order })}
-                    type="button"
-                  >
-                    Excluir
-                  </button>
+                  <>
+                    <button
+                      className="orders-table-btn orders-table-btn--edit"
+                      onClick={() => onEdit?.(order)}
+                      type="button"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="orders-table-btn orders-table-btn--cancel-order"
+                      onClick={() => onConfirm({ type: 'delete', order })}
+                      type="button"
+                    >
+                      Excluir
+                    </button>
+                  </>
                 )}
               </td>
             </tr>

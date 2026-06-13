@@ -19,7 +19,7 @@ export function OrderFormModal({ form, products }: OrderFormModalProps) {
     <Modal
       open={form.isOpen}
       onClose={form.close}
-      title="Novo Pedido"
+      title={form.isEditing ? 'Editar Pedido' : 'Novo Pedido'}
       maxWidth="600px"
       footer={
         <>
@@ -35,7 +35,7 @@ export function OrderFormModal({ form, products }: OrderFormModalProps) {
             onClick={() => form.save()}
             type="button"
           >
-            Criar Pedido
+            {form.isEditing ? 'Salvar Alterações' : 'Criar Pedido'}
           </button>
         </>
       }

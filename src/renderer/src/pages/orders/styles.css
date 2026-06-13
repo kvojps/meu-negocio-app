@@ -252,6 +252,14 @@
   background: rgba(107, 114, 128, 0.1);
 }
 
+.orders-table-btn--edit {
+  color: var(--color-active-text);
+}
+
+.orders-table-btn--edit:hover {
+  background: var(--color-active-bg);
+}
+
 .orders-table-btn--cancel-order {
   color: #dc2626;
 }

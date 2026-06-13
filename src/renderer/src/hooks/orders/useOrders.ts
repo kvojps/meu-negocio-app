@@ -102,6 +102,19 @@ export function useOrders(
     );
   }
 
+  function updateOrder(
+    id: string,
+    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
+  ) {
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === id
+          ? { ...order, ...data, updatedAt: new Date().toISOString() }
+          : order,
+      ),
+    );
+  }
+
   function deleteOrder(id: string) {
     setOrders((prev) => prev.filter((o) => o.id !== id));
   }
@@ -122,6 +135,7 @@ export function useOrders(
     setFilters,
     toggleSort,
     addOrder,
+    updateOrder,
     setOrderStatus,
     deleteOrder,
   };
