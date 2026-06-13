@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Pagination } from '../../components/Pagination';
 import './styles.css';
@@ -31,8 +31,13 @@ export function OrdersPage() {
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
 
+  const activeOrders = useMemo(
+    () => filtered.filter((o) => o.status !== 'completed'),
+    [filtered],
+  );
+
   const { page, setPage, totalPages, paginatedItems, start } = usePagination(
-    filtered,
+    activeOrders,
     10,
   );
 
@@ -54,11 +59,15 @@ export function OrdersPage() {
         </button>
       </div>
 
-      <OrderFilters filters={filters} onChange={setFilters} />
+      <OrderFilters
+        filters={filters}
+        onChange={setFilters}
+        hideStatuses={['completed']}
+      />
 
       <OrderTable
         filtered={paginatedItems}
-        totalCount={filtered.length}
+        totalCount={activeOrders.length}
         start={start}
         sort={sort}
         onToggleSort={toggleSort}

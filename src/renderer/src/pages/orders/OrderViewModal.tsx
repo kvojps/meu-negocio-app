@@ -17,14 +17,19 @@ const formatDate = (dateStr: string) =>
 interface OrderViewModalProps {
   viewTarget: Order | null;
   onClose: () => void;
+  title?: string;
 }
 
-export function OrderViewModal({ viewTarget, onClose }: OrderViewModalProps) {
+export function OrderViewModal({
+  viewTarget,
+  onClose,
+  title = 'Detalhes do Pedido',
+}: OrderViewModalProps) {
   return (
     <Modal
       open={!!viewTarget}
       onClose={onClose}
-      title="Detalhes do Pedido"
+      title={title}
       maxWidth="600px"
       footer={
         <button

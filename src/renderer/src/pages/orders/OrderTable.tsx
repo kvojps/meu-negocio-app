@@ -21,6 +21,8 @@ interface OrderTableProps {
     type: 'advance' | 'cancel' | 'reopen' | 'delete';
     order: Order;
   }) => void;
+  readOnly?: boolean;
+  hideStatusColumn?: boolean;
 }
 
 const sortableColumns: { key: OrderSortKey; label: string }[] = [
@@ -53,41 +55,59 @@ export function OrderTable({
   onView,
   onStatusChange,
   onConfirm,
+  readOnly = false,
+  hideStatusColumn = false,
 }: OrderTableProps) {
   return (
     <div className="orders-table-wrapper">
       <table className="orders-table">
         <thead>
           <tr>
-            {sortableColumns.slice(0, 2).map((col) => (
+            <th
+              className={
+                sort.key === 'customerName' ? 'orders-table-th--sorted' : ''
+              }
+              onClick={() => onToggleSort('customerName')}
+            >
+              Cliente
+              {sort.key === 'customerName' && (
+                <SortIndicator direction={sort.direction} />
+              )}
+            </th>
+            {!hideStatusColumn && (
               <th
-                key={col.key}
                 className={
-                  sort.key === col.key ? 'orders-table-th--sorted' : ''
+                  sort.key === 'status' ? 'orders-table-th--sorted' : ''
                 }
-                onClick={() => onToggleSort(col.key)}
+                onClick={() => onToggleSort('status')}
               >
-                {col.label}
-                {sort.key === col.key && (
+                Status
+                {sort.key === 'status' && (
                   <SortIndicator direction={sort.direction} />
                 )}
               </th>
-            ))}
+            )}
             <th>Itens</th>
-            {sortableColumns.slice(2).map((col) => (
-              <th
-                key={col.key}
-                className={
-                  sort.key === col.key ? 'orders-table-th--sorted' : ''
-                }
-                onClick={() => onToggleSort(col.key)}
-              >
-                {col.label}
-                {sort.key === col.key && (
-                  <SortIndicator direction={sort.direction} />
-                )}
-              </th>
-            ))}
+            <th
+              className={sort.key === 'total' ? 'orders-table-th--sorted' : ''}
+              onClick={() => onToggleSort('total')}
+            >
+              Total
+              {sort.key === 'total' && (
+                <SortIndicator direction={sort.direction} />
+              )}
+            </th>
+            <th
+              className={
+                sort.key === 'createdAt' ? 'orders-table-th--sorted' : ''
+              }
+              onClick={() => onToggleSort('createdAt')}
+            >
+              Data
+              {sort.key === 'createdAt' && (
+                <SortIndicator direction={sort.direction} />
+              )}
+            </th>
             <th className="orders-table-th--actions">Ações</th>
           </tr>
         </thead>
@@ -97,21 +117,31 @@ export function OrderTable({
               <td>
                 <strong>{order.customerName}</strong>
               </td>
-              <td>
-                <select
-                  className={`status-badge status-badge--${order.status} status-select`}
-                  value={order.status}
-                  onChange={(e) =>
-                    onStatusChange(order, e.target.value as OrderStatus)
-                  }
-                >
-                  {ORDER_STATUS_OPTIONS.map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </td>
+              {!hideStatusColumn && (
+                <td>
+                  {readOnly ? (
+                    <span
+                      className={`status-badge status-badge--${order.status}`}
+                    >
+                      {ORDER_STATUS_LABELS[order.status]}
+                    </span>
+                  ) : (
+                    <select
+                      className={`status-badge status-badge--${order.status} status-select`}
+                      value={order.status}
+                      onChange={(e) =>
+                        onStatusChange(order, e.target.value as OrderStatus)
+                      }
+                    >
+                      {ORDER_STATUS_OPTIONS.map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </td>
+              )}
               <td>{order.items.length}</td>
               <td>{formatCurrency(getOrderTotal(order))}</td>
               <td>{formatDate(order.createdAt)}</td>
@@ -123,7 +153,7 @@ export function OrderTable({
                 >
                   Ver
                 </button>
-                {order.status === 'pending' && (
+                {!readOnly && order.status === 'pending' && (
                   <button
                     className="orders-table-btn orders-table-btn--cancel-order"
                     onClick={() => onConfirm({ type: 'delete', order })}
