@@ -1,3 +1,4 @@
+import { DeleteIcon, EditIcon } from '../../components/Icons';
 import { SortIndicator } from '../../components/SortIndicator';
 import { StockBadge } from '../../components/StockBadge';
 import type { Product } from '../../../../shared/types/product';
@@ -77,14 +78,14 @@ export function ProductTable({
                   onClick={() => onEdit(product)}
                   type="button"
                 >
-                  Editar
+                  <EditIcon />
                 </button>
                 <button
                   className="products-table-btn products-table-btn--delete"
                   onClick={() => onDelete(product)}
                   type="button"
                 >
-                  Excluir
+                  <DeleteIcon />
                 </button>
               </td>
             </tr>
