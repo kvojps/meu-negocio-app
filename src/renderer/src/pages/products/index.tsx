@@ -1,15 +1,25 @@
 import { useMemo, useState } from 'react';
+import { ActionsMenu } from '../../components/ActionsMenu';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { DataTable } from '../../components/DataTable';
+import type { Column } from '../../components/DataTable';
 import { Pagination } from '../../components/Pagination';
+import { StockBadge } from '../../components/StockBadge';
 import './styles.css';
 import type { Product } from '../../../../shared/types/product';
 import { useProductConfirm } from '../../hooks/products/useProductConfirm';
 import { useProductForm } from '../../hooks/products/useProductForm';
+import type { SortKey } from '../../hooks/products/useProducts';
 import { useProducts } from '../../hooks/products/useProducts';
 import { usePagination } from '../../hooks/usePagination';
 import { ProductFilters } from './ProductFilters';
 import { ProductFormModal } from './ProductFormModal';
-import { ProductTable } from './ProductTable';
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
 
 export function ProductsPage() {
   const {
@@ -42,6 +52,54 @@ export function ProductsPage() {
     [products],
   );
 
+  const columns: Column<Product>[] = useMemo(
+    () => [
+      {
+        key: 'name',
+        label: 'Nome',
+        sortable: true,
+        render: (p: Product) => <strong>{p.name}</strong>,
+      },
+      {
+        key: 'category',
+        label: 'Categoria',
+        sortable: true,
+        render: (p: Product) => p.category,
+      },
+      {
+        key: 'supplier',
+        label: 'Fornecedor',
+        sortable: true,
+        render: (p: Product) => p.supplier,
+      },
+      {
+        key: 'salePrice',
+        label: 'Preço Venda',
+        sortable: true,
+        render: (p: Product) => formatCurrency(p.salePrice),
+      },
+      {
+        key: 'stock',
+        label: 'Estoque',
+        sortable: true,
+        render: (p: Product) => (
+          <>
+            <span
+              style={{ marginRight: 8 }}
+              className={
+                p.stock <= p.minStock ? 'stock-number--low' : ''
+              }
+            >
+              {p.stock}
+            </span>
+            <StockBadge stock={p.stock} minStock={p.minStock} />
+          </>
+        ),
+      },
+    ],
+    [],
+  );
+
   return (
     <div className="products-page">
       <div className="products-header">
@@ -62,15 +120,20 @@ export function ProductsPage() {
         onChange={setFilters}
       />
 
-      <div className="products-table-card">
-        <ProductTable
-          filtered={paginatedItems}
+      <DataTable
+          columns={columns}
+          items={paginatedItems}
           totalCount={filtered.length}
           start={start}
           sort={sort}
-          onToggleSort={toggleSort}
-          onEdit={form.openEdit}
-          onDelete={confirm.setDeleteTarget}
+          onToggleSort={(key) => toggleSort(key as SortKey)}
+          renderActions={(product: Product) => (
+            <ActionsMenu
+              onEdit={() => form.openEdit(product)}
+              onDelete={() => confirm.setDeleteTarget(product)}
+            />
+          )}
+          footerLabel="produtos"
         />
 
         <Pagination
@@ -78,7 +141,6 @@ export function ProductsPage() {
           totalPages={totalPages}
           onPageChange={setPage}
         />
-      </div>
 
       <ProductFormModal
         isOpen={form.isOpen}

@@ -1,17 +1,38 @@
 import { useMemo, useState } from 'react';
+import { ActionsMenu } from '../../components/ActionsMenu';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { DataTable } from '../../components/DataTable';
+import type { Column } from '../../components/DataTable';
 import { Pagination } from '../../components/Pagination';
 import './styles.css';
 import type { Order, OrderStatus } from '../../../../shared/types/order';
+import {
+  ORDER_STATUS_LABELS,
+  getOrderTotal,
+} from '../../../../shared/types/order';
 import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
 import { useOrderForm } from '../../hooks/orders/useOrderForm';
+import type { OrderSortKey } from '../../hooks/orders/useOrders';
 import { useOrders } from '../../hooks/orders/useOrders';
 import { useProducts } from '../../hooks/products/useProducts';
 import { usePagination } from '../../hooks/usePagination';
 import { OrderFilters } from './OrderFilters';
 import { OrderFormModal } from './OrderFormModal';
-import { OrderTable } from './OrderTable';
 import { OrderViewModal } from './OrderViewModal';
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+
+const formatDate = (dateStr: string) =>
+  new Intl.DateTimeFormat('pt-BR').format(new Date(dateStr));
+
+const ORDER_STATUS_OPTIONS = Object.entries(ORDER_STATUS_LABELS) as [
+  OrderStatus,
+  string,
+][];
 
 export function OrdersPage() {
   const { products, adjustStock } = useProducts();
@@ -47,6 +68,56 @@ export function OrdersPage() {
     confirm.setConfirmTarget({ type: 'status_change', order, newStatus });
   }
 
+  const columns: Column<Order>[] = useMemo(
+    () => [
+      {
+        key: 'customerName',
+        label: 'Cliente',
+        sortable: true,
+        render: (o: Order) => <strong>{o.customerName}</strong>,
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        sortable: true,
+        render: (o: Order) => (
+          <select
+            className={`status-badge status-badge--${o.status} status-select`}
+            value={o.status}
+            onChange={(e) =>
+              handleStatusChange(o, e.target.value as OrderStatus)
+            }
+          >
+            {ORDER_STATUS_OPTIONS.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        ),
+      },
+      {
+        key: 'items',
+        label: 'Itens',
+        sortable: false,
+        render: (o: Order) => o.items.length,
+      },
+      {
+        key: 'total',
+        label: 'Total',
+        sortable: true,
+        render: (o: Order) => formatCurrency(getOrderTotal(o)),
+      },
+      {
+        key: 'createdAt',
+        label: 'Data',
+        sortable: true,
+        render: (o: Order) => formatDate(o.createdAt),
+      },
+    ],
+    [handleStatusChange],
+  );
+
   return (
     <div className="orders-page">
       <div className="orders-header">
@@ -66,17 +137,25 @@ export function OrdersPage() {
         hideStatuses={['completed']}
       />
 
-      <div className="orders-table-card">
-        <OrderTable
-          filtered={paginatedItems}
+      <DataTable
+          columns={columns}
+          items={paginatedItems}
           totalCount={activeOrders.length}
           start={start}
           sort={sort}
-          onToggleSort={toggleSort}
-          onView={setViewTarget}
-          onEdit={form.openForEdit}
-          onStatusChange={handleStatusChange}
-          onConfirm={confirm.setConfirmTarget}
+          onToggleSort={(key) => toggleSort(key as OrderSortKey)}
+          renderActions={(order: Order) => (
+            <ActionsMenu
+              onView={() => setViewTarget(order)}
+              onEdit={order.status === 'pending' ? () => form.openForEdit(order) : undefined}
+              onDelete={
+                order.status === 'pending'
+                  ? () => confirm.setConfirmTarget({ type: 'delete', order })
+                  : undefined
+              }
+            />
+          )}
+          footerLabel="pedidos"
         />
 
         <Pagination
@@ -84,7 +163,6 @@ export function OrdersPage() {
           totalPages={totalPages}
           onPageChange={setPage}
         />
-      </div>
 
       <OrderFormModal form={form} products={products} />
 

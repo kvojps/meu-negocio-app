@@ -1,13 +1,17 @@
 import { useMemo, useState } from 'react';
+import { ActionsMenu } from '../../components/ActionsMenu';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { DataTable } from '../../components/DataTable';
+import type { Column } from '../../components/DataTable';
 import { Pagination } from '../../components/Pagination';
 import '../orders/styles.css';
 import type { Order } from '../../../../shared/types/order';
+import { getOrderTotal } from '../../../../shared/types/order';
 import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
+import type { OrderSortKey } from '../../hooks/orders/useOrders';
 import { useOrders } from '../../hooks/orders/useOrders';
 import { usePagination } from '../../hooks/usePagination';
 import { OrderFilters } from '../orders/OrderFilters';
-import { OrderTable } from '../orders/OrderTable';
 import { OrderViewModal } from '../orders/OrderViewModal';
 import { SalesCards } from './SalesCards';
 
@@ -35,6 +39,45 @@ export function SalesPage() {
     10,
   );
 
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+
+  const formatDate = (dateStr: string) =>
+    new Intl.DateTimeFormat('pt-BR').format(new Date(dateStr));
+
+  const columns: Column<Order>[] = useMemo(
+    () => [
+      {
+        key: 'customerName',
+        label: 'Cliente',
+        sortable: true,
+        render: (o: Order) => <strong>{o.customerName}</strong>,
+      },
+      {
+        key: 'items',
+        label: 'Itens',
+        sortable: false,
+        render: (o: Order) => o.items.length,
+      },
+      {
+        key: 'total',
+        label: 'Total',
+        sortable: true,
+        render: (o: Order) => formatCurrency(getOrderTotal(o)),
+      },
+      {
+        key: 'createdAt',
+        label: 'Data',
+        sortable: true,
+        render: (o: Order) => formatDate(o.createdAt),
+      },
+    ],
+    [],
+  );
+
   return (
     <div className="orders-page">
       <div className="orders-header">
@@ -50,17 +93,19 @@ export function SalesPage() {
 
       <SalesCards completedOrders={completedOrders} />
 
-      <OrderTable
-        filtered={paginatedItems}
+      <DataTable
+        columns={columns}
+        items={paginatedItems}
         totalCount={completedOrders.length}
         start={start}
         sort={sort}
-        onToggleSort={toggleSort}
-        onView={setViewTarget}
-        onStatusChange={() => {}}
-        onConfirm={confirm.setConfirmTarget}
-        readOnly
-        hideStatusColumn
+        onToggleSort={(key) => toggleSort(key as OrderSortKey)}
+        renderActions={(order: Order) => (
+          <ActionsMenu
+            onView={() => setViewTarget(order)}
+          />
+        )}
+        footerLabel="vendas"
       />
 
       <Pagination
