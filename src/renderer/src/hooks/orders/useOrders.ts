@@ -8,6 +8,8 @@ export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
 export interface OrderFilterState {
   search: string;
   status: string;
+  dateFrom: string;
+  dateTo: string;
 }
 
 export interface OrderSortState {
@@ -22,6 +24,8 @@ export function useOrders(
   const [filters, setFilters] = useState<OrderFilterState>({
     search: '',
     status: '',
+    dateFrom: '',
+    dateTo: '',
   });
   const [sort, setSort] = useState<OrderSortState>({
     key: null,
@@ -38,6 +42,18 @@ export function useOrders(
 
     if (filters.status) {
       result = result.filter((o) => o.status === filters.status);
+    }
+
+    if (filters.dateFrom) {
+      const from = new Date(filters.dateFrom);
+      from.setHours(0, 0, 0, 0);
+      result = result.filter((o) => new Date(o.createdAt) >= from);
+    }
+
+    if (filters.dateTo) {
+      const to = new Date(filters.dateTo);
+      to.setHours(23, 59, 59, 999);
+      result = result.filter((o) => new Date(o.createdAt) <= to);
     }
 
     if (sort.key) {

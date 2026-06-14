@@ -9,6 +9,7 @@ import { usePagination } from '../../hooks/usePagination';
 import { OrderFilters } from '../orders/OrderFilters';
 import { OrderTable } from '../orders/OrderTable';
 import { OrderViewModal } from '../orders/OrderViewModal';
+import { SalesCards } from './SalesCards';
 
 export function SalesPage() {
   const {
@@ -40,7 +41,14 @@ export function SalesPage() {
         <h1 className="orders-header-title">Vendas</h1>
       </div>
 
-      <OrderFilters filters={filters} onChange={setFilters} hideStatusFilter />
+      <OrderFilters
+        filters={filters}
+        onChange={setFilters}
+        hideStatusFilter
+        showDateFilter
+      />
+
+      <SalesCards completedOrders={completedOrders} />
 
       <OrderTable
         filtered={paginatedItems}

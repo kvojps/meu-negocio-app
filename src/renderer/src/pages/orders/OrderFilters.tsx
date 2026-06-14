@@ -1,6 +1,11 @@
+import { ptBR } from 'date-fns/locale/pt-BR';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import type { OrderStatus } from '../../../../shared/types/order';
 import { ORDER_STATUS_LABELS } from '../../../../shared/types/order';
 import type { OrderFilterState } from '../../hooks/orders/useOrders';
+
+registerLocale('pt-BR', ptBR);
 
 const ALL_STATUS_OPTIONS: OrderStatus[] = [
   'pending',
@@ -9,11 +14,46 @@ const ALL_STATUS_OPTIONS: OrderStatus[] = [
   'cancelled',
 ];
 
+function toDate(iso: string): Date | null {
+  if (!iso) return null;
+  const d = new Date(iso + 'T00:00:00');
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function toISO(date: Date | null): string {
+  if (!date) return '';
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function DatePickerInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <DatePicker
+      locale="pt-BR"
+      dateFormat="dd/MM/yyyy"
+      placeholderText="dd/mm/aaaa"
+      selected={toDate(value)}
+      onChange={(date: Date | null) => onChange(toISO(date))}
+      className="orders-filters-date"
+      wrapperClassName="orders-filters-date-wrap"
+    />
+  );
+}
+
 interface OrderFiltersProps {
   filters: OrderFilterState;
   onChange: (filters: OrderFilterState) => void;
   hideStatuses?: OrderStatus[];
   hideStatusFilter?: boolean;
+  showDateFilter?: boolean;
 }
 
 export function OrderFilters({
@@ -21,6 +61,7 @@ export function OrderFilters({
   onChange,
   hideStatuses,
   hideStatusFilter,
+  showDateFilter,
 }: OrderFiltersProps) {
   const statusOptions = hideStatuses
     ? ALL_STATUS_OPTIONS.filter((s) => !hideStatuses.includes(s))
@@ -48,6 +89,19 @@ export function OrderFilters({
             </option>
           ))}
         </select>
+      )}
+      {showDateFilter && (
+        <>
+          <DatePickerInput
+            value={filters.dateFrom}
+            onChange={(v) => onChange({ ...filters, dateFrom: v })}
+          />
+          <span className="orders-filters-date-separator">—</span>
+          <DatePickerInput
+            value={filters.dateTo}
+            onChange={(v) => onChange({ ...filters, dateTo: v })}
+          />
+        </>
       )}
     </div>
   );
