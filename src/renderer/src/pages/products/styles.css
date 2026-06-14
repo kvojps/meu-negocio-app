@@ -254,26 +254,16 @@
 }
 
 .stock-badge {
-  border-radius: 6px;
-  display: inline-block;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  padding: 0.125rem 0.5rem;
-}
-
-.stock-badge--ok {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-}
-
-.stock-badge--warn {
-  background: rgba(245, 158, 11, 0.12);
-  color: #d97706;
+  align-items: center;
+  display: inline-flex;
 }
 
 .stock-badge--low {
-  background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
+  color: #e11d48;
+}
+
+.stock-number--low {
+  color: #e11d48;
 }
 
 .products-form {

@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { OptionsIcon, EditIcon, DeleteIcon } from './Icons';
+import { useEffect, useRef, useState } from 'react';
+import { DeleteIcon, EditIcon, OptionsIcon } from './Icons';
 
 interface ActionsMenuProps {
   onEdit: () => void;

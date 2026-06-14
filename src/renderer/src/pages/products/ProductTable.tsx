@@ -1,6 +1,6 @@
+import { ActionsMenu } from '../../components/ActionsMenu';
 import { SortIndicator } from '../../components/SortIndicator';
 import { StockBadge } from '../../components/StockBadge';
-import { ActionsMenu } from '../../components/ActionsMenu';
 import type { Product } from '../../../../shared/types/product';
 import type { SortKey, SortState } from '../../hooks/products/useProducts';
 
@@ -69,7 +69,14 @@ export function ProductTable({
               <td>{product.supplier}</td>
               <td>{formatCurrency(product.salePrice)}</td>
               <td>
-                <span style={{ marginRight: 8 }}>{product.stock}</span>
+                <span
+                  style={{ marginRight: 8 }}
+                  className={
+                    product.stock <= product.minStock ? 'stock-number--low' : ''
+                  }
+                >
+                  {product.stock}
+                </span>
                 <StockBadge stock={product.stock} minStock={product.minStock} />
               </td>
               <td className="products-table-cell--actions">
