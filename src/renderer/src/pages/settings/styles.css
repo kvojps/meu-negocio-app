@@ -1,0 +1,130 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.settings-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.settings-section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+}
+
+.settings-section h2 {
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+}
+
+.settings-form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  max-width: 480px;
+}
+
+.settings-field--full {
+  grid-column: 1 / -1;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settings-field-label {
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.settings-field input,
+.settings-field textarea {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s;
+}
+
+.settings-field input:focus,
+.settings-field textarea:focus {
+  border-color: var(--color-active-text);
+  box-shadow: 0 0 0 2px var(--color-active-bg);
+}
+
+.settings-field textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.settings-field-actions {
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.settings-save-btn {
+  background: var(--color-active-text);
+  border: 1px solid var(--color-active-text);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  transition: opacity 0.15s;
+}
+
+.settings-save-btn:hover {
+  opacity: 0.9;
+}
+
+.settings-save-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.settings-save-feedback {
+  align-self: center;
+  color: var(--color-active-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.settings-about-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-about-row {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.settings-about-label {
+  color: #6b7280;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  min-width: 6rem;
+}
+
+.settings-about-value {
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+}
