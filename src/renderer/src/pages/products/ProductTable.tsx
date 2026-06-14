@@ -1,6 +1,6 @@
-import { DeleteIcon, EditIcon } from '../../components/Icons';
 import { SortIndicator } from '../../components/SortIndicator';
 import { StockBadge } from '../../components/StockBadge';
+import { ActionsMenu } from '../../components/ActionsMenu';
 import type { Product } from '../../../../shared/types/product';
 import type { SortKey, SortState } from '../../hooks/products/useProducts';
 
@@ -73,20 +73,10 @@ export function ProductTable({
                 <StockBadge stock={product.stock} minStock={product.minStock} />
               </td>
               <td className="products-table-cell--actions">
-                <button
-                  className="products-table-btn products-table-btn--edit"
-                  onClick={() => onEdit(product)}
-                  type="button"
-                >
-                  <EditIcon />
-                </button>
-                <button
-                  className="products-table-btn products-table-btn--delete"
-                  onClick={() => onDelete(product)}
-                  type="button"
-                >
-                  <DeleteIcon />
-                </button>
+                <ActionsMenu
+                  onEdit={() => onEdit(product)}
+                  onDelete={() => onDelete(product)}
+                />
               </td>
             </tr>
           ))}

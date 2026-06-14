@@ -22,6 +22,22 @@ export function EditIcon({ size = 16 }: IconProps) {
   );
 }
 
+export function OptionsIcon({ size = 16 }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="24" cy="11" r="5" fill="currentColor" />
+      <circle cx="24" cy="24" r="5" fill="currentColor" />
+      <circle cx="24" cy="37" r="5" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function DeleteIcon({ size = 16 }: IconProps) {
   return (
     <svg
