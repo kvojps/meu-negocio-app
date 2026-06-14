@@ -56,21 +56,23 @@ export function ProductsPage() {
         onChange={setFilters}
       />
 
-      <ProductTable
-        filtered={paginatedItems}
-        totalCount={filtered.length}
-        start={start}
-        sort={sort}
-        onToggleSort={toggleSort}
-        onEdit={form.openEdit}
-        onDelete={confirm.setDeleteTarget}
-      />
+      <div className="products-table-card">
+        <ProductTable
+          filtered={paginatedItems}
+          totalCount={filtered.length}
+          start={start}
+          sort={sort}
+          onToggleSort={toggleSort}
+          onEdit={form.openEdit}
+          onDelete={confirm.setDeleteTarget}
+        />
 
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      </div>
 
       <ProductFormModal
         isOpen={form.isOpen}

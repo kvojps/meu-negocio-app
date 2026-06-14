@@ -99,10 +99,13 @@
   color: var(--color-active-text);
 }
 
-.products-table-wrapper {
+.products-table-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.products-table-wrapper {
   overflow-x: auto;
 }
 
