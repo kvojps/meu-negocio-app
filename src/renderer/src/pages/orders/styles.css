@@ -314,6 +314,10 @@
   width: 5rem;
 }
 
+.orders-item-row-input input {
+  width: 100%;
+}
+
 .orders-item-row-price {
   color: #374151;
   font-size: 0.875rem;
