@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '../Icons';
 import './styles.css';
+import { DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '../Icons';
 
 interface ActionsMenuProps {
   onView?: () => void;
