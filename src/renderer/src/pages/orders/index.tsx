@@ -66,23 +66,25 @@ export function OrdersPage() {
         hideStatuses={['completed']}
       />
 
-      <OrderTable
-        filtered={paginatedItems}
-        totalCount={activeOrders.length}
-        start={start}
-        sort={sort}
-        onToggleSort={toggleSort}
-        onView={setViewTarget}
-        onEdit={form.openForEdit}
-        onStatusChange={handleStatusChange}
-        onConfirm={confirm.setConfirmTarget}
-      />
+      <div className="orders-table-card">
+        <OrderTable
+          filtered={paginatedItems}
+          totalCount={activeOrders.length}
+          start={start}
+          sort={sort}
+          onToggleSort={toggleSort}
+          onView={setViewTarget}
+          onEdit={form.openForEdit}
+          onStatusChange={handleStatusChange}
+          onConfirm={confirm.setConfirmTarget}
+        />
 
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      </div>
 
       <OrderFormModal form={form} products={products} />
 

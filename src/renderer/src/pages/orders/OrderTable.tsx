@@ -1,3 +1,4 @@
+import { ActionsMenu } from '../../components/ActionsMenu';
 import { SortIndicator } from '../../components/SortIndicator';
 import type { Order, OrderStatus } from '../../../../shared/types/order';
 import {
@@ -148,31 +149,19 @@ export function OrderTable({
               <td>{formatCurrency(getOrderTotal(order))}</td>
               <td>{formatDate(order.createdAt)}</td>
               <td className="orders-table-cell--actions">
-                <button
-                  className="orders-table-btn orders-table-btn--view"
-                  onClick={() => onView(order)}
-                  type="button"
-                >
-                  Ver
-                </button>
-                {!readOnly && order.status === 'pending' && (
-                  <>
-                    <button
-                      className="orders-table-btn orders-table-btn--edit"
-                      onClick={() => onEdit?.(order)}
-                      type="button"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="orders-table-btn orders-table-btn--cancel-order"
-                      onClick={() => onConfirm({ type: 'delete', order })}
-                      type="button"
-                    >
-                      Excluir
-                    </button>
-                  </>
-                )}
+                <ActionsMenu
+                  onView={() => onView(order)}
+                  onEdit={
+                    !readOnly && order.status === 'pending'
+                      ? () => onEdit?.(order)
+                      : undefined
+                  }
+                  onDelete={
+                    !readOnly && order.status === 'pending'
+                      ? () => onConfirm({ type: 'delete', order })
+                      : undefined
+                  }
+                />
               </td>
             </tr>
           ))}

@@ -74,10 +74,13 @@
   box-shadow: 0 0 0 2px var(--color-active-bg);
 }
 
-.orders-table-wrapper {
+.orders-table-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.orders-table-wrapper {
   overflow-x: auto;
 }
 
@@ -226,46 +229,6 @@
 .status-select option {
   background: #fff;
   color: #374151;
-}
-
-.orders-table-btn {
-  background: none;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.375rem 0.625rem;
-  transition: all 0.15s;
-}
-
-.orders-table-btn:hover {
-  opacity: 0.85;
-}
-
-.orders-table-btn--view {
-  color: #6b7280;
-}
-
-.orders-table-btn--view:hover {
-  background: rgba(107, 114, 128, 0.1);
-}
-
-.orders-table-btn--edit {
-  color: var(--color-active-text);
-}
-
-.orders-table-btn--edit:hover {
-  background: var(--color-active-bg);
-}
-
-.orders-table-btn--cancel-order {
-  color: #dc2626;
-}
-
-.orders-table-btn--cancel-order:hover {
-  background: rgba(220, 38, 38, 0.1);
 }
 
 .orders-form {
