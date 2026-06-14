@@ -1,5 +1,5 @@
-import { SortIndicator } from '../SortIndicator';
 import './styles.css';
+import { SortIndicator } from '../SortIndicator';
 
 export interface Column<T> {
   key: string;

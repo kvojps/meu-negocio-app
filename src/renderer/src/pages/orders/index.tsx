@@ -138,31 +138,35 @@ export function OrdersPage() {
       />
 
       <DataTable
-          columns={columns}
-          items={paginatedItems}
-          totalCount={activeOrders.length}
-          start={start}
-          sort={sort}
-          onToggleSort={(key) => toggleSort(key as OrderSortKey)}
-          renderActions={(order: Order) => (
-            <ActionsMenu
-              onView={() => setViewTarget(order)}
-              onEdit={order.status === 'pending' ? () => form.openForEdit(order) : undefined}
-              onDelete={
-                order.status === 'pending'
-                  ? () => confirm.setConfirmTarget({ type: 'delete', order })
-                  : undefined
-              }
-            />
-          )}
-          footerLabel="pedidos"
-        />
+        columns={columns}
+        items={paginatedItems}
+        totalCount={activeOrders.length}
+        start={start}
+        sort={sort}
+        onToggleSort={(key) => toggleSort(key as OrderSortKey)}
+        renderActions={(order: Order) => (
+          <ActionsMenu
+            onView={() => setViewTarget(order)}
+            onEdit={
+              order.status === 'pending'
+                ? () => form.openForEdit(order)
+                : undefined
+            }
+            onDelete={
+              order.status === 'pending'
+                ? () => confirm.setConfirmTarget({ type: 'delete', order })
+                : undefined
+            }
+          />
+        )}
+        footerLabel="pedidos"
+      />
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
 
       <OrderFormModal form={form} products={products} />
 

@@ -101,9 +101,7 @@ export function SalesPage() {
         sort={sort}
         onToggleSort={(key) => toggleSort(key as OrderSortKey)}
         renderActions={(order: Order) => (
-          <ActionsMenu
-            onView={() => setViewTarget(order)}
-          />
+          <ActionsMenu onView={() => setViewTarget(order)} />
         )}
         footerLabel="vendas"
       />

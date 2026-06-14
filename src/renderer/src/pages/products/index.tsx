@@ -86,9 +86,7 @@ export function ProductsPage() {
           <>
             <span
               style={{ marginRight: 8 }}
-              className={
-                p.stock <= p.minStock ? 'stock-number--low' : ''
-              }
+              className={p.stock <= p.minStock ? 'stock-number--low' : ''}
             >
               {p.stock}
             </span>
@@ -121,26 +119,26 @@ export function ProductsPage() {
       />
 
       <DataTable
-          columns={columns}
-          items={paginatedItems}
-          totalCount={filtered.length}
-          start={start}
-          sort={sort}
-          onToggleSort={(key) => toggleSort(key as SortKey)}
-          renderActions={(product: Product) => (
-            <ActionsMenu
-              onEdit={() => form.openEdit(product)}
-              onDelete={() => confirm.setDeleteTarget(product)}
-            />
-          )}
-          footerLabel="produtos"
-        />
+        columns={columns}
+        items={paginatedItems}
+        totalCount={filtered.length}
+        start={start}
+        sort={sort}
+        onToggleSort={(key) => toggleSort(key as SortKey)}
+        renderActions={(product: Product) => (
+          <ActionsMenu
+            onEdit={() => form.openEdit(product)}
+            onDelete={() => confirm.setDeleteTarget(product)}
+          />
+        )}
+        footerLabel="produtos"
+      />
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
 
       <ProductFormModal
         isOpen={form.isOpen}
