@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { useProducts } from '../../hooks/products/useProducts';
-import { useOrders } from '../../hooks/orders/useOrders';
-import { getOrderTotal } from '../../../../shared/types/order';
-import { DashboardCards } from './DashboardCards';
 import './styles.css';
+import { getOrderTotal } from '../../../../shared/types/order';
+import { useOrders } from '../../hooks/orders/useOrders';
+import { useProducts } from '../../hooks/products/useProducts';
+import { DashboardCards } from './DashboardCards';
 
 function formatBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', {
@@ -17,7 +17,9 @@ function formatDate(dateStr: string): string {
 }
 
 function formatShortMonth(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+  return new Date(dateStr)
+    .toLocaleDateString('pt-BR', { month: 'short' })
+    .replace('.', '');
 }
 
 export function DashboardPage() {
@@ -81,7 +83,10 @@ export function DashboardPage() {
     const map = new Map<string, number>();
     for (const order of completedOrders) {
       for (const item of order.items) {
-        map.set(item.productName, (map.get(item.productName) ?? 0) + item.quantity);
+        map.set(
+          item.productName,
+          (map.get(item.productName) ?? 0) + item.quantity,
+        );
       }
     }
     return Array.from(map.entries())
@@ -90,9 +95,8 @@ export function DashboardPage() {
       .map(([name, qty], i) => ({ rank: i + 1, name, qty }));
   }, [completedOrders]);
 
-  const topMaxQty = topProducts.length > 0
-    ? Math.max(...topProducts.map((p) => p.qty))
-    : 1;
+  const topMaxQty =
+    topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.qty)) : 1;
 
   const orderStatusData = useMemo(() => {
     const counts: Record<string, number> = {
@@ -105,10 +109,30 @@ export function DashboardPage() {
       counts[order.status]++;
     }
     return [
-      { status: 'pending', label: 'Pendentes', count: counts.pending, color: '#f59e0b' },
-      { status: 'in_progress', label: 'Em Andamento', count: counts.in_progress, color: '#3b82f6' },
-      { status: 'completed', label: 'Concluídos', count: counts.completed, color: '#2cba7a' },
-      { status: 'cancelled', label: 'Cancelados', count: counts.cancelled, color: '#ef4444' },
+      {
+        status: 'pending',
+        label: 'Pendentes',
+        count: counts.pending,
+        color: '#f59e0b',
+      },
+      {
+        status: 'in_progress',
+        label: 'Em Andamento',
+        count: counts.in_progress,
+        color: '#3b82f6',
+      },
+      {
+        status: 'completed',
+        label: 'Concluídos',
+        count: counts.completed,
+        color: '#2cba7a',
+      },
+      {
+        status: 'cancelled',
+        label: 'Cancelados',
+        count: counts.cancelled,
+        color: '#ef4444',
+      },
     ];
   }, [orders]);
 
@@ -154,7 +178,9 @@ export function DashboardPage() {
                   className="revenue-chart-bar"
                   style={{ height: `${Math.max(pct, 2)}%` }}
                 >
-                  <span className="revenue-chart-tooltip">{formatBRL(total)}</span>
+                  <span className="revenue-chart-tooltip">
+                    {formatBRL(total)}
+                  </span>
                 </div>
                 <span className="revenue-chart-label">
                   {formatShortMonth(month + '-01')}
@@ -224,7 +250,9 @@ export function DashboardPage() {
           <section className="dashboard-section">
             <h2>Estoque Crítico</h2>
             {lowStockProducts.length === 0 ? (
-              <p className="dashboard-empty">Nenhum produto com estoque baixo</p>
+              <p className="dashboard-empty">
+                Nenhum produto com estoque baixo
+              </p>
             ) : (
               <table className="dashboard-table">
                 <thead>

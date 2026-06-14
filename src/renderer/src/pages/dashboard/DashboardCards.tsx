@@ -86,7 +86,10 @@ export function DashboardCards({
     {
       label: 'Pedidos Pendentes',
       value: String(pendingOrders),
-      sub: pendingOrders === 1 ? 'aguardando processamento' : 'aguardando processamento',
+      sub:
+        pendingOrders === 1
+          ? 'aguardando processamento'
+          : 'aguardando processamento',
       color: '#f59e0b',
       icon: (
         <svg
@@ -106,7 +109,10 @@ export function DashboardCards({
     {
       label: 'Estoque Baixo',
       value: String(lowStockCount),
-      sub: lowStockCount === 1 ? 'produto abaixo do mínimo' : 'produtos abaixo do mínimo',
+      sub:
+        lowStockCount === 1
+          ? 'produto abaixo do mínimo'
+          : 'produtos abaixo do mínimo',
       color: '#ef4444',
       icon: (
         <svg
