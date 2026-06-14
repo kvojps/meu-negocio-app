@@ -37,6 +37,11 @@ export function ProductsPage() {
     return Array.from(unique).sort((a, b) => a.localeCompare(b, 'pt-BR'));
   }, [products]);
 
+  const lowStockCount = useMemo(
+    () => products.filter((p) => p.stock <= p.minStock).length,
+    [products],
+  );
+
   return (
     <div className="products-page">
       <div className="products-header">
@@ -53,6 +58,7 @@ export function ProductsPage() {
       <ProductFilters
         filters={filters}
         categories={categories}
+        lowStockCount={lowStockCount}
         onChange={setFilters}
       />
 

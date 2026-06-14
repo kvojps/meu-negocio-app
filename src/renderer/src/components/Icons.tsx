@@ -58,6 +58,40 @@ export function ArrowDownIcon({ size = 14 }: IconProps) {
   );
 }
 
+export function AlertTriangleIcon({ size = 16 }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.29 3.85999L1.82002 18C1.64539 18.3024 1.55299 18.6453 1.55201 18.9945C1.55103 19.3437 1.64149 19.6871 1.81445 19.9905C1.98741 20.2939 2.23712 20.5467 2.53873 20.7235C2.84034 20.9003 3.18282 20.9952 3.53202 21H20.468C20.8172 20.9952 21.1597 20.9003 21.4613 20.7235C21.7629 20.5467 22.0126 20.2939 22.1856 19.9905C22.3586 19.6871 22.449 19.3437 22.448 18.9945C22.4471 18.6453 22.3547 18.3024 22.18 18L13.71 3.85999C13.5318 3.56611 13.2807 3.32312 12.9812 3.15448C12.6817 2.98584 12.3438 2.89725 12 2.89725C11.6563 2.89725 11.3184 2.98584 11.0188 3.15448C10.7193 3.32312 10.4682 3.56611 10.29 3.85999Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 9V13"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 17H12.01"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function DeleteIcon({ size = 16 }: IconProps) {
   return (
     <svg
