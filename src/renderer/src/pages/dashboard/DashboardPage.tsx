@@ -1,9 +1,9 @@
+import { useOrders } from '@hooks/orders/useOrders';
+import { useProducts } from '@hooks/products/useProducts';
+import { getOrderTotal } from '@shared/types/order';
 import { useMemo } from 'react';
+import { DashboardCards } from './components/DashboardCards';
 import './styles.css';
-import { getOrderTotal } from '../../../../shared/types/order';
-import { useOrders } from '../../hooks/orders/useOrders';
-import { useProducts } from '../../hooks/products/useProducts';
-import { DashboardCards } from './DashboardCards';
 
 function formatBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', {

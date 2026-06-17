@@ -1,23 +1,20 @@
+import { ActionsMenu } from '@components/ActionsMenu';
+import { ConfirmDialog } from '@components/ConfirmDialog';
+import { DataTable } from '@components/DataTable';
+import type { Column } from '@components/DataTable';
+import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
+import { useOrderForm } from '@hooks/orders/useOrderForm';
+import type { OrderSortKey } from '@hooks/orders/useOrders';
+import { useOrders } from '@hooks/orders/useOrders';
+import { useProducts } from '@hooks/products/useProducts';
+import { usePagination } from '@hooks/use-pagination/usePagination';
+import type { Order, OrderStatus } from '@shared/types/order';
+import { ORDER_STATUS_LABELS, getOrderTotal } from '@shared/types/order';
 import { useMemo, useState } from 'react';
-import { ActionsMenu } from '../../components/ActionsMenu';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { DataTable } from '../../components/DataTable';
-import type { Column } from '../../components/DataTable';
+import { OrderFilters } from './components/OrderFilters';
+import { OrderFormModal } from './components/OrderFormModal';
+import { OrderViewModal } from './components/OrderViewModal';
 import './styles.css';
-import type { Order, OrderStatus } from '../../../../shared/types/order';
-import {
-  ORDER_STATUS_LABELS,
-  getOrderTotal,
-} from '../../../../shared/types/order';
-import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
-import { useOrderForm } from '../../hooks/orders/useOrderForm';
-import type { OrderSortKey } from '../../hooks/orders/useOrders';
-import { useOrders } from '../../hooks/orders/useOrders';
-import { useProducts } from '../../hooks/products/useProducts';
-import { usePagination } from '../../hooks/usePagination';
-import { OrderFilters } from './OrderFilters';
-import { OrderFormModal } from './OrderFormModal';
-import { OrderViewModal } from './OrderViewModal';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

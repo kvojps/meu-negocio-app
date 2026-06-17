@@ -1,9 +1,6 @@
-import { Modal } from '../../components/Modal';
-import type { Order } from '../../../../shared/types/order';
-import {
-  ORDER_STATUS_LABELS,
-  getOrderTotal,
-} from '../../../../shared/types/order';
+import { Modal } from '@components/Modal';
+import type { Order } from '@shared/types/order';
+import { ORDER_STATUS_LABELS, getOrderTotal } from '@shared/types/order';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

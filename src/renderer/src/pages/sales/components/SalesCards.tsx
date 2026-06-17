@@ -1,7 +1,7 @@
+import type { Order } from '@shared/types/order';
+import { getOrderTotal } from '@shared/types/order';
 import { useMemo } from 'react';
-import './sales-cards.css';
-import type { Order } from '../../../../shared/types/order';
-import { getOrderTotal } from '../../../../shared/types/order';
+import '../styles.css';
 
 interface SalesCardsProps {
   completedOrders: Order[];

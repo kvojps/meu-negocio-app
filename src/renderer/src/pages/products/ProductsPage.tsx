@@ -1,18 +1,18 @@
+import { ActionsMenu } from '@components/ActionsMenu';
+import { ConfirmDialog } from '@components/ConfirmDialog';
+import { DataTable } from '@components/DataTable';
+import type { Column } from '@components/DataTable';
+import { StockBadge } from '@components/StockBadge';
+import { useProductConfirm } from '@hooks/products/useProductConfirm';
+import { useProductForm } from '@hooks/products/useProductForm';
+import type { SortKey } from '@hooks/products/useProducts';
+import { useProducts } from '@hooks/products/useProducts';
+import { usePagination } from '@hooks/use-pagination/usePagination';
+import type { Product } from '@shared/types/product';
 import { useMemo, useState } from 'react';
-import { ActionsMenu } from '../../components/ActionsMenu';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { DataTable } from '../../components/DataTable';
-import type { Column } from '../../components/DataTable';
-import { StockBadge } from '../../components/StockBadge';
+import { ProductFilters } from './components/ProductFilters';
+import { ProductFormModal } from './components/ProductFormModal';
 import './styles.css';
-import type { Product } from '../../../../shared/types/product';
-import { useProductConfirm } from '../../hooks/products/useProductConfirm';
-import { useProductForm } from '../../hooks/products/useProductForm';
-import type { SortKey } from '../../hooks/products/useProducts';
-import { useProducts } from '../../hooks/products/useProducts';
-import { usePagination } from '../../hooks/usePagination';
-import { ProductFilters } from './ProductFilters';
-import { ProductFormModal } from './ProductFormModal';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

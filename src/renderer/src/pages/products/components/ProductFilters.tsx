@@ -1,5 +1,5 @@
-import { AlertTriangleIcon } from '../../components/Icons';
-import type { FilterState } from '../../hooks/products/useProducts';
+import { AlertTriangleIcon } from '@components/Icons';
+import type { FilterState } from '@hooks/products/useProducts';
 
 interface ProductFiltersProps {
   filters: FilterState;

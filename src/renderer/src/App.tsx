@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './routes';
-import { DashboardPage } from './pages/dashboard';
-import { HelpPage } from './pages/help';
-import { LogoutPage } from './pages/logout';
-import { OrdersPage } from './pages/orders';
-import { ProductsPage } from './pages/products';
-import { SalesPage } from './pages/sales';
-import { SettingsPage } from './pages/settings';
+import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { HelpPage } from './pages/help/HelpPage';
+import { LogoutPage } from './pages/logout/LogoutPage';
+import { OrdersPage } from './pages/orders/OrdersPage';
+import { ProductsPage } from './pages/products/ProductsPage';
+import { SalesPage } from './pages/sales/SalesPage';
+import { SettingsPage } from './pages/settings/SettingsPage';
 import { Sidebar } from './components/Sidebar';
 
 export function App() {

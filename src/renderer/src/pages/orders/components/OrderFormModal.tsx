@@ -1,7 +1,7 @@
-import { FormField } from '../../components/FormField';
-import { Modal } from '../../components/Modal';
-import type { Product } from '../../../../shared/types/product';
-import type { UseOrderFormReturn } from '../../hooks/orders/useOrderForm';
+import { FormField } from '@components/FormField';
+import { Modal } from '@components/Modal';
+import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
+import type { Product } from '@shared/types/product';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

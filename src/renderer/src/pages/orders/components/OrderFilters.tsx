@@ -1,9 +1,9 @@
+import type { OrderFilterState } from '@hooks/orders/useOrders';
+import type { OrderStatus } from '@shared/types/order';
+import { ORDER_STATUS_LABELS } from '@shared/types/order';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import type { OrderStatus } from '../../../../shared/types/order';
-import { ORDER_STATUS_LABELS } from '../../../../shared/types/order';
-import type { OrderFilterState } from '../../hooks/orders/useOrders';
 
 registerLocale('pt-BR', ptBR);
 

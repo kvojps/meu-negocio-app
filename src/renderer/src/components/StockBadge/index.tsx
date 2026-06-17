@@ -1,4 +1,4 @@
-import { ArrowDownIcon } from './Icons';
+import { ArrowDownIcon } from '../Icons';
 
 interface StockBadgeProps {
   stock: number;

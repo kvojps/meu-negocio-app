@@ -1,6 +1,6 @@
+import { Pagination } from '@components/Pagination';
+import { SortIndicator } from '@components/SortIndicator';
 import './styles.css';
-import { Pagination } from '../Pagination';
-import { SortIndicator } from '../SortIndicator';
 
 export interface Column<T> {
   key: string;

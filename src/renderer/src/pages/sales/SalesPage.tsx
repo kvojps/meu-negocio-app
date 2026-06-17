@@ -1,18 +1,18 @@
+import { ActionsMenu } from '@components/ActionsMenu';
+import { ConfirmDialog } from '@components/ConfirmDialog';
+import { DataTable } from '@components/DataTable';
+import type { Column } from '@components/DataTable';
+import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
+import type { OrderSortKey } from '@hooks/orders/useOrders';
+import { useOrders } from '@hooks/orders/useOrders';
+import { usePagination } from '@hooks/use-pagination/usePagination';
+import type { Order } from '@shared/types/order';
+import { getOrderTotal } from '@shared/types/order';
 import { useMemo, useState } from 'react';
-import { ActionsMenu } from '../../components/ActionsMenu';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { DataTable } from '../../components/DataTable';
-import type { Column } from '../../components/DataTable';
+import { OrderFilters } from '../orders/components/OrderFilters';
+import { OrderViewModal } from '../orders/components/OrderViewModal';
+import { SalesCards } from './components/SalesCards';
 import '../orders/styles.css';
-import type { Order } from '../../../../shared/types/order';
-import { getOrderTotal } from '../../../../shared/types/order';
-import { useOrderConfirm } from '../../hooks/orders/useOrderConfirm';
-import type { OrderSortKey } from '../../hooks/orders/useOrders';
-import { useOrders } from '../../hooks/orders/useOrders';
-import { usePagination } from '../../hooks/usePagination';
-import { OrderFilters } from '../orders/OrderFilters';
-import { OrderViewModal } from '../orders/OrderViewModal';
-import { SalesCards } from './SalesCards';
 
 export function SalesPage() {
   const {

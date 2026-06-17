@@ -1,5 +1,5 @@
+import { useSettings } from '@hooks/settings/useSettings';
 import './styles.css';
-import { useSettings } from '../../hooks/settings/useSettings';
 
 const APP_VERSION = '1.0.0';
 
