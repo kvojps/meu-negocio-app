@@ -111,7 +111,9 @@ const statuses: Order['status'][] = [
 export const mockOrders: Order[] = Array.from({ length: 58 }, (_, i) => {
   const createdAt = daysAgo(58 - i);
   const status: Order['status'] =
-    i < 30 ? 'completed' : statuses[Math.floor(Math.random() * statuses.length)];
+    i < 30
+      ? 'completed'
+      : statuses[Math.floor(Math.random() * statuses.length)];
   return {
     id: crypto.randomUUID(),
     customerName: names[i],
