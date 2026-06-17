@@ -1,4 +1,5 @@
 import './styles.css';
+import { Pagination } from '../Pagination';
 import { SortIndicator } from '../SortIndicator';
 
 export interface Column<T> {
@@ -17,6 +18,11 @@ interface DataTableProps<T> {
   onToggleSort?: (key: string) => void;
   renderActions?: (item: T) => React.ReactNode;
   footerLabel: string;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 export function DataTable<T>({
@@ -28,6 +34,7 @@ export function DataTable<T>({
   onToggleSort,
   renderActions,
   footerLabel,
+  pagination,
 }: DataTableProps<T>) {
   return (
     <div className="data-table-card">
@@ -77,6 +84,13 @@ export function DataTable<T>({
           ? `Mostrando ${start + 1}–${start + items.length} de ${totalCount} ${footerLabel}`
           : `Mostrando 0 de 0 ${footerLabel}`}
       </div>
+      {pagination && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={pagination.onPageChange}
+        />
+      )}
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { ActionsMenu } from '../../components/ActionsMenu';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { DataTable } from '../../components/DataTable';
 import type { Column } from '../../components/DataTable';
-import { Pagination } from '../../components/Pagination';
 import { StockBadge } from '../../components/StockBadge';
 import './styles.css';
 import type { Product } from '../../../../shared/types/product';
@@ -132,12 +131,7 @@ export function ProductsPage() {
           />
         )}
         footerLabel="produtos"
-      />
-
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
+        pagination={{ currentPage: page, totalPages, onPageChange: setPage }}
       />
 
       <ProductFormModal

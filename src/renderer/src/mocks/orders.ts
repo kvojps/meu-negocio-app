@@ -28,6 +28,44 @@ const names = [
   'Fernanda Castro',
   'Rodrigo Moreira',
   'Vanessa Araújo',
+  'Bruno Teixeira',
+  'Isabela Campos',
+  'Marcelo Dias',
+  'Gabriela Freitas',
+  'André Cardoso',
+  'Tatiana Monteiro',
+  'Felipe Peixoto',
+  'Renata Gusmão',
+  'Leonardo Pires',
+  'Cíntia Viana',
+  'Diego Bastos',
+  'Priscila Lopes',
+  'Alexandre Guerra',
+  'Beatriz Alencar',
+  'Henrique Fogaça',
+  'Michele Prado',
+  'Otávio Rezende',
+  'Bianca Siqueira',
+  'Vitor Valadares',
+  'Letícia Jordão',
+  'Samuel Beltrão',
+  'Paola Marques',
+  'Igor Madeira',
+  'Sofia Ouriques',
+  'Caio Noronha',
+  'Manuela Bittencourt',
+  'Renan Chaves',
+  'Carolina Salgado',
+  'Murilo Vergara',
+  'Jéssica Toledo',
+  'Danilo Quadros',
+  'Elisa Ximenes',
+  'Rui Campelo',
+  'Tainá Figueiró',
+  'Nelson Palhares',
+  'Stella Arantes',
+  'Geraldo Neto',
+  'Adriana Marcondes',
 ];
 
 const itemsPool = [
@@ -70,12 +108,14 @@ const statuses: Order['status'][] = [
   'cancelled',
 ];
 
-export const mockOrders: Order[] = Array.from({ length: 20 }, (_, i) => {
-  const createdAt = daysAgo(20 - i);
+export const mockOrders: Order[] = Array.from({ length: 58 }, (_, i) => {
+  const createdAt = daysAgo(58 - i);
+  const status: Order['status'] =
+    i < 30 ? 'completed' : statuses[Math.floor(Math.random() * statuses.length)];
   return {
     id: crypto.randomUUID(),
     customerName: names[i],
-    status: statuses[Math.floor(Math.random() * statuses.length)],
+    status,
     items: pickItems(),
     createdAt,
     updatedAt: createdAt,
