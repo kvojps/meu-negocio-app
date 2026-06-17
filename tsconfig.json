@@ -12,13 +12,12 @@
     "jsx": "react-jsx",
     "strict": true,
     "types": ["node"],
-    "baseUrl": "src/renderer/src",
     "paths": {
-      "@shared/*": ["../../shared/*"],
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./pages/*"],
-      "@hooks/*": ["./hooks/*"],
-      "@assets/*": ["./assets/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@components/*": ["./src/renderer/src/components/*"],
+      "@pages/*": ["./src/renderer/src/pages/*"],
+      "@hooks/*": ["./src/renderer/src/hooks/*"],
+      "@assets/*": ["./src/renderer/src/assets/*"]
     }
   },
   "include": ["src", "electron.vite.config.ts"]
