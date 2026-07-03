@@ -1,7 +1,6 @@
 import { BrowserWindow, app } from 'electron';
 import path from 'node:path';
 import { initDb } from './db/connection';
-import { seedIfEmpty } from './db/seed';
 import { registerIpcHandlers } from './ipc/registerIpc';
 
 function createWindow() {
@@ -29,7 +28,6 @@ function createWindow() {
 
 app.whenReady().then(() => {
   const db = initDb();
-  seedIfEmpty(db);
   registerIpcHandlers(db);
 
   createWindow();
