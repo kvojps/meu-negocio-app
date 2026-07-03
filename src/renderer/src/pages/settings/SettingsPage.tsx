@@ -1,8 +1,15 @@
+import { ConfirmDialog } from '@components/ConfirmDialog';
 import { FormField } from '@components/FormField';
 import { Input } from '@components/FormField/Input';
 import { Textarea } from '@components/FormField/Textarea';
-import { CheckIcon, SettingIcon } from '@components/Icons';
+import {
+  CheckIcon,
+  DownloadIcon,
+  SettingIcon,
+  UploadIcon,
+} from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
+import { useDataTransfer } from '@hooks/settings/useDataTransfer';
 import { useSettings } from '@hooks/settings/useSettings';
 import './styles.css';
 
@@ -10,6 +17,15 @@ const APP_VERSION = '1.0.0';
 
 export function SettingsPage() {
   const { settings, updateField, persist, saved } = useSettings();
+  const {
+    exporting,
+    importing,
+    confirmOpen,
+    handleExport,
+    requestImport,
+    cancelImport,
+    confirmImport,
+  } = useDataTransfer();
 
   return (
     <div className="settings">
@@ -80,6 +96,50 @@ export function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <div className="settings-section">
+        <h2>Exportar e Importar Dados</h2>
+
+        <p className="settings-data-hint">
+          Exporte todos os produtos, pedidos e dados da empresa para um arquivo
+          de backup, ou importe um arquivo existente para restaurar os dados.
+        </p>
+
+        <div className="settings-data-actions">
+          <button
+            className="settings-btn settings-btn--primary"
+            onClick={handleExport}
+            disabled={exporting}
+            type="button"
+          >
+            <DownloadIcon size={16} />
+            {exporting ? 'Exportando...' : 'Exportar Dados'}
+          </button>
+
+          <button
+            className="settings-btn settings-btn--secondary"
+            onClick={requestImport}
+            disabled={importing}
+            type="button"
+          >
+            <UploadIcon size={16} />
+            {importing ? 'Importando...' : 'Importar Dados'}
+          </button>
+        </div>
+      </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Importar dados"
+        onConfirm={confirmImport}
+        onCancel={cancelImport}
+        confirmLabel="Importar"
+        danger
+      >
+        Importar um arquivo de backup substituirá todos os produtos, pedidos e
+        dados da empresa atuais. Essa ação não pode ser desfeita. Deseja
+        continuar?
+      </ConfirmDialog>
 
       <div className="settings-section">
         <h2>Sobre</h2>

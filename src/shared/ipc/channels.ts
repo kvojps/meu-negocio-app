@@ -10,4 +10,6 @@ export const IPC_CHANNELS = {
   ordersDelete: 'orders:delete',
   settingsGet: 'settings:get',
   settingsUpdate: 'settings:update',
+  dataExport: 'data:export',
+  dataImport: 'data:import',
 } as const;

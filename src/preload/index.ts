@@ -36,6 +36,10 @@ const api: ElectronApi = {
     update: (data: CompanySettings) =>
       ipcRenderer.invoke(IPC_CHANNELS.settingsUpdate, data),
   },
+  data: {
+    export: () => ipcRenderer.invoke(IPC_CHANNELS.dataExport),
+    import: () => ipcRenderer.invoke(IPC_CHANNELS.dataImport),
+  },
 };
 
 contextBridge.exposeInMainWorld('api', api);

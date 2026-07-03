@@ -18,8 +18,11 @@ import {
   updateProduct,
 } from '../db/productsRepository';
 import { getSettings, updateSettings } from '../db/settingsRepository';
+import { registerBackupHandlers } from './backupHandlers';
 
 export function registerIpcHandlers(db: Database.Database): void {
+  registerBackupHandlers(db);
+
   ipcMain.handle(IPC_CHANNELS.productsGetAll, () => getAllProducts(db));
   ipcMain.handle(
     IPC_CHANNELS.productsAdd,
