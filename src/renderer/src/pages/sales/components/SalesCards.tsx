@@ -14,32 +14,6 @@ function formatBRL(value: number): string {
   }).format(value);
 }
 
-function getTodayISO(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function getMostSoldProduct(orders: Order[]): string {
-  const map = new Map<string, number>();
-  for (const order of orders) {
-    for (const item of order.items) {
-      map.set(
-        item.productName,
-        (map.get(item.productName) ?? 0) + item.quantity,
-      );
-    }
-  }
-  let best = '';
-  let bestQty = 0;
-  for (const [name, qty] of map) {
-    if (qty > bestQty) {
-      bestQty = qty;
-      best = name;
-    }
-  }
-  return best;
-}
-
 export function SalesCards({ completedOrders }: SalesCardsProps) {
   const cards = useMemo(() => {
     const totalRevenue = completedOrders.reduce(
@@ -52,11 +26,6 @@ export function SalesCards({ completedOrders }: SalesCardsProps) {
     );
     const totalSales = completedOrders.length;
     const avgTicket = totalSales > 0 ? totalRevenue / totalSales : 0;
-    const today = getTodayISO();
-    const todaySales = completedOrders.filter(
-      (o) => o.createdAt.slice(0, 10) === today,
-    ).length;
-    const topProduct = getMostSoldProduct(completedOrders);
 
     return [
       {
@@ -147,46 +116,6 @@ export function SalesCards({ completedOrders }: SalesCardsProps) {
           </svg>
         ),
         color: '#f59e0b',
-      },
-      {
-        label: 'Vendas Hoje',
-        value: String(todaySales),
-        sub: todaySales === 1 ? 'venda hoje' : 'vendas hoje',
-        icon: (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
-              fill="currentColor"
-            />
-          </svg>
-        ),
-        color: '#8b5cf6',
-      },
-      {
-        label: 'Produto Mais Vendido',
-        value: topProduct || '—',
-        sub: topProduct ? 'em quantidade' : 'nenhuma venda',
-        icon: (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17.21 9l-4.38-6.56c-.19-.28-.51-.44-.83-.44s-.64.16-.83.44L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1h-4.79zM9 9l3-4.5L15 9H9zm3 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
-              fill="currentColor"
-            />
-          </svg>
-        ),
-        color: '#ef4444',
       },
     ];
   }, [completedOrders]);
