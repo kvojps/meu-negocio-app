@@ -21,12 +21,12 @@ export type UseOrderConfirmReturn = {
   confirmTarget: ConfirmTarget | null;
   setConfirmTarget: (target: ConfirmTarget | null) => void;
   buildProps: () => ConfirmProps;
-  handleAction: () => void;
+  handleAction: () => Promise<void>;
 };
 
 export function useOrderConfirm(
-  setOrderStatus: (id: string, status: OrderStatus) => void,
-  deleteOrder: (id: string) => void,
+  setOrderStatus: (id: string, status: OrderStatus) => Promise<void>,
+  deleteOrder: (id: string) => Promise<void>,
 ): UseOrderConfirmReturn {
   const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(
     null,
@@ -79,32 +79,33 @@ export function useOrderConfirm(
     }
   }
 
-  function handleAction() {
+  async function handleAction() {
     if (!confirmTarget) return;
 
     const { type, order } = confirmTarget;
 
     switch (type) {
       case 'advance':
-        if (order.status === 'pending') setOrderStatus(order.id, 'in_progress');
+        if (order.status === 'pending')
+          await setOrderStatus(order.id, 'in_progress');
         else if (order.status === 'in_progress')
-          setOrderStatus(order.id, 'completed');
+          await setOrderStatus(order.id, 'completed');
         showToast('Status do pedido atualizado.');
         break;
       case 'cancel':
-        setOrderStatus(order.id, 'cancelled');
+        await setOrderStatus(order.id, 'cancelled');
         showToast('Pedido cancelado.', 'info');
         break;
       case 'reopen':
-        setOrderStatus(order.id, 'in_progress');
+        await setOrderStatus(order.id, 'in_progress');
         showToast('Pedido reaberto.');
         break;
       case 'delete':
-        deleteOrder(order.id);
+        await deleteOrder(order.id);
         showToast('Pedido excluído.', 'info');
         break;
       case 'status_change':
-        setOrderStatus(order.id, confirmTarget.newStatus!);
+        await setOrderStatus(order.id, confirmTarget.newStatus!);
         showToast('Status do pedido atualizado.');
         break;
     }

@@ -13,11 +13,13 @@ import {
 
 export function useOrderForm(
   products: Product[],
-  addOrder: (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => void,
+  addOrder: (
+    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => Promise<Order>,
   updateOrder?: (
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
-  ) => void,
+  ) => Promise<void>,
 ) {
   const [isOpen, setIsOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Order | null>(null);
@@ -109,10 +111,10 @@ export function useOrderForm(
       };
 
       if (editTarget && updateOrder) {
-        updateOrder(editTarget.id, data);
+        await updateOrder(editTarget.id, data);
         showToast('Pedido atualizado com sucesso.');
       } else {
-        addOrder({ ...data, status: 'pending' });
+        await addOrder({ ...data, status: 'pending' });
         showToast('Pedido criado com sucesso.');
       }
 

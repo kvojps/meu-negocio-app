@@ -1,90 +1,75 @@
 import type { Order, OrderStatus } from '@shared/types/order';
-import { createContext, useContext, useMemo, useState } from 'react';
-import { mockOrders } from '../mocks/orders';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useProductsContext } from './ProductsContext';
 
 export interface OrdersContextValue {
   orders: Order[];
-  addOrder: (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => Order;
+  isLoading: boolean;
+  addOrder: (
+    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => Promise<Order>;
   updateOrder: (
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
-  ) => void;
-  setOrderStatus: (id: string, newStatus: OrderStatus) => void;
-  deleteOrder: (id: string) => void;
+  ) => Promise<void>;
+  setOrderStatus: (id: string, newStatus: OrderStatus) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
 }
 
 const OrdersContext = createContext<OrdersContextValue | null>(null);
 
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
-  const { adjustStock } = useProductsContext();
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const { refreshProducts } = useProductsContext();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  function addOrder(data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) {
-    const now = new Date().toISOString();
-    const order: Order = {
-      ...data,
-      id: crypto.randomUUID(),
-      createdAt: now,
-      updatedAt: now,
-    };
+  useEffect(() => {
+    window.api.orders
+      .getAll()
+      .then(setOrders)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  async function addOrder(data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) {
+    const order = await window.api.orders.add(data);
     setOrders((prev) => [...prev, order]);
     return order;
   }
 
-  function setOrderStatus(id: string, newStatus: OrderStatus) {
-    setOrders((prev) =>
-      prev.map((order) => {
-        if (order.id !== id) return order;
-
-        const wasCompleted = order.status === 'completed';
-        const isNowCompleted = newStatus === 'completed';
-
-        if (wasCompleted && !isNowCompleted) {
-          order.items.forEach((item) =>
-            adjustStock(item.productId, item.quantity),
-          );
-        } else if (!wasCompleted && isNowCompleted) {
-          order.items.forEach((item) =>
-            adjustStock(item.productId, -item.quantity),
-          );
-        }
-
-        return {
-          ...order,
-          status: newStatus,
-          updatedAt: new Date().toISOString(),
-        };
-      }),
+  async function setOrderStatus(id: string, newStatus: OrderStatus) {
+    const { order, updatedProducts } = await window.api.orders.setStatus(
+      id,
+      newStatus,
     );
+    setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
+    if (updatedProducts.length > 0) {
+      await refreshProducts();
+    }
   }
 
-  function updateOrder(
+  async function updateOrder(
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
   ) {
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === id
-          ? { ...order, ...data, updatedAt: new Date().toISOString() }
-          : order,
-      ),
-    );
+    const updated = await window.api.orders.update(id, data);
+    setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 
-  function deleteOrder(id: string) {
+  async function deleteOrder(id: string) {
+    await window.api.orders.delete(id);
     setOrders((prev) => prev.filter((o) => o.id !== id));
   }
 
   const value = useMemo<OrdersContextValue>(
     () => ({
       orders,
+      isLoading,
       addOrder,
       updateOrder,
       setOrderStatus,
       deleteOrder,
     }),
-    [orders],
+    [orders, isLoading],
   );
 
   return (

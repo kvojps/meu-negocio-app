@@ -10,8 +10,10 @@ import {
 } from './productSchema';
 
 export function useProductForm(
-  addProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void,
-  updateProduct: (id: string, data: Partial<Product>) => void,
+  addProduct: (
+    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => Promise<Product>,
+  updateProduct: (id: string, data: Partial<Product>) => Promise<void>,
 ) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -65,10 +67,10 @@ export function useProductForm(
       };
 
       if (editingId) {
-        updateProduct(editingId, data);
+        await updateProduct(editingId, data);
         showToast('Produto atualizado com sucesso.');
       } else {
-        addProduct(data);
+        await addProduct(data);
         showToast('Produto criado com sucesso.');
       }
 

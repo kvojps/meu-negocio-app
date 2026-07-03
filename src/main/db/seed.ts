@@ -1,13 +1,7 @@
-import type { Product } from '@shared/types/product';
+import type Database from 'better-sqlite3';
+import { randomUUID } from 'node:crypto';
 
-const now = new Date();
-const daysAgo = (d: number) => {
-  const date = new Date(now);
-  date.setDate(date.getDate() - d);
-  return date.toISOString();
-};
-
-type ProductSeed = {
+interface ProductSeed {
   name: string;
   description: string;
   category: string;
@@ -15,9 +9,9 @@ type ProductSeed = {
   costPrice: number;
   salePrice: number;
   minStock: number;
-};
+}
 
-const seeds: ProductSeed[] = [
+const PRODUCT_SEEDS: ProductSeed[] = [
   {
     name: 'Camiseta Algodão',
     description: 'Camiseta branca em algodão premium, tamanho M',
@@ -200,10 +194,148 @@ const seeds: ProductSeed[] = [
   },
 ];
 
-export const mockProducts: Product[] = seeds.map((seed, i) => ({
-  id: crypto.randomUUID(),
-  ...seed,
-  stock: Math.floor(Math.random() * 150) + 1,
-  createdAt: daysAgo(120 - i * 6),
-  updatedAt: daysAgo(Math.floor(Math.random() * 30)),
-}));
+const CUSTOMER_NAMES = [
+  'João Silva',
+  'Maria Oliveira',
+  'Carlos Santos',
+  'Ana Costa',
+  'Pedro Almeida',
+  'Lucia Ferreira',
+  'Rafael Souza',
+  'Juliana Lima',
+  'Fernando Rocha',
+  'Patrícia Gomes',
+  'Lucas Martins',
+  'Camila Barbosa',
+  'Thiago Ribeiro',
+  'Amanda Carvalho',
+  'Gustavo Nunes',
+  'Larissa Dias',
+  'Eduardo Azevedo',
+  'Fernanda Castro',
+  'Rodrigo Moreira',
+  'Vanessa Araújo',
+  'Bruno Teixeira',
+  'Isabela Campos',
+  'Marcelo Dias',
+  'Gabriela Freitas',
+  'André Cardoso',
+  'Tatiana Monteiro',
+  'Felipe Peixoto',
+  'Renata Gusmão',
+  'Leonardo Pires',
+  'Cíntia Viana',
+  'Diego Bastos',
+  'Priscila Lopes',
+  'Alexandre Guerra',
+  'Beatriz Alencar',
+  'Henrique Fogaça',
+  'Michele Prado',
+  'Otávio Rezende',
+  'Bianca Siqueira',
+  'Vitor Valadares',
+  'Letícia Jordão',
+  'Samuel Beltrão',
+  'Paola Marques',
+  'Igor Madeira',
+  'Sofia Ouriques',
+  'Caio Noronha',
+  'Manuela Bittencourt',
+  'Renan Chaves',
+  'Carolina Salgado',
+  'Murilo Vergara',
+  'Jéssica Toledo',
+  'Danilo Quadros',
+  'Elisa Ximenes',
+  'Rui Campelo',
+  'Tainá Figueiró',
+  'Nelson Palhares',
+  'Stella Arantes',
+  'Geraldo Neto',
+  'Adriana Marcondes',
+];
+
+const ORDER_STATUSES = ['pending', 'in_progress', 'completed', 'cancelled'];
+
+function daysAgo(d: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() - d);
+  return date.toISOString();
+}
+
+export function seedIfEmpty(db: Database.Database): void {
+  const productCount = (
+    db.prepare('SELECT COUNT(*) AS count FROM products').get() as {
+      count: number;
+    }
+  ).count;
+  if (productCount > 0) return;
+
+  const insertProduct = db.prepare(`
+    INSERT INTO products (id, name, description, category, supplier, cost_price, sale_price, stock, min_stock, created_at, updated_at)
+    VALUES (@id, @name, @description, @category, @supplier, @costPrice, @salePrice, @stock, @minStock, @createdAt, @updatedAt)
+  `);
+
+  const seededProducts = PRODUCT_SEEDS.map((seed, i) => ({
+    id: randomUUID(),
+    ...seed,
+    stock: Math.floor(Math.random() * 150) + 1,
+    createdAt: daysAgo(120 - i * 6),
+    updatedAt: daysAgo(Math.floor(Math.random() * 30)),
+  }));
+
+  const insertOrder = db.prepare(`
+    INSERT INTO orders (id, customer_name, status, manual_total, created_at, updated_at)
+    VALUES (@id, @customerName, @status, NULL, @createdAt, @updatedAt)
+  `);
+
+  const insertOrderItem = db.prepare(`
+    INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price)
+    VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice)
+  `);
+
+  const seedTransaction = db.transaction(() => {
+    for (const product of seededProducts) {
+      insertProduct.run(product);
+    }
+
+    for (let i = 0; i < CUSTOMER_NAMES.length; i++) {
+      const createdAt = daysAgo(CUSTOMER_NAMES.length - i);
+      const status =
+        i < 30
+          ? 'completed'
+          : ORDER_STATUSES[Math.floor(Math.random() * ORDER_STATUSES.length)];
+      const orderId = randomUUID();
+
+      insertOrder.run({
+        id: orderId,
+        customerName: CUSTOMER_NAMES[i],
+        status,
+        createdAt,
+        updatedAt: createdAt,
+      });
+
+      const itemCount = Math.floor(Math.random() * 3) + 1;
+      const picked = new Set<number>();
+      for (let n = 0; n < itemCount; n++) {
+        let idx: number;
+        do {
+          idx = Math.floor(Math.random() * seededProducts.length);
+        } while (picked.has(idx));
+        picked.add(idx);
+        const product = seededProducts[idx];
+
+        insertOrderItem.run({
+          id: randomUUID(),
+          orderId,
+          productId: product.id,
+          productName: product.name,
+          quantity: Math.floor(Math.random() * 8) + 1,
+          unitPrice: product.salePrice,
+        });
+      }
+    }
+  });
+
+  seedTransaction();
+}

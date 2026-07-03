@@ -1,46 +1,48 @@
 import type { Product } from '@shared/types/product';
-import { createContext, useContext, useMemo, useState } from 'react';
-import { mockProducts } from '../mocks/products';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 export interface ProductsContextValue {
   products: Product[];
+  isLoading: boolean;
   addProduct: (
     data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Product;
-  updateProduct: (id: string, data: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
+  ) => Promise<Product>;
+  updateProduct: (id: string, data: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Product | undefined;
-  adjustStock: (productId: string, delta: number) => void;
+  refreshProducts: () => Promise<void>;
 }
 
 const ProductsContext = createContext<ProductsContextValue | null>(null);
 
 export function ProductsProvider({ children }: { children: React.ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  function addProduct(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) {
-    const now = new Date().toISOString();
-    const product: Product = {
-      ...data,
-      id: crypto.randomUUID(),
-      createdAt: now,
-      updatedAt: now,
-    };
+  async function refreshProducts() {
+    const all = await window.api.products.getAll();
+    setProducts(all);
+  }
+
+  useEffect(() => {
+    refreshProducts().finally(() => setIsLoading(false));
+  }, []);
+
+  async function addProduct(
+    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
+  ) {
+    const product = await window.api.products.add(data);
     setProducts((prev) => [...prev, product]);
     return product;
   }
 
-  function updateProduct(id: string, data: Partial<Product>) {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? { ...p, ...data, updatedAt: new Date().toISOString() }
-          : p,
-      ),
-    );
+  async function updateProduct(id: string, data: Partial<Product>) {
+    const updated = await window.api.products.update(id, data);
+    setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
   }
 
-  function deleteProduct(id: string) {
+  async function deleteProduct(id: string) {
+    await window.api.products.delete(id);
     setProducts((prev) => prev.filter((p) => p.id !== id));
   }
 
@@ -48,30 +50,17 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     return products.find((p) => p.id === id);
   }
 
-  function adjustStock(productId: string, delta: number) {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === productId
-          ? {
-              ...p,
-              stock: Math.max(0, p.stock + delta),
-              updatedAt: new Date().toISOString(),
-            }
-          : p,
-      ),
-    );
-  }
-
   const value = useMemo<ProductsContextValue>(
     () => ({
       products,
+      isLoading,
       addProduct,
       updateProduct,
       deleteProduct,
       getProductById,
-      adjustStock,
+      refreshProducts,
     }),
-    [products],
+    [products, isLoading],
   );
 
   return (

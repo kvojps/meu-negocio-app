@@ -3,8 +3,20 @@ import { defineConfig } from 'electron-vite';
 import path from 'path';
 
 export default defineConfig({
-  main: {},
-  preload: {},
+  main: {
+    resolve: {
+      alias: {
+        '@shared': path.resolve(__dirname, 'src/shared'),
+      },
+    },
+  },
+  preload: {
+    resolve: {
+      alias: {
+        '@shared': path.resolve(__dirname, 'src/shared'),
+      },
+    },
+  },
   renderer: {
     plugins: [react()],
     resolve: {

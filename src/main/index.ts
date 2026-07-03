@@ -1,5 +1,8 @@
 import { BrowserWindow, app } from 'electron';
 import path from 'node:path';
+import { initDb } from './db/connection';
+import { seedIfEmpty } from './db/seed';
+import { registerIpcHandlers } from './ipc/registerIpc';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -8,7 +11,7 @@ function createWindow() {
     minWidth: 960,
     minHeight: 640,
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.mjs'),
+      preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -25,6 +28,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  const db = initDb();
+  seedIfEmpty(db);
+  registerIpcHandlers(db);
+
   createWindow();
 
   app.on('activate', () => {
