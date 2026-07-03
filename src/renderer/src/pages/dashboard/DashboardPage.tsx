@@ -4,7 +4,9 @@ import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
 import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 import { useMemo } from 'react';
+import { OrderFilters } from '../orders/components/OrderFilters';
 import { DashboardCards } from './components/DashboardCards';
+import '../orders/styles.css';
 import './styles.css';
 
 function formatBRL(value: number): string {
@@ -26,7 +28,7 @@ function formatShortMonth(dateStr: string): string {
 
 export function DashboardPage() {
   const { products } = useProducts();
-  const { orders } = useOrders();
+  const { filtered: orders, filters, setFilters } = useOrders();
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -172,6 +174,14 @@ export function DashboardPage() {
         icon={<DashboardIcon />}
         title="Dashboard"
         subtitle="Visão geral do seu negócio"
+      />
+
+      <OrderFilters
+        filters={filters}
+        onChange={setFilters}
+        hideSearch
+        hideStatusFilter
+        showDateFilter
       />
 
       <DashboardCards

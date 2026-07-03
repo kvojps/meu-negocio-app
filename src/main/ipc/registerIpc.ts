@@ -3,7 +3,7 @@ import type { Order, OrderStatus } from '@shared/types/order';
 import type { Product } from '@shared/types/product';
 import type { CompanySettings } from '@shared/types/settings';
 import type Database from 'better-sqlite3';
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import {
   addOrder,
   deleteOrder,
@@ -64,4 +64,6 @@ export function registerIpcHandlers(db: Database.Database): void {
   ipcMain.handle(IPC_CHANNELS.settingsUpdate, (_event, data: CompanySettings) =>
     updateSettings(db, data),
   );
+
+  ipcMain.handle(IPC_CHANNELS.appQuit, () => app.quit());
 }

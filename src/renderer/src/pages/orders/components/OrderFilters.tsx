@@ -54,6 +54,7 @@ interface OrderFiltersProps {
   onChange: (filters: OrderFilterState) => void;
   hideStatuses?: OrderStatus[];
   hideStatusFilter?: boolean;
+  hideSearch?: boolean;
   showDateFilter?: boolean;
 }
 
@@ -62,6 +63,7 @@ export function OrderFilters({
   onChange,
   hideStatuses,
   hideStatusFilter,
+  hideSearch,
   showDateFilter,
 }: OrderFiltersProps) {
   const statusOptions = hideStatuses
@@ -70,18 +72,20 @@ export function OrderFilters({
 
   return (
     <div className="orders-filters">
-      <div className="search-input-wrap">
-        <span className="search-input-icon">
-          <SearchIcon size={16} />
-        </span>
-        <input
-          className="orders-filters-search"
-          placeholder="Buscar cliente..."
-          type="text"
-          value={filters.search}
-          onChange={(e) => onChange({ ...filters, search: e.target.value })}
-        />
-      </div>
+      {!hideSearch && (
+        <div className="search-input-wrap">
+          <span className="search-input-icon">
+            <SearchIcon size={16} />
+          </span>
+          <input
+            className="orders-filters-search"
+            placeholder="Buscar cliente..."
+            type="text"
+            value={filters.search}
+            onChange={(e) => onChange({ ...filters, search: e.target.value })}
+          />
+        </div>
+      )}
       {!hideStatusFilter && (
         <select
           className="orders-filters-select"

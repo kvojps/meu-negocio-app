@@ -12,4 +12,5 @@ export const IPC_CHANNELS = {
   settingsUpdate: 'settings:update',
   dataExport: 'data:export',
   dataImport: 'data:import',
+  appQuit: 'app:quit',
 } as const;

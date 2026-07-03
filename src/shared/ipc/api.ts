@@ -54,9 +54,14 @@ export interface DataApi {
   import: () => Promise<ImportResult>;
 }
 
+export interface AppApi {
+  quit: () => Promise<void>;
+}
+
 export interface ElectronApi {
   products: ProductsApi;
   orders: OrdersApi;
   settings: SettingsApi;
   data: DataApi;
+  app: AppApi;
 }

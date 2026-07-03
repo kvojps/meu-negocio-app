@@ -40,6 +40,9 @@ const api: ElectronApi = {
     export: () => ipcRenderer.invoke(IPC_CHANNELS.dataExport),
     import: () => ipcRenderer.invoke(IPC_CHANNELS.dataImport),
   },
+  app: {
+    quit: () => ipcRenderer.invoke(IPC_CHANNELS.appQuit),
+  },
 };
 
 contextBridge.exposeInMainWorld('api', api);
