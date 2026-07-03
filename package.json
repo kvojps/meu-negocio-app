@@ -14,12 +14,15 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
+    "@hookform/resolvers": "^5.4.0",
     "date-fns": "^4.4.0",
     "electron": "^35.0.0",
     "react": "^19.0.0",
     "react-datepicker": "^9.1.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.17.0"
+    "react-hook-form": "^7.80.0",
+    "react-router-dom": "^7.17.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",

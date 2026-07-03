@@ -1,4 +1,6 @@
 import { FormField } from '@components/FormField';
+import { Input } from '@components/FormField/Input';
+import { Select } from '@components/FormField/Select';
 import { Modal } from '@components/Modal';
 import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
 import type { Product } from '@shared/types/product';
@@ -10,44 +12,70 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 interface OrderFormModalProps {
-  form: UseOrderFormReturn;
+  formState: UseOrderFormReturn;
   products: Product[];
 }
 
-export function OrderFormModal({ form, products }: OrderFormModalProps) {
+export function OrderFormModal({ formState, products }: OrderFormModalProps) {
+  const {
+    isOpen,
+    isEditing,
+    isSaving,
+    form,
+    fields,
+    displayTotal,
+    close,
+    onSubmit,
+    selectProduct,
+    addItem,
+    removeItem,
+  } = formState;
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = form;
+  const items = watch('items');
+  const manualEnabled = watch('manualEnabled');
+
   return (
     <Modal
-      open={form.isOpen}
-      onClose={form.close}
-      title={form.isEditing ? 'Editar Pedido' : 'Novo Pedido'}
+      open={isOpen}
+      onClose={close}
+      title={isEditing ? 'Editar Pedido' : 'Novo Pedido'}
       maxWidth="600px"
       footer={
         <>
           <button
             className="modal-btn modal-btn--cancel"
-            onClick={form.close}
+            disabled={isSaving}
+            onClick={close}
             type="button"
           >
             Cancelar
           </button>
           <button
             className="modal-btn modal-btn--confirm"
-            onClick={() => form.save()}
+            disabled={isSaving}
+            onClick={() => onSubmit()}
             type="button"
           >
-            {form.isEditing ? 'Salvar Alterações' : 'Criar Pedido'}
+            {isSaving
+              ? 'Salvando…'
+              : isEditing
+                ? 'Salvar Alterações'
+                : 'Criar Pedido'}
           </button>
         </>
       }
     >
       <div className="orders-form">
-        <FormField label="Cliente" required error={form.errors.customer}>
-          <input
-            className={`orders-form-input ${form.errors.customer ? 'orders-form-input--error' : ''}`}
+        <FormField label="Cliente" required error={errors.customer?.message}>
+          <Input
+            error={!!errors.customer}
             placeholder="Nome do cliente"
             type="text"
-            value={form.customer}
-            onChange={(e) => form.setCustomer(e.target.value)}
+            {...register('customer')}
           />
         </FormField>
 
@@ -56,104 +84,97 @@ export function OrderFormModal({ form, products }: OrderFormModalProps) {
             <h3 className="orders-items-title">Itens</h3>
             <button
               className="orders-items-add"
-              onClick={form.addItem}
+              onClick={addItem}
               type="button"
             >
               + Adicionar Item
             </button>
           </div>
 
-          {form.items.map((item, index) => (
-            <div className="orders-item-row" key={index}>
-              <div className="orders-item-row-select">
-                <select
-                  className={`orders-form-input ${form.errors[`item_${index}_product`] ? 'orders-form-input--error' : ''}`}
-                  style={{ width: '100%' }}
-                  value={item.productId}
-                  onChange={(e) =>
-                    form.updateItem(index, 'productId', e.target.value)
-                  }
+          {fields.map((field, index) => {
+            const item = items[index];
+            const itemErrors = errors.items?.[index];
+            return (
+              <div className="orders-item-row" key={field.id}>
+                <div className="orders-item-row-select">
+                  <Select
+                    error={!!itemErrors?.productId}
+                    style={{ width: '100%' }}
+                    value={item?.productId ?? ''}
+                    onChange={(e) => selectProduct(index, e.target.value)}
+                  >
+                    <option value="">Selecionar produto...</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} — {formatCurrency(p.salePrice)}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div className="orders-item-row-input">
+                  <Input
+                    error={!!itemErrors?.quantity}
+                    min="1"
+                    step="1"
+                    type="number"
+                    {...register(`items.${index}.quantity`)}
+                  />
+                </div>
+                <div className="orders-item-row-input">
+                  <Input
+                    error={!!itemErrors?.unitPrice}
+                    min="0"
+                    step="0.01"
+                    type="number"
+                    {...register(`items.${index}.unitPrice`)}
+                  />
+                </div>
+                <span className="orders-item-row-price">
+                  {formatCurrency(
+                    (Number(item?.quantity) || 0) *
+                      (Number(item?.unitPrice) || 0),
+                  )}
+                </span>
+                <button
+                  className="orders-item-row-remove"
+                  disabled={fields.length <= 1}
+                  onClick={() => removeItem(index)}
+                  style={{
+                    opacity: fields.length <= 1 ? 0.3 : 1,
+                  }}
+                  type="button"
                 >
-                  <option value="">Selecionar produto...</option>
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} — {formatCurrency(p.salePrice)}
-                    </option>
-                  ))}
-                </select>
+                  ×
+                </button>
               </div>
-              <div className="orders-item-row-input">
-                <input
-                  className={`orders-form-input ${form.errors[`item_${index}_qty`] ? 'orders-form-input--error' : ''}`}
-                  min="1"
-                  step="1"
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    form.updateItem(index, 'quantity', e.target.value)
-                  }
-                />
-              </div>
-              <div className="orders-item-row-input">
-                <input
-                  className={`orders-form-input ${form.errors[`item_${index}_price`] ? 'orders-form-input--error' : ''}`}
-                  min="0"
-                  step="0.01"
-                  type="number"
-                  value={item.unitPrice}
-                  onChange={(e) =>
-                    form.updateItem(index, 'unitPrice', e.target.value)
-                  }
-                />
-              </div>
-              <span className="orders-item-row-price">
-                {formatCurrency(
-                  (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0),
-                )}
-              </span>
-              <button
-                className="orders-item-row-remove"
-                disabled={form.items.length <= 1}
-                onClick={() => form.removeItem(index)}
-                style={{
-                  opacity: form.items.length <= 1 ? 0.3 : 1,
-                }}
-                type="button"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-          {form.errors.items && (
-            <span className="form-field-error">{form.errors.items}</span>
-          )}
+            );
+          })}
         </div>
 
         <div className="orders-total-row">
           <div className="orders-manual-toggle">
             <input
-              checked={form.manualEnabled}
               id="manual-total-toggle"
               type="checkbox"
-              onChange={(e) => form.setManualEnabled(e.target.checked)}
+              {...register('manualEnabled')}
             />
             <label htmlFor="manual-total-toggle">Valor personalizado</label>
           </div>
 
-          {form.manualEnabled ? (
-            <input
-              className={`orders-form-input orders-manual-input ${form.errors.manualTotal ? 'orders-form-input--error' : ''}`}
+          {manualEnabled ? (
+            <Input
+              className="orders-manual-input"
+              error={!!errors.manualTotal}
               min="0"
               step="0.01"
               type="number"
-              value={form.manualTotal}
-              onChange={(e) => form.setManualTotal(e.target.value)}
+              {...register('manualTotal')}
             />
           ) : null}
 
           <span className="orders-total-label">Total:</span>
           <span className="orders-total-value">
-            {formatCurrency(form.displayTotal)}
+            {formatCurrency(displayTotal)}
           </span>
         </div>
       </div>

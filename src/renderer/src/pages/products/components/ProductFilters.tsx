@@ -1,4 +1,4 @@
-import { AlertTriangleIcon } from '@components/Icons';
+import { AlertTriangleIcon, SearchIcon } from '@components/Icons';
 import type { FilterState } from '@hooks/products/useProducts';
 
 interface ProductFiltersProps {
@@ -16,13 +16,18 @@ export function ProductFilters({
 }: ProductFiltersProps) {
   return (
     <div className="products-filters">
-      <input
-        className="products-filters-search"
-        placeholder="Buscar por nome..."
-        type="text"
-        value={filters.search}
-        onChange={(e) => onChange({ ...filters, search: e.target.value })}
-      />
+      <div className="search-input-wrap">
+        <span className="search-input-icon">
+          <SearchIcon size={16} />
+        </span>
+        <input
+          className="products-filters-search"
+          placeholder="Buscar por nome..."
+          type="text"
+          value={filters.search}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+        />
+      </div>
       <select
         className="products-filters-select"
         value={filters.category}

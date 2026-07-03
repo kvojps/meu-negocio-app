@@ -1,3 +1,8 @@
+import { FormField } from '@components/FormField';
+import { Input } from '@components/FormField/Input';
+import { Textarea } from '@components/FormField/Textarea';
+import { CheckIcon, SettingIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { useSettings } from '@hooks/settings/useSettings';
 import './styles.css';
 
@@ -8,54 +13,57 @@ export function SettingsPage() {
 
   return (
     <div className="settings">
-      <div className="settings-header">
-        <h1 className="page-title">Configurações</h1>
-      </div>
+      <PageHeader
+        icon={<SettingIcon />}
+        title="Configurações"
+        subtitle="Dados da empresa e informações do aplicativo"
+      />
 
       <div className="settings-section">
         <h2>Dados da Empresa</h2>
 
         <div className="settings-form">
-          <div className="settings-field settings-field--full">
-            <label className="settings-field-label">Nome da Empresa</label>
-            <input
-              type="text"
-              value={settings.name}
-              onChange={(e) => updateField('name', e.target.value)}
-              placeholder="Ex: Minha Empresa Ltda"
-            />
+          <div className="settings-field--full">
+            <FormField label="Nome da Empresa">
+              <Input
+                type="text"
+                value={settings.name}
+                onChange={(e) => updateField('name', e.target.value)}
+                placeholder="Ex: Minha Empresa Ltda"
+              />
+            </FormField>
           </div>
 
-          <div className="settings-field">
-            <label className="settings-field-label">CNPJ</label>
-            <input
+          <FormField label="CNPJ">
+            <Input
               type="text"
               value={settings.cnpj}
               onChange={(e) => updateField('cnpj', e.target.value)}
               placeholder="00.000.000/0000-00"
             />
-          </div>
+          </FormField>
 
-          <div className="settings-field">
-            <label className="settings-field-label">Telefone</label>
-            <input
+          <FormField label="Telefone">
+            <Input
               type="text"
               value={settings.phone}
               onChange={(e) => updateField('phone', e.target.value)}
               placeholder="(00) 00000-0000"
             />
+          </FormField>
+
+          <div className="settings-field--full">
+            <FormField label="Endereço">
+              <Textarea
+                rows={3}
+                value={settings.address}
+                onChange={(e) => updateField('address', e.target.value)}
+                placeholder="Rua, número, bairro, cidade, estado"
+              />
+            </FormField>
           </div>
 
-          <div className="settings-field settings-field--full">
-            <label className="settings-field-label">Endereço</label>
-            <textarea
-              value={settings.address}
-              onChange={(e) => updateField('address', e.target.value)}
-              placeholder="Rua, número, bairro, cidade, estado"
-            />
-          </div>
-
-          <div className="settings-field settings-field--full settings-field-actions">
+          <div className="settings-field--full settings-field-actions">
             <button
               className="settings-save-btn"
               onClick={persist}
@@ -63,7 +71,12 @@ export function SettingsPage() {
             >
               Salvar
             </button>
-            {saved && <span className="settings-save-feedback">Salvo!</span>}
+            <span
+              className={`settings-save-feedback ${saved ? 'settings-save-feedback--visible' : ''}`}
+            >
+              <CheckIcon size={14} />
+              Salvo!
+            </span>
           </div>
         </div>
       </div>

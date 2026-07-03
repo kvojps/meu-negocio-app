@@ -2,6 +2,8 @@ import { ActionsMenu } from '@components/ActionsMenu';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DataTable } from '@components/DataTable';
 import type { Column } from '@components/DataTable';
+import { OrderIcon, PlusIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import { useOrderForm } from '@hooks/orders/useOrderForm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
@@ -31,7 +33,7 @@ const ORDER_STATUS_OPTIONS = Object.entries(ORDER_STATUS_LABELS) as [
 ][];
 
 export function OrdersPage() {
-  const { products, adjustStock } = useProducts();
+  const { products } = useProducts();
   const {
     orders,
     filtered,
@@ -43,7 +45,7 @@ export function OrdersPage() {
     updateOrder,
     setOrderStatus,
     deleteOrder,
-  } = useOrders(adjustStock);
+  } = useOrders();
 
   const form = useOrderForm(products, addOrder, updateOrder);
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
@@ -116,16 +118,21 @@ export function OrdersPage() {
 
   return (
     <div className="orders-page">
-      <div className="orders-header">
-        <h1 className="orders-header-title">Pedidos</h1>
-        <button
-          className="orders-header-button"
-          onClick={form.open}
-          type="button"
-        >
-          + Novo Pedido
-        </button>
-      </div>
+      <PageHeader
+        icon={<OrderIcon />}
+        title="Pedidos"
+        subtitle="Registro e acompanhamento de pedidos"
+        actions={
+          <button
+            className="orders-header-button"
+            onClick={form.open}
+            type="button"
+          >
+            <PlusIcon size={16} />
+            Novo Pedido
+          </button>
+        }
+      />
 
       <OrderFilters
         filters={filters}
@@ -155,11 +162,13 @@ export function OrdersPage() {
             }
           />
         )}
+        getRowKey={(order) => order.id}
         footerLabel="pedidos"
+        emptyMessage="Nenhum pedido por aqui ainda — clique em “+ Novo Pedido” para criar o primeiro."
         pagination={{ currentPage: page, totalPages, onPageChange: setPage }}
       />
 
-      <OrderFormModal form={form} products={products} />
+      <OrderFormModal formState={form} products={products} />
 
       <OrderViewModal
         viewTarget={viewTarget}

@@ -1,4 +1,6 @@
+import { AlertTriangleIcon, CheckIcon } from '@components/Icons';
 import { Modal } from '@components/Modal';
+import './styles.css';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -45,9 +47,14 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6 }}>
-        {children}
-      </p>
+      <div className="confirm-dialog-body">
+        <span
+          className={`confirm-dialog-icon ${danger ? 'confirm-dialog-icon--danger' : ''}`}
+        >
+          {danger ? <AlertTriangleIcon size={20} /> : <CheckIcon size={20} />}
+        </span>
+        <p className="confirm-dialog-message">{children}</p>
+      </div>
     </Modal>
   );
 }

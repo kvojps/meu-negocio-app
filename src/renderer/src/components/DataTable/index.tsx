@@ -3,7 +3,7 @@ import { SortIndicator } from '@components/SortIndicator';
 import './styles.css';
 
 export interface Column<T> {
-  key: string;
+  key: (keyof T & string) | (string & {});
   label: string;
   sortable?: boolean;
   render: (item: T) => React.ReactNode;
@@ -17,7 +17,9 @@ interface DataTableProps<T> {
   sort: { key: string | null; direction: 'asc' | 'desc' };
   onToggleSort?: (key: string) => void;
   renderActions?: (item: T) => React.ReactNode;
+  getRowKey: (item: T) => string;
   footerLabel: string;
+  emptyMessage?: string;
   pagination?: {
     currentPage: number;
     totalPages: number;
@@ -33,9 +35,13 @@ export function DataTable<T>({
   sort,
   onToggleSort,
   renderActions,
+  getRowKey,
   footerLabel,
+  emptyMessage,
   pagination,
 }: DataTableProps<T>) {
+  const colSpan = columns.length + (renderActions ? 1 : 0);
+
   return (
     <div className="data-table-card">
       <div className="data-table-wrapper">
@@ -64,18 +70,26 @@ export function DataTable<T>({
             </tr>
           </thead>
           <tbody>
-            {items.map((item, idx) => (
-              <tr key={idx}>
-                {columns.map((col) => (
-                  <td key={col.key}>{col.render(item)}</td>
-                ))}
-                {renderActions && (
-                  <td className="data-table-cell--actions">
-                    {renderActions(item)}
-                  </td>
-                )}
+            {totalCount === 0 ? (
+              <tr>
+                <td className="data-table-empty" colSpan={colSpan}>
+                  {emptyMessage ?? `Nenhum registro encontrado.`}
+                </td>
               </tr>
-            ))}
+            ) : (
+              items.map((item) => (
+                <tr key={getRowKey(item)}>
+                  {columns.map((col) => (
+                    <td key={col.key}>{col.render(item)}</td>
+                  ))}
+                  {renderActions && (
+                    <td className="data-table-cell--actions">
+                      {renderActions(item)}
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

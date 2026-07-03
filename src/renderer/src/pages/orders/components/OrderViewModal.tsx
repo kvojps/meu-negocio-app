@@ -80,14 +80,7 @@ export function OrderViewModal({
 
           <div className="orders-details-total">
             {viewTarget.manualTotal !== undefined && (
-              <span
-                style={{
-                  color: '#9ca3af',
-                  fontSize: '0.75rem',
-                  fontWeight: 400,
-                  marginRight: 8,
-                }}
-              >
+              <span className="orders-details-total-note">
                 (valor personalizado)
               </span>
             )}

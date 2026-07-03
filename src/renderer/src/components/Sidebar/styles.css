@@ -144,6 +144,12 @@
     color 150ms ease;
 }
 
+button.sidebar-nav-item {
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+}
+
 .sidebar-nav-item--active {
   background-color: var(--color-active-bg);
 }
@@ -159,15 +165,16 @@
 }
 
 .sidebar-nav-icon {
+  align-items: center;
+  color: var(--color-text-muted);
+  display: inline-flex;
   flex: 0 0 auto;
-  transition:
-    filter 150ms ease,
-    transform 150ms ease;
+  justify-content: center;
+  transition: color 150ms ease;
 }
 
 .sidebar-nav-item--active .sidebar-nav-icon {
-  filter: invert(39%) sepia(72%) saturate(600%) hue-rotate(85deg)
-    brightness(95%) contrast(90%);
+  color: var(--color-active-text);
 }
 
 .sidebar-nav-label {

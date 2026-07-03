@@ -5,18 +5,6 @@
   height: 100%;
 }
 
-.dashboard-header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-
-.dashboard-header h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-}
-
 .dashboard-cards {
   display: grid;
   gap: 1rem;
@@ -24,9 +12,8 @@
 }
 
 .dashboard-card {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  border-top: 3px solid var(--card-accent);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -44,9 +31,13 @@
 
 .dashboard-card-icon {
   align-items: center;
+  background: color-mix(in srgb, var(--card-accent) 15%, transparent);
+  border-radius: 0.75rem;
   display: flex;
-  margin-bottom: 0.5rem;
-  opacity: 0.7;
+  height: 2.5rem;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  width: 2.5rem;
 }
 
 .dashboard-card-value {
@@ -60,7 +51,7 @@
 }
 
 .dashboard-card-label {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -68,7 +59,7 @@
 }
 
 .dashboard-card-sub {
-  color: #9ca3af;
+  color: var(--color-text-faint);
   font-size: 0.75rem;
   margin-top: 0.125rem;
 }
@@ -80,7 +71,7 @@
 }
 
 .dashboard-section {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
@@ -100,7 +91,7 @@
 }
 
 .dashboard-empty {
-  color: #9ca3af;
+  color: var(--color-text-faint);
   font-size: 0.875rem;
   margin: 0;
   padding: 2rem 0;
@@ -161,7 +152,7 @@
 }
 
 .revenue-chart-label {
-  color: #9ca3af;
+  color: var(--color-text-faint);
   font-size: 0.75rem;
   margin-top: 0.5rem;
   text-transform: capitalize;
@@ -182,9 +173,9 @@
 
 .top-product-rank {
   align-items: center;
-  background: #f3f4f6;
+  background: var(--color-border-faint);
   border-radius: 50%;
-  color: #6b7280;
+  color: var(--color-text-muted);
   display: flex;
   flex-shrink: 0;
   font-size: 0.75rem;
@@ -226,7 +217,7 @@
 }
 
 .top-product-bar-bg {
-  background: #f3f4f6;
+  background: var(--color-border-faint);
   border-radius: 4px;
   height: 8px;
   overflow: hidden;
@@ -240,7 +231,7 @@
 }
 
 .top-product-qty {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
@@ -277,7 +268,7 @@
 }
 
 .status-bar-bg {
-  background: #f3f4f6;
+  background: var(--color-border-faint);
   border-radius: 4px;
   flex: 1;
   height: 8px;
@@ -305,8 +296,8 @@
 }
 
 .dashboard-table th {
-  border-bottom: 1px solid #f3f4f6;
-  color: #9ca3af;
+  border-bottom: 1px solid var(--color-border-faint);
+  color: var(--color-text-faint);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -316,7 +307,7 @@
 }
 
 .dashboard-table td {
-  border-bottom: 1px solid #f9fafb;
+  border-bottom: 1px solid var(--color-border-faint);
   color: var(--color-text-primary);
   font-size: 0.875rem;
   padding: 0.625rem 0;

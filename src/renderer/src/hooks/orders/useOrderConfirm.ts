@@ -1,7 +1,8 @@
+import { useToast } from '@contexts/ToastContext';
+import type { OrderStatus } from '@shared/types/order';
+import { ORDER_STATUS_LABELS } from '@shared/types/order';
+import type { Order } from '@shared/types/order';
 import { useState } from 'react';
-import type { OrderStatus } from '../../../../shared/types/order';
-import { ORDER_STATUS_LABELS } from '../../../../shared/types/order';
-import type { Order } from '../../../../shared/types/order';
 
 interface ConfirmTarget {
   type: 'advance' | 'cancel' | 'reopen' | 'delete' | 'status_change';
@@ -30,6 +31,7 @@ export function useOrderConfirm(
   const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(
     null,
   );
+  const { showToast } = useToast();
 
   function buildProps(): ConfirmProps {
     const { type, order } = confirmTarget!;
@@ -87,18 +89,23 @@ export function useOrderConfirm(
         if (order.status === 'pending') setOrderStatus(order.id, 'in_progress');
         else if (order.status === 'in_progress')
           setOrderStatus(order.id, 'completed');
+        showToast('Status do pedido atualizado.');
         break;
       case 'cancel':
         setOrderStatus(order.id, 'cancelled');
+        showToast('Pedido cancelado.', 'info');
         break;
       case 'reopen':
         setOrderStatus(order.id, 'in_progress');
+        showToast('Pedido reaberto.');
         break;
       case 'delete':
         deleteOrder(order.id);
+        showToast('Pedido excluído.', 'info');
         break;
       case 'status_change':
         setOrderStatus(order.id, confirmTarget.newStatus!);
+        showToast('Status do pedido atualizado.');
         break;
     }
 

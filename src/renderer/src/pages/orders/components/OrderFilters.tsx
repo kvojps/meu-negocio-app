@@ -1,3 +1,4 @@
+import { SearchIcon } from '@components/Icons';
 import type { OrderFilterState } from '@hooks/orders/useOrders';
 import type { OrderStatus } from '@shared/types/order';
 import { ORDER_STATUS_LABELS } from '@shared/types/order';
@@ -69,13 +70,18 @@ export function OrderFilters({
 
   return (
     <div className="orders-filters">
-      <input
-        className="orders-filters-search"
-        placeholder="Buscar cliente..."
-        type="text"
-        value={filters.search}
-        onChange={(e) => onChange({ ...filters, search: e.target.value })}
-      />
+      <div className="search-input-wrap">
+        <span className="search-input-icon">
+          <SearchIcon size={16} />
+        </span>
+        <input
+          className="orders-filters-search"
+          placeholder="Buscar cliente..."
+          type="text"
+          value={filters.search}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+        />
+      </div>
       {!hideStatusFilter && (
         <select
           className="orders-filters-select"

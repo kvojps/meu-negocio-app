@@ -1,3 +1,5 @@
+import { HelpIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { useState } from 'react';
 import './styles.css';
 
@@ -35,10 +37,11 @@ export function HelpPage() {
 
   return (
     <div className="help">
-      <h1 className="page-title">Ajuda</h1>
-      <p className="help-subtitle">
-        Tire dúvidas e aprenda a usar o Meu Negócio
-      </p>
+      <PageHeader
+        icon={<HelpIcon />}
+        title="Ajuda"
+        subtitle="Tire dúvidas e aprenda a usar o Meu Negócio"
+      />
 
       <AccordionSection
         title="Visão Geral"

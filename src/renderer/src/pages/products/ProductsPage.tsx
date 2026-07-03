@@ -2,6 +2,8 @@ import { ActionsMenu } from '@components/ActionsMenu';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DataTable } from '@components/DataTable';
 import type { Column } from '@components/DataTable';
+import { PlusIcon, ProductIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { StockBadge } from '@components/StockBadge';
 import { useProductConfirm } from '@hooks/products/useProductConfirm';
 import { useProductForm } from '@hooks/products/useProductForm';
@@ -99,16 +101,21 @@ export function ProductsPage() {
 
   return (
     <div className="products-page">
-      <div className="products-header">
-        <h1 className="products-header-title">Produtos</h1>
-        <button
-          className="products-header-button"
-          onClick={form.openNew}
-          type="button"
-        >
-          + Novo Produto
-        </button>
-      </div>
+      <PageHeader
+        icon={<ProductIcon />}
+        title="Produtos"
+        subtitle="Cadastro e controle de estoque do seu catálogo"
+        actions={
+          <button
+            className="products-header-button"
+            onClick={form.openNew}
+            type="button"
+          >
+            <PlusIcon size={16} />
+            Novo Produto
+          </button>
+        }
+      />
 
       <ProductFilters
         filters={filters}
@@ -130,19 +137,13 @@ export function ProductsPage() {
             onDelete={() => confirm.setDeleteTarget(product)}
           />
         )}
+        getRowKey={(product) => product.id}
         footerLabel="produtos"
+        emptyMessage="Nenhum produto cadastrado ainda — clique em “+ Novo Produto” para começar."
         pagination={{ currentPage: page, totalPages, onPageChange: setPage }}
       />
 
-      <ProductFormModal
-        isOpen={form.isOpen}
-        editingId={form.editingId}
-        form={form.form}
-        formErrors={form.formErrors}
-        onSave={form.save}
-        onClose={form.close}
-        onChange={form.setForm}
-      />
+      <ProductFormModal formState={form} />
 
       {confirm.deleteTarget &&
         (() => {

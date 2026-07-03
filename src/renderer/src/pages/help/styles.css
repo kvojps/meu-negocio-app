@@ -5,15 +5,9 @@
   height: 100%;
 }
 
-.help-subtitle {
-  color: #6b7280;
-  font-size: 0.875rem;
-  margin: 0;
-}
-
 /* Accordion */
 .help-accordion {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   overflow: hidden;
@@ -55,13 +49,13 @@
 }
 
 .help-accordion-content {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-border-faint);
   padding: 1rem 1.5rem 1.25rem;
 }
 
 /* Paragraph */
 .help-paragraph {
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   line-height: 1.6;
   margin: 0 0 1rem;
@@ -72,7 +66,7 @@
 }
 
 .help-paragraph--small {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
 }
 
@@ -86,7 +80,7 @@
 
 .help-module-card {
   align-items: flex-start;
-  background: #f9fafb;
+  background: var(--color-surface-subtle);
   border-radius: 8px;
   display: flex;
   gap: 0.75rem;
@@ -101,7 +95,7 @@
 }
 
 .help-module-card p {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   line-height: 1.5;
   margin: 0;
@@ -136,7 +130,7 @@
 }
 
 .help-guide-steps {
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   line-height: 1.8;
   margin: 0;
@@ -146,7 +140,7 @@
 /* Flow diagram */
 .help-flow {
   align-items: center;
-  background: #f9fafb;
+  background: var(--color-surface-subtle);
   border-radius: 8px;
   display: flex;
   gap: 0.5rem;
@@ -177,7 +171,7 @@
 }
 
 .help-flow-arrow {
-  color: #9ca3af;
+  color: var(--color-text-faint);
   font-size: 1rem;
   font-weight: 600;
 }
@@ -189,7 +183,7 @@
 }
 
 .help-faq-item {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--color-border-faint);
   padding: 0.875rem 0;
 }
 
@@ -205,7 +199,7 @@
 }
 
 .help-faq-answer {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   line-height: 1.6;
   margin: 0;
@@ -220,7 +214,7 @@
 
 .help-tip {
   align-items: flex-start;
-  background: #f9fafb;
+  background: var(--color-surface-subtle);
   border-radius: 8px;
   display: flex;
   gap: 0.625rem;
@@ -228,7 +222,7 @@
 }
 
 .help-tip p {
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
@@ -293,7 +287,7 @@
 }
 
 .help-about-label {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   font-weight: 600;
   min-width: 6rem;

@@ -1,3 +1,5 @@
+import { DashboardIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
 import { getOrderTotal } from '@shared/types/order';
@@ -24,7 +26,7 @@ function formatShortMonth(dateStr: string): string {
 
 export function DashboardPage() {
   const { products } = useProducts();
-  const { orders } = useOrders(() => {});
+  const { orders } = useOrders();
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -156,9 +158,11 @@ export function DashboardPage() {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>Dashboard</h1>
-      </div>
+      <PageHeader
+        icon={<DashboardIcon />}
+        title="Dashboard"
+        subtitle="Visão geral do seu negócio"
+      />
 
       <DashboardCards
         totalRevenue={totalRevenue}

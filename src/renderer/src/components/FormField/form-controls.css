@@ -1,0 +1,31 @@
+.form-input,
+.form-textarea {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--color-active-text);
+  box-shadow: 0 0 0 2px var(--color-active-bg);
+}
+
+.form-input--error {
+  border-color: #dc2626;
+}
+
+.form-textarea {
+  resize: vertical;
+}
+
+.form-select {
+  cursor: pointer;
+}

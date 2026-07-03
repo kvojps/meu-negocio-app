@@ -1,4 +1,4 @@
-import type { Product } from '../../../shared/types/product';
+import type { Product } from '@shared/types/product';
 
 const now = new Date();
 const daysAgo = (d: number) => {

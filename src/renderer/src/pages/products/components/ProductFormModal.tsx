@@ -1,89 +1,83 @@
 import { FormField } from '@components/FormField';
+import { Input } from '@components/FormField/Input';
+import { Textarea } from '@components/FormField/Textarea';
 import { Modal } from '@components/Modal';
-import type { FormData, FormErrors } from '@hooks/products/useProductForm';
+import type { UseProductFormReturn } from '@hooks/products/useProductForm';
 
 interface ProductFormModalProps {
-  isOpen: boolean;
-  editingId: string | null;
-  form: FormData;
-  formErrors: FormErrors;
-  onSave: () => void;
-  onClose: () => void;
-  onChange: (form: FormData) => void;
+  formState: UseProductFormReturn;
 }
 
-export function ProductFormModal({
-  isOpen,
-  editingId,
-  form,
-  formErrors,
-  onSave,
-  onClose,
-  onChange,
-}: ProductFormModalProps) {
+export function ProductFormModal({ formState }: ProductFormModalProps) {
+  const { isOpen, editingId, isSaving, form, close, onSubmit } = formState;
+  const {
+    register,
+    formState: { errors },
+  } = form;
+
   return (
     <Modal
       open={isOpen}
-      onClose={onClose}
+      onClose={close}
       title={editingId ? 'Editar Produto' : 'Novo Produto'}
       footer={
         <>
           <button
             className="modal-btn modal-btn--cancel"
-            onClick={onClose}
+            disabled={isSaving}
+            onClick={close}
             type="button"
           >
             Cancelar
           </button>
           <button
             className="modal-btn modal-btn--confirm"
-            onClick={onSave}
+            disabled={isSaving}
+            onClick={() => onSubmit()}
             type="button"
           >
-            {editingId ? 'Salvar' : 'Criar'}
+            {isSaving ? 'Salvando…' : editingId ? 'Salvar' : 'Criar'}
           </button>
         </>
       }
     >
       <div className="products-form">
-        <FormField label="Nome" required error={formErrors.name}>
-          <input
-            className={`products-form-input ${formErrors.name ? 'products-form-input--error' : ''}`}
+        <FormField label="Nome" required error={errors.name?.message}>
+          <Input
+            error={!!errors.name}
             placeholder="Nome do produto"
             type="text"
-            value={form.name}
-            onChange={(e) => onChange({ ...form, name: e.target.value })}
+            {...register('name')}
           />
         </FormField>
 
         <FormField label="Descrição">
-          <textarea
-            className="products-form-textarea"
+          <Textarea
             placeholder="Descrição do produto (opcional)"
             rows={3}
-            value={form.description}
-            onChange={(e) => onChange({ ...form, description: e.target.value })}
+            {...register('description')}
           />
         </FormField>
 
         <div className="products-form-row">
-          <FormField label="Categoria" required error={formErrors.category}>
-            <input
-              className={`products-form-input ${formErrors.category ? 'products-form-input--error' : ''}`}
+          <FormField
+            label="Categoria"
+            required
+            error={errors.category?.message}
+          >
+            <Input
+              error={!!errors.category}
               placeholder="Ex: Vestuário"
               type="text"
-              value={form.category}
-              onChange={(e) => onChange({ ...form, category: e.target.value })}
+              {...register('category')}
             />
           </FormField>
 
           <FormField label="Fornecedor">
-            <input
-              className="products-form-input"
+            <Input
               placeholder="Nome do fornecedor"
               type="text"
-              value={form.supplier}
-              onChange={(e) => onChange({ ...form, supplier: e.target.value })}
+              {...register('supplier')}
             />
           </FormField>
         </div>
@@ -92,58 +86,53 @@ export function ProductFormModal({
           <FormField
             label="Preço de Custo"
             required
-            error={formErrors.costPrice}
+            error={errors.costPrice?.message}
           >
-            <input
-              className={`products-form-input ${formErrors.costPrice ? 'products-form-input--error' : ''}`}
+            <Input
+              error={!!errors.costPrice}
               placeholder="0,00"
               type="number"
               step="0.01"
               min="0"
-              value={form.costPrice}
-              onChange={(e) => onChange({ ...form, costPrice: e.target.value })}
+              {...register('costPrice')}
             />
           </FormField>
 
           <FormField
             label="Preço de Venda"
             required
-            error={formErrors.salePrice}
+            error={errors.salePrice?.message}
           >
-            <input
-              className={`products-form-input ${formErrors.salePrice ? 'products-form-input--error' : ''}`}
+            <Input
+              error={!!errors.salePrice}
               placeholder="0,00"
               type="number"
               step="0.01"
               min="0"
-              value={form.salePrice}
-              onChange={(e) => onChange({ ...form, salePrice: e.target.value })}
+              {...register('salePrice')}
             />
           </FormField>
         </div>
 
         <div className="products-form-row">
-          <FormField label="Estoque" required error={formErrors.stock}>
-            <input
-              className={`products-form-input ${formErrors.stock ? 'products-form-input--error' : ''}`}
+          <FormField label="Estoque" required error={errors.stock?.message}>
+            <Input
+              error={!!errors.stock}
               placeholder="0"
               type="number"
               step="1"
               min="0"
-              value={form.stock}
-              onChange={(e) => onChange({ ...form, stock: e.target.value })}
+              {...register('stock')}
             />
           </FormField>
 
           <FormField label="Estoque Mínimo">
-            <input
-              className="products-form-input"
+            <Input
               placeholder="0"
               type="number"
               step="1"
               min="0"
-              value={form.minStock}
-              onChange={(e) => onChange({ ...form, minStock: e.target.value })}
+              {...register('minStock')}
             />
           </FormField>
         </div>

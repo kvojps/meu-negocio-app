@@ -15,6 +15,7 @@
     "paths": {
       "@shared/*": ["./src/shared/*"],
       "@components/*": ["./src/renderer/src/components/*"],
+      "@contexts/*": ["./src/renderer/src/contexts/*"],
       "@pages/*": ["./src/renderer/src/pages/*"],
       "@hooks/*": ["./src/renderer/src/hooks/*"],
       "@assets/*": ["./src/renderer/src/assets/*"]

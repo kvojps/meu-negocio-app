@@ -1,6 +1,6 @@
 .pagination {
   align-items: center;
-  background: #fff;
+  background: var(--color-surface);
   display: flex;
   gap: 0.5rem;
   justify-content: center;
@@ -15,10 +15,10 @@
 
 .pagination-btn {
   align-items: center;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  color: #374151;
+  color: var(--color-text-secondary);
   cursor: pointer;
   display: inline-flex;
   font-family: var(--font-sans);
@@ -46,7 +46,7 @@
 }
 
 .pagination-btn:disabled {
-  color: #d1d5db;
+  color: var(--color-border);
   cursor: default;
   opacity: 0.5;
 }

@@ -1,8 +1,10 @@
+import { useToast } from '@contexts/ToastContext';
+import type { Product } from '@shared/types/product';
 import { useState } from 'react';
-import type { Product } from '../../../../shared/types/product';
 
 export function useProductConfirm(deleteProduct: (id: string) => void) {
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const { showToast } = useToast();
 
   function buildProps() {
     return {
@@ -16,6 +18,7 @@ export function useProductConfirm(deleteProduct: (id: string) => void) {
   function handleAction() {
     if (deleteTarget) {
       deleteProduct(deleteTarget.id);
+      showToast(`Produto "${deleteTarget.name}" excluído.`, 'info');
       setDeleteTarget(null);
     }
   }

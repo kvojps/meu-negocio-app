@@ -2,6 +2,8 @@ import { ActionsMenu } from '@components/ActionsMenu';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DataTable } from '@components/DataTable';
 import type { Column } from '@components/DataTable';
+import { SaleIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
 import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
@@ -23,7 +25,7 @@ export function SalesPage() {
     toggleSort,
     setOrderStatus,
     deleteOrder,
-  } = useOrders(() => {});
+  } = useOrders();
 
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
@@ -79,9 +81,11 @@ export function SalesPage() {
 
   return (
     <div className="orders-page">
-      <div className="orders-header">
-        <h1 className="orders-header-title">Vendas</h1>
-      </div>
+      <PageHeader
+        icon={<SaleIcon />}
+        title="Vendas"
+        subtitle="Indicadores e histórico de pedidos concluídos"
+      />
 
       <OrderFilters
         filters={filters}
@@ -102,7 +106,9 @@ export function SalesPage() {
         renderActions={(order: Order) => (
           <ActionsMenu onView={() => setViewTarget(order)} />
         )}
+        getRowKey={(order) => order.id}
         footerLabel="vendas"
+        emptyMessage="Nenhuma venda concluída ainda."
         pagination={{ currentPage: page, totalPages, onPageChange: setPage }}
       />
 

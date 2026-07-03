@@ -5,9 +5,8 @@
 }
 
 .sales-card {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  border-top: 3px solid var(--card-accent);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -25,9 +24,13 @@
 
 .sales-card-icon {
   align-items: center;
+  background: color-mix(in srgb, var(--card-accent) 15%, transparent);
+  border-radius: 0.75rem;
   display: flex;
-  margin-bottom: 0.5rem;
-  opacity: 0.7;
+  height: 2.5rem;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  width: 2.5rem;
 }
 
 .sales-card-value {
@@ -41,7 +44,7 @@
 }
 
 .sales-card-label {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -49,7 +52,7 @@
 }
 
 .sales-card-sub {
-  color: #9ca3af;
+  color: var(--color-text-faint);
   font-size: 0.75rem;
   margin-top: 0.125rem;
 }
