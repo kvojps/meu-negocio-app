@@ -6,6 +6,7 @@ export interface OrderItem {
   productName: string;
   quantity: number;
   unitPrice: number;
+  unitCost: number;
 }
 
 export interface Order {
@@ -24,6 +25,17 @@ export function getOrderTotal(order: Order): number {
     (sum, item) => sum + item.quantity * item.unitPrice,
     0,
   );
+}
+
+export function getOrderCost(order: Order): number {
+  return order.items.reduce(
+    (sum, item) => sum + item.quantity * item.unitCost,
+    0,
+  );
+}
+
+export function getOrderProfit(order: Order): number {
+  return getOrderTotal(order) - getOrderCost(order);
 }
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {

@@ -9,7 +9,7 @@ import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { usePagination } from '@hooks/use-pagination/usePagination';
 import type { Order } from '@shared/types/order';
-import { getOrderTotal } from '@shared/types/order';
+import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 import { useMemo, useState } from 'react';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
@@ -68,6 +68,12 @@ export function SalesPage() {
         label: 'Total',
         sortable: true,
         render: (o: Order) => formatCurrency(getOrderTotal(o)),
+      },
+      {
+        key: 'profit',
+        label: 'Lucro',
+        sortable: false,
+        render: (o: Order) => formatCurrency(getOrderProfit(o)),
       },
       {
         key: 'createdAt',

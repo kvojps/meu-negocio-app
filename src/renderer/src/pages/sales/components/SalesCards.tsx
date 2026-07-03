@@ -1,5 +1,5 @@
 import type { Order } from '@shared/types/order';
-import { getOrderTotal } from '@shared/types/order';
+import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 import { useMemo } from 'react';
 import '../styles.css';
 
@@ -46,6 +46,10 @@ export function SalesCards({ completedOrders }: SalesCardsProps) {
       (sum, o) => sum + getOrderTotal(o),
       0,
     );
+    const totalProfit = completedOrders.reduce(
+      (sum, o) => sum + getOrderProfit(o),
+      0,
+    );
     const totalSales = completedOrders.length;
     const avgTicket = totalSales > 0 ? totalRevenue / totalSales : 0;
     const today = getTodayISO();
@@ -80,6 +84,29 @@ export function SalesCards({ completedOrders }: SalesCardsProps) {
           </svg>
         ),
         color: '#2cba7a',
+      },
+      {
+        label: 'Lucro Total',
+        value: formatBRL(totalProfit),
+        sub:
+          totalRevenue > 0
+            ? `${((totalProfit / totalRevenue) * 100).toFixed(1)}% de margem`
+            : 'sem vendas',
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.5 15.5l-4-4 1.41-1.41 2.59 2.58 6.09-6.09 1.41 1.42-7.5 7.5z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+        color: '#06b6d4',
       },
       {
         label: 'Quantidade de Vendas',

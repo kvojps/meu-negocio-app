@@ -60,6 +60,7 @@ export function useOrderForm(
         productName: item.productName,
         quantity: String(item.quantity),
         unitPrice: String(item.unitPrice),
+        unitCost: String(item.unitCost),
       })),
       manualEnabled: order.manualTotal !== undefined,
       manualTotal:
@@ -83,6 +84,10 @@ export function useOrderForm(
       `items.${index}.unitPrice`,
       product ? String(product.salePrice) : '',
     );
+    form.setValue(
+      `items.${index}.unitCost`,
+      product ? String(product.costPrice) : '',
+    );
   }
 
   function addItem() {
@@ -104,6 +109,7 @@ export function useOrderForm(
           productName: item.productName,
           quantity: Number(item.quantity),
           unitPrice: Number(item.unitPrice),
+          unitCost: Number(item.unitCost) || 0,
         })),
         manualTotal: values.manualEnabled
           ? Number(values.manualTotal)

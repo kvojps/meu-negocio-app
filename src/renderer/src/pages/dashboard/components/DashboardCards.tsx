@@ -2,6 +2,7 @@ import '../styles.css';
 
 interface DashboardCardsProps {
   totalRevenue: number;
+  totalProfit: number;
   currentMonthSales: number;
   avgTicket: number;
   pendingOrders: number;
@@ -17,6 +18,7 @@ function formatBRL(value: number): string {
 
 export function DashboardCards({
   totalRevenue,
+  totalProfit,
   currentMonthSales,
   avgTicket,
   pendingOrders,
@@ -38,6 +40,29 @@ export function DashboardCards({
         >
           <path
             d="M16 6l2.29 2.29-9.17 9.17-4.24-4.24 1.41-1.41 2.83 2.83 7.76-7.77L16 6zM3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"
+            fill="currentColor"
+          />
+        </svg>
+      ),
+    },
+    {
+      label: 'Lucro Total',
+      value: formatBRL(totalProfit),
+      sub:
+        totalRevenue > 0
+          ? `${((totalProfit / totalRevenue) * 100).toFixed(1)}% de margem`
+          : 'sem vendas',
+      color: '#06b6d4',
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.5 15.5l-4-4 1.41-1.41 2.59 2.58 6.09-6.09 1.41 1.42-7.5 7.5z"
             fill="currentColor"
           />
         </svg>

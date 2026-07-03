@@ -19,6 +19,7 @@ export const orderItemSchema = z.object({
       (v) => !Number.isNaN(Number(v)) && Number(v) >= 0,
       'Preço inválido',
     ),
+  unitCost: z.string().trim(),
 });
 
 export const orderFormSchema = z
@@ -40,7 +41,13 @@ export const orderFormSchema = z
 export type OrderFormValues = z.infer<typeof orderFormSchema>;
 
 export function emptyOrderItem() {
-  return { productId: '', productName: '', quantity: '1', unitPrice: '' };
+  return {
+    productId: '',
+    productName: '',
+    quantity: '1',
+    unitPrice: '',
+    unitCost: '',
+  };
 }
 
 export const emptyOrderFormValues: OrderFormValues = {

@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   product_id TEXT NOT NULL,
   product_name TEXT NOT NULL,
   quantity INTEGER NOT NULL,
-  unit_price REAL NOT NULL
+  unit_price REAL NOT NULL,
+  unit_cost REAL NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 
@@ -60,5 +61,17 @@ export function initDb(): Database.Database {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  migrate(db);
   return db;
+}
+
+function migrate(db: Database.Database): void {
+  const hasUnitCost = db
+    .prepare(
+      "SELECT 1 FROM pragma_table_info('order_items') WHERE name = 'unit_cost'",
+    )
+    .get();
+  if (!hasUnitCost) {
+    db.exec('ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0');
+  }
 }

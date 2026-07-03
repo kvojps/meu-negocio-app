@@ -2,7 +2,7 @@ import { DashboardIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
 import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
-import { getOrderTotal } from '@shared/types/order';
+import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 import { useMemo } from 'react';
 import { DashboardCards } from './components/DashboardCards';
 import './styles.css';
@@ -46,6 +46,11 @@ export function DashboardPage() {
     [completedOrders],
   );
 
+  const totalProfit = useMemo(
+    () => completedOrders.reduce((s, o) => s + getOrderProfit(o), 0),
+    [completedOrders],
+  );
+
   const currentMonthOrders = useMemo(
     () => completedOrders.filter((o) => new Date(o.createdAt) >= startOfMonth),
     [completedOrders],
@@ -60,24 +65,29 @@ export function DashboardPage() {
   );
 
   const monthlyRevenue = useMemo(() => {
-    const map: Record<string, number> = {};
+    const revenueMap: Record<string, number> = {};
+    const profitMap: Record<string, number> = {};
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const key = d.toISOString().slice(0, 7);
-      map[key] = 0;
+      revenueMap[key] = 0;
+      profitMap[key] = 0;
     }
     for (const order of completedOrders) {
       const key = order.createdAt.slice(0, 7);
-      if (key in map) {
-        map[key] += getOrderTotal(order);
+      if (key in revenueMap) {
+        revenueMap[key] += getOrderTotal(order);
+        profitMap[key] += getOrderProfit(order);
       }
     }
-    const entries = Object.entries(map);
+    const entries = Object.entries(revenueMap);
     const max = Math.max(...entries.map(([, v]) => v), 1);
     return entries.map(([month, total]) => ({
       month,
       total,
+      profit: profitMap[month],
       pct: (total / max) * 100,
+      profitPct: (profitMap[month] / max) * 100,
     }));
   }, [completedOrders]);
 
@@ -166,6 +176,7 @@ export function DashboardPage() {
 
       <DashboardCards
         totalRevenue={totalRevenue}
+        totalProfit={totalProfit}
         currentMonthSales={currentMonthOrders.length}
         avgTicket={avgTicket}
         pendingOrders={pendingOrders.length}
@@ -174,17 +185,39 @@ export function DashboardPage() {
 
       <div className="dashboard-grid">
         <section className="dashboard-section">
-          <h2>Faturamento por Mês</h2>
+          <div className="dashboard-section-header">
+            <h2>Faturamento e Lucro por Mês</h2>
+            <div className="revenue-chart-legend">
+              <span className="revenue-chart-legend-item">
+                <span className="revenue-chart-legend-dot revenue-chart-legend-dot--revenue" />
+                Faturamento
+              </span>
+              <span className="revenue-chart-legend-item">
+                <span className="revenue-chart-legend-dot revenue-chart-legend-dot--profit" />
+                Lucro
+              </span>
+            </div>
+          </div>
           <div className="revenue-chart">
-            {monthlyRevenue.map(({ month, total, pct }) => (
+            {monthlyRevenue.map(({ month, total, profit, pct, profitPct }) => (
               <div key={month} className="revenue-chart-col">
-                <div
-                  className="revenue-chart-bar"
-                  style={{ height: `${Math.max(pct, 2)}%` }}
-                >
-                  <span className="revenue-chart-tooltip">
-                    {formatBRL(total)}
-                  </span>
+                <div className="revenue-chart-bars">
+                  <div
+                    className="revenue-chart-bar"
+                    style={{ height: `${Math.max(pct, 2)}%` }}
+                  >
+                    <span className="revenue-chart-tooltip">
+                      {formatBRL(total)}
+                    </span>
+                  </div>
+                  <div
+                    className="revenue-chart-bar revenue-chart-bar--profit"
+                    style={{ height: `${Math.max(profitPct, 2)}%` }}
+                  >
+                    <span className="revenue-chart-tooltip">
+                      {formatBRL(profit)}
+                    </span>
+                  </div>
                 </div>
                 <span className="revenue-chart-label">
                   {formatShortMonth(month + '-01')}

@@ -28,8 +28,8 @@ export function importData(db: Database.Database, data: BackupData): void {
   );
 
   const insertItem = db.prepare(
-    `INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price)
-     VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice)`,
+    `INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price, unit_cost)
+     VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice, @unitCost)`,
   );
 
   const insertSettings = db.prepare(

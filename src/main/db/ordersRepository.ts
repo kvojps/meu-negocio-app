@@ -20,6 +20,7 @@ interface OrderItemRow {
   product_name: string;
   quantity: number;
   unit_price: number;
+  unit_cost: number;
 }
 
 function rowToItem(row: OrderItemRow): OrderItem {
@@ -29,6 +30,7 @@ function rowToItem(row: OrderItemRow): OrderItem {
     productName: row.product_name,
     quantity: row.quantity,
     unitPrice: row.unit_price,
+    unitCost: row.unit_cost,
   };
 }
 
@@ -85,8 +87,8 @@ function insertItems(
   items: OrderItem[],
 ): void {
   const insertItem = db.prepare(
-    `INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price)
-     VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice)`,
+    `INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price, unit_cost)
+     VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice, @unitCost)`,
   );
   for (const item of items) {
     insertItem.run({
@@ -96,6 +98,7 @@ function insertItems(
       productName: item.productName,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
+      unitCost: item.unitCost,
     });
   }
 }
