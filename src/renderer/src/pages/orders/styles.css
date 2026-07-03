@@ -28,6 +28,7 @@
 .orders-filters {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
@@ -38,6 +39,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 0.875rem;
+  max-width: 100%;
   outline: none;
   padding: 0.5rem 0.75rem;
   width: 18rem;

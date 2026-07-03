@@ -40,6 +40,7 @@ body {
 }
 
 .app-main {
+  container-type: inline-size;
   flex: 1;
   height: 100vh;
   min-width: 0;

@@ -8,7 +8,7 @@
 .dashboard-cards {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
 }
 
 .dashboard-card {
@@ -88,6 +88,12 @@
   display: grid;
   gap: 1.5rem;
   grid-template-columns: 1fr 1fr;
+}
+
+@container (max-width: 45rem) {
+  .dashboard-cols {
+    grid-template-columns: 1fr;
+  }
 }
 
 .dashboard-empty {
