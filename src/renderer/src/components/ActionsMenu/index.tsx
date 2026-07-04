@@ -1,4 +1,10 @@
-import { DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '@components/Icons';
+import {
+  CheckIcon,
+  DeleteIcon,
+  EditIcon,
+  OptionsIcon,
+  ViewIcon,
+} from '@components/Icons';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './styles.css';
@@ -6,10 +12,16 @@ import './styles.css';
 interface ActionsMenuProps {
   onView?: () => void;
   onEdit?: () => void;
+  onPayment?: () => void;
   onDelete?: () => void;
 }
 
-export function ActionsMenu({ onView, onEdit, onDelete }: ActionsMenuProps) {
+export function ActionsMenu({
+  onView,
+  onEdit,
+  onPayment,
+  onDelete,
+}: ActionsMenuProps) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, right: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -93,6 +105,19 @@ export function ActionsMenu({ onView, onEdit, onDelete }: ActionsMenuProps) {
               >
                 <EditIcon size={14} />
                 Editar
+              </button>
+            )}
+            {onPayment && (
+              <button
+                className="actions-menu-item"
+                onClick={() => {
+                  onPayment();
+                  setOpen(false);
+                }}
+                type="button"
+              >
+                <CheckIcon size={14} />
+                Registrar pagamento
               </button>
             )}
             {onDelete && (

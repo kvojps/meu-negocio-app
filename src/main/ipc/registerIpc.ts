@@ -8,6 +8,7 @@ import {
   addOrder,
   deleteOrder,
   getAllOrders,
+  setOrderPaymentAmount,
   setOrderStatus,
   updateOrder,
 } from '../db/ordersRepository';
@@ -55,6 +56,11 @@ export function registerIpcHandlers(db: Database.Database): void {
     IPC_CHANNELS.ordersSetStatus,
     (_event, id: string, newStatus: OrderStatus) =>
       setOrderStatus(db, id, newStatus),
+  );
+  ipcMain.handle(
+    IPC_CHANNELS.ordersSetPaymentAmount,
+    (_event, id: string, amountPaid: number) =>
+      setOrderPaymentAmount(db, id, amountPaid),
   );
   ipcMain.handle(IPC_CHANNELS.ordersDelete, (_event, id: string) =>
     deleteOrder(db, id),

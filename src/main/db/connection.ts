@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS orders (
   customer_name TEXT NOT NULL,
   status TEXT NOT NULL,
   manual_total REAL,
+  amount_paid REAL NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -74,4 +75,38 @@ function migrate(db: Database.Database): void {
   if (!hasUnitCost) {
     db.exec('ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0');
   }
+
+  const hasAmountPaid = db
+    .prepare(
+      "SELECT 1 FROM pragma_table_info('orders') WHERE name = 'amount_paid'",
+    )
+    .get();
+  if (!hasAmountPaid) {
+    db.exec('ALTER TABLE orders ADD COLUMN amount_paid REAL NOT NULL DEFAULT 0');
+    backfillAmountPaidForCompletedOrders(db);
+  }
+}
+
+function backfillAmountPaidForCompletedOrders(db: Database.Database): void {
+  const completedOrders = db
+    .prepare(
+      `SELECT o.id AS id, o.manual_total AS manual_total,
+         COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS items_total
+       FROM orders o
+       LEFT JOIN order_items oi ON oi.order_id = o.id
+       WHERE o.status = 'completed'
+       GROUP BY o.id`,
+    )
+    .all() as { id: string; manual_total: number | null; items_total: number }[];
+
+  const updateAmountPaid = db.prepare(
+    'UPDATE orders SET amount_paid = @amountPaid WHERE id = @id',
+  );
+  const backfillTransaction = db.transaction(() => {
+    for (const row of completedOrders) {
+      const total = row.manual_total ?? row.items_total;
+      updateAmountPaid.run({ id: row.id, amountPaid: total });
+    }
+  });
+  backfillTransaction();
 }

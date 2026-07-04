@@ -29,6 +29,8 @@ const api: ElectronApi = {
     ) => ipcRenderer.invoke(IPC_CHANNELS.ordersUpdate, id, data),
     setStatus: (id: string, newStatus: OrderStatus) =>
       ipcRenderer.invoke(IPC_CHANNELS.ordersSetStatus, id, newStatus),
+    setPaymentAmount: (id: string, amountPaid: number) =>
+      ipcRenderer.invoke(IPC_CHANNELS.ordersSetPaymentAmount, id, amountPaid),
     delete: (id: string) => ipcRenderer.invoke(IPC_CHANNELS.ordersDelete, id),
   },
   settings: {

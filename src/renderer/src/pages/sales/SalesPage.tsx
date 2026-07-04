@@ -9,10 +9,16 @@ import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { usePagination } from '@hooks/use-pagination/usePagination';
 import type { Order } from '@shared/types/order';
-import { getOrderProfit, getOrderTotal } from '@shared/types/order';
+import {
+  PAYMENT_STATUS_LABELS,
+  getOrderPaymentStatus,
+  getOrderProfit,
+  getOrderTotal,
+} from '@shared/types/order';
 import { useMemo, useState } from 'react';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
+import { PaymentModal } from './components/PaymentModal';
 import { SalesCards } from './components/SalesCards';
 import '../orders/styles.css';
 
@@ -24,11 +30,13 @@ export function SalesPage() {
     setFilters,
     toggleSort,
     setOrderStatus,
+    setOrderPaymentAmount,
     deleteOrder,
   } = useOrders();
 
   const confirm = useOrderConfirm(setOrderStatus, deleteOrder);
   const [viewTarget, setViewTarget] = useState<Order | null>(null);
+  const [paymentTarget, setPaymentTarget] = useState<Order | null>(null);
 
   const completedOrders = useMemo(
     () => filtered.filter((o) => o.status === 'completed'),
@@ -76,6 +84,19 @@ export function SalesPage() {
         render: (o: Order) => formatCurrency(getOrderProfit(o)),
       },
       {
+        key: 'paymentStatus',
+        label: 'Pagamento',
+        sortable: false,
+        render: (o: Order) => {
+          const paymentStatus = getOrderPaymentStatus(o);
+          return (
+            <span className={`status-badge status-badge--${paymentStatus}`}>
+              {PAYMENT_STATUS_LABELS[paymentStatus]}
+            </span>
+          );
+        },
+      },
+      {
         key: 'createdAt',
         label: 'Data',
         sortable: true,
@@ -98,6 +119,7 @@ export function SalesPage() {
         onChange={setFilters}
         hideStatusFilter
         showDateFilter
+        showPaymentFilter
       />
 
       <SalesCards completedOrders={completedOrders} />
@@ -110,7 +132,10 @@ export function SalesPage() {
         sort={sort}
         onToggleSort={(key) => toggleSort(key as OrderSortKey)}
         renderActions={(order: Order) => (
-          <ActionsMenu onView={() => setViewTarget(order)} />
+          <ActionsMenu
+            onView={() => setViewTarget(order)}
+            onPayment={() => setPaymentTarget(order)}
+          />
         )}
         getRowKey={(order) => order.id}
         footerLabel="vendas"
@@ -122,6 +147,12 @@ export function SalesPage() {
         viewTarget={viewTarget}
         onClose={() => setViewTarget(null)}
         title="Detalhes da Venda"
+      />
+
+      <PaymentModal
+        order={paymentTarget}
+        onClose={() => setPaymentTarget(null)}
+        onSave={setOrderPaymentAmount}
       />
 
       {confirm.confirmTarget &&

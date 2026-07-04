@@ -148,6 +148,39 @@
   background: #ef4444;
 }
 
+.status-badge--paid {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.status-badge--paid::before {
+  background: #10b981;
+}
+
+.status-badge--partial {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.status-badge--partial::before {
+  background: #f59e0b;
+}
+
+.status-badge--unpaid {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+.status-badge--unpaid::before {
+  background: #ef4444;
+}
+
+.payment-modal-shortcuts {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
 .status-select {
   -webkit-appearance: none;
   -moz-appearance: none;

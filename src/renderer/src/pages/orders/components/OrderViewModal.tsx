@@ -1,6 +1,12 @@
 import { Modal } from '@components/Modal';
 import type { Order } from '@shared/types/order';
-import { ORDER_STATUS_LABELS, getOrderTotal } from '@shared/types/order';
+import {
+  ORDER_STATUS_LABELS,
+  PAYMENT_STATUS_LABELS,
+  getOrderBalanceDue,
+  getOrderPaymentStatus,
+  getOrderTotal,
+} from '@shared/types/order';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -55,6 +61,22 @@ export function OrderViewModal({
             <span>
               <strong>Data:</strong> {formatDate(viewTarget.createdAt)}
             </span>
+            <span>
+              <strong>Pagamento:</strong>{' '}
+              <span
+                className={`status-badge status-badge--${getOrderPaymentStatus(viewTarget)}`}
+              >
+                {PAYMENT_STATUS_LABELS[getOrderPaymentStatus(viewTarget)]}
+              </span>
+            </span>
+            {getOrderPaymentStatus(viewTarget) !== 'paid' && (
+              <span>
+                <strong>Valor pago:</strong>{' '}
+                {formatCurrency(viewTarget.amountPaid)} ·{' '}
+                <strong>Saldo restante:</strong>{' '}
+                {formatCurrency(getOrderBalanceDue(viewTarget))}
+              </span>
+            )}
           </div>
 
           <table className="orders-details-table">

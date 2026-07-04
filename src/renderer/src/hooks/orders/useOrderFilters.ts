@@ -1,5 +1,5 @@
 import type { Order } from '@shared/types/order';
-import { getOrderTotal } from '@shared/types/order';
+import { getOrderPaymentStatus, getOrderTotal } from '@shared/types/order';
 import { useMemo, useState } from 'react';
 
 export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
@@ -7,6 +7,7 @@ export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
 export interface OrderFilterState {
   search: string;
   status: string;
+  paymentStatus: string;
   dateFrom: string;
   dateTo: string;
 }
@@ -20,6 +21,7 @@ export function useOrderFilters(orders: Order[]) {
   const [filters, setFilters] = useState<OrderFilterState>({
     search: '',
     status: '',
+    paymentStatus: '',
     dateFrom: '',
     dateTo: '',
   });
@@ -38,6 +40,12 @@ export function useOrderFilters(orders: Order[]) {
 
     if (filters.status) {
       result = result.filter((o) => o.status === filters.status);
+    }
+
+    if (filters.paymentStatus) {
+      result = result.filter(
+        (o) => getOrderPaymentStatus(o) === filters.paymentStatus,
+      );
     }
 
     if (filters.dateFrom) {

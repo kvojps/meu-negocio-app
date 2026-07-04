@@ -117,10 +117,13 @@ export function useOrderForm(
       };
 
       if (editTarget && updateOrder) {
-        await updateOrder(editTarget.id, data);
+        await updateOrder(editTarget.id, {
+          ...data,
+          amountPaid: editTarget.amountPaid,
+        });
         showToast('Pedido atualizado com sucesso.');
       } else {
-        await addOrder({ ...data, status: 'pending' });
+        await addOrder({ ...data, status: 'pending', amountPaid: 0 });
         showToast('Pedido criado com sucesso.');
       }
 

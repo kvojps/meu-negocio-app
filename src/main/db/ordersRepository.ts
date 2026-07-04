@@ -9,6 +9,7 @@ interface OrderRow {
   customer_name: string;
   status: OrderStatus;
   manual_total: number | null;
+  amount_paid: number;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +42,7 @@ function buildOrder(row: OrderRow, items: OrderItem[]): Order {
     status: row.status,
     items,
     manualTotal: row.manual_total ?? undefined,
+    amountPaid: row.amount_paid,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -117,13 +119,14 @@ export function addOrder(
 
   const insertTransaction = db.transaction(() => {
     db.prepare(
-      `INSERT INTO orders (id, customer_name, status, manual_total, created_at, updated_at)
-       VALUES (@id, @customerName, @status, @manualTotal, @createdAt, @updatedAt)`,
+      `INSERT INTO orders (id, customer_name, status, manual_total, amount_paid, created_at, updated_at)
+       VALUES (@id, @customerName, @status, @manualTotal, @amountPaid, @createdAt, @updatedAt)`,
     ).run({
       id: order.id,
       customerName: order.customerName,
       status: order.status,
       manualTotal: order.manualTotal ?? null,
+      amountPaid: order.amountPaid,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     });
@@ -213,4 +216,27 @@ export function setOrderStatus(
   }
 
   return { order, updatedProducts };
+}
+
+export function setOrderPaymentAmount(
+  db: Database.Database,
+  id: string,
+  amountPaid: number,
+): Order {
+  const existing = getOrderById(db, id);
+  if (!existing) {
+    throw new Error(`Order not found: ${id}`);
+  }
+
+  const updatedAt = new Date().toISOString();
+  db.prepare(
+    'UPDATE orders SET amount_paid = @amountPaid, updated_at = @updatedAt WHERE id = @id',
+  ).run({ id, amountPaid, updatedAt });
+
+  const order = getOrderById(db, id);
+  if (!order) {
+    throw new Error(`Order not found after update: ${id}`);
+  }
+
+  return order;
 }

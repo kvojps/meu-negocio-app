@@ -7,6 +7,7 @@ export const IPC_CHANNELS = {
   ordersAdd: 'orders:add',
   ordersUpdate: 'orders:update',
   ordersSetStatus: 'orders:setStatus',
+  ordersSetPaymentAmount: 'orders:setPaymentAmount',
   ordersDelete: 'orders:delete',
   settingsGet: 'settings:get',
   settingsUpdate: 'settings:update',

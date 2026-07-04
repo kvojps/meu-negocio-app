@@ -15,6 +15,7 @@ export interface Order {
   status: OrderStatus;
   items: OrderItem[];
   manualTotal?: number;
+  amountPaid: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,4 +44,23 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   in_progress: 'Em andamento',
   completed: 'Concluído',
   cancelled: 'Cancelado',
+};
+
+export type PaymentStatus = 'paid' | 'partial' | 'unpaid';
+
+export function getOrderPaymentStatus(order: Order): PaymentStatus {
+  const total = getOrderTotal(order);
+  if (order.amountPaid <= 0) return 'unpaid';
+  if (order.amountPaid >= total) return 'paid';
+  return 'partial';
+}
+
+export function getOrderBalanceDue(order: Order): number {
+  return Math.max(getOrderTotal(order) - order.amountPaid, 0);
+}
+
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  paid: 'Pago',
+  partial: 'Parcial',
+  unpaid: 'Não pago',
 };

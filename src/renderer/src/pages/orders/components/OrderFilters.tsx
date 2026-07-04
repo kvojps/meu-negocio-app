@@ -1,7 +1,7 @@
 import { SearchIcon } from '@components/Icons';
 import type { OrderFilterState } from '@hooks/orders/useOrders';
-import type { OrderStatus } from '@shared/types/order';
-import { ORDER_STATUS_LABELS } from '@shared/types/order';
+import type { OrderStatus, PaymentStatus } from '@shared/types/order';
+import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from '@shared/types/order';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -13,6 +13,12 @@ const ALL_STATUS_OPTIONS: OrderStatus[] = [
   'in_progress',
   'completed',
   'cancelled',
+];
+
+const ALL_PAYMENT_STATUS_OPTIONS: PaymentStatus[] = [
+  'paid',
+  'partial',
+  'unpaid',
 ];
 
 function toDate(iso: string): Date | null {
@@ -56,6 +62,7 @@ interface OrderFiltersProps {
   hideStatusFilter?: boolean;
   hideSearch?: boolean;
   showDateFilter?: boolean;
+  showPaymentFilter?: boolean;
 }
 
 export function OrderFilters({
@@ -65,6 +72,7 @@ export function OrderFilters({
   hideStatusFilter,
   hideSearch,
   showDateFilter,
+  showPaymentFilter,
 }: OrderFiltersProps) {
   const statusOptions = hideStatuses
     ? ALL_STATUS_OPTIONS.filter((s) => !hideStatuses.includes(s))
@@ -96,6 +104,22 @@ export function OrderFilters({
           {statusOptions.map((s) => (
             <option key={s} value={s}>
               {ORDER_STATUS_LABELS[s]}
+            </option>
+          ))}
+        </select>
+      )}
+      {showPaymentFilter && (
+        <select
+          className="orders-filters-select"
+          value={filters.paymentStatus}
+          onChange={(e) =>
+            onChange({ ...filters, paymentStatus: e.target.value })
+          }
+        >
+          <option value="">Todos os pagamentos</option>
+          {ALL_PAYMENT_STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {PAYMENT_STATUS_LABELS[s]}
             </option>
           ))}
         </select>

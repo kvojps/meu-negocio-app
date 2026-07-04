@@ -13,6 +13,7 @@ export interface OrdersContextValue {
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
   ) => Promise<void>;
   setOrderStatus: (id: string, newStatus: OrderStatus) => Promise<void>;
+  setOrderPaymentAmount: (id: string, amountPaid: number) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
 }
 
@@ -47,6 +48,11 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function setOrderPaymentAmount(id: string, amountPaid: number) {
+    const order = await window.api.orders.setPaymentAmount(id, amountPaid);
+    setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
+  }
+
   async function updateOrder(
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
@@ -67,6 +73,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
       addOrder,
       updateOrder,
       setOrderStatus,
+      setOrderPaymentAmount,
       deleteOrder,
     }),
     [orders, isLoading],

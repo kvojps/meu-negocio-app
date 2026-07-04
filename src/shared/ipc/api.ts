@@ -30,6 +30,7 @@ export interface OrdersApi {
     id: string,
     newStatus: OrderStatus,
   ) => Promise<SetOrderStatusResult>;
+  setPaymentAmount: (id: string, amountPaid: number) => Promise<Order>;
   delete: (id: string) => Promise<void>;
 }
 
