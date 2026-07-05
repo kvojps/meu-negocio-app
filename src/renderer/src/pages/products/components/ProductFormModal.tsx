@@ -1,8 +1,6 @@
-import { FormField } from '@components/FormField';
-import { Input } from '@components/FormField/Input';
-import { Textarea } from '@components/FormField/Textarea';
 import { Modal } from '@components/Modal';
 import type { UseProductFormReturn } from '@hooks/products/useProductForm';
+import { Button, Stack, TextField } from '@mui/material';
 
 interface ProductFormModalProps {
   formState: UseProductFormReturn;
@@ -22,121 +20,107 @@ export function ProductFormModal({ formState }: ProductFormModalProps) {
       title={editingId ? 'Editar Produto' : 'Novo Produto'}
       footer={
         <>
-          <button
-            className="modal-btn modal-btn--cancel"
-            disabled={isSaving}
-            onClick={close}
-            type="button"
-          >
+          <Button onClick={close} disabled={isSaving} color="inherit">
             Cancelar
-          </button>
-          <button
-            className="modal-btn modal-btn--confirm"
-            disabled={isSaving}
+          </Button>
+          <Button
             onClick={() => onSubmit()}
-            type="button"
+            disabled={isSaving}
+            variant="contained"
           >
             {isSaving ? 'Salvando…' : editingId ? 'Salvar' : 'Criar'}
-          </button>
+          </Button>
         </>
       }
     >
-      <div className="products-form">
-        <FormField label="Nome" required error={errors.name?.message}>
-          <Input
-            error={!!errors.name}
-            placeholder="Nome do produto"
-            type="text"
-            {...register('name')}
-          />
-        </FormField>
+      <Stack spacing={2}>
+        <TextField
+          label="Nome"
+          required
+          error={!!errors.name}
+          helperText={errors.name?.message}
+          placeholder="Nome do produto"
+          fullWidth
+          {...register('name')}
+        />
 
-        <FormField label="Descrição">
-          <Textarea
-            placeholder="Descrição do produto (opcional)"
-            rows={3}
-            {...register('description')}
-          />
-        </FormField>
+        <TextField
+          label="Descrição"
+          placeholder="Descrição do produto (opcional)"
+          multiline
+          rows={3}
+          fullWidth
+          {...register('description')}
+        />
 
-        <div className="products-form-row">
-          <FormField
+        <Stack direction="row" spacing={2}>
+          <TextField
             label="Categoria"
             required
-            error={errors.category?.message}
-          >
-            <Input
-              error={!!errors.category}
-              placeholder="Ex: Vestuário"
-              type="text"
-              {...register('category')}
-            />
-          </FormField>
+            error={!!errors.category}
+            helperText={errors.category?.message}
+            placeholder="Ex: Vestuário"
+            fullWidth
+            {...register('category')}
+          />
 
-          <FormField label="Fornecedor">
-            <Input
-              placeholder="Nome do fornecedor"
-              type="text"
-              {...register('supplier')}
-            />
-          </FormField>
-        </div>
+          <TextField
+            label="Fornecedor"
+            placeholder="Nome do fornecedor"
+            fullWidth
+            {...register('supplier')}
+          />
+        </Stack>
 
-        <div className="products-form-row">
-          <FormField
+        <Stack direction="row" spacing={2}>
+          <TextField
             label="Preço de Custo"
             required
-            error={errors.costPrice?.message}
-          >
-            <Input
-              error={!!errors.costPrice}
-              placeholder="0,00"
-              type="number"
-              step="0.01"
-              min="0"
-              {...register('costPrice')}
-            />
-          </FormField>
+            error={!!errors.costPrice}
+            helperText={errors.costPrice?.message}
+            placeholder="0,00"
+            type="number"
+            slotProps={{ htmlInput: { step: '0.01', min: '0' } }}
+            fullWidth
+            {...register('costPrice')}
+          />
 
-          <FormField
+          <TextField
             label="Preço de Venda"
             required
-            error={errors.salePrice?.message}
-          >
-            <Input
-              error={!!errors.salePrice}
-              placeholder="0,00"
-              type="number"
-              step="0.01"
-              min="0"
-              {...register('salePrice')}
-            />
-          </FormField>
-        </div>
+            error={!!errors.salePrice}
+            helperText={errors.salePrice?.message}
+            placeholder="0,00"
+            type="number"
+            slotProps={{ htmlInput: { step: '0.01', min: '0' } }}
+            fullWidth
+            {...register('salePrice')}
+          />
+        </Stack>
 
-        <div className="products-form-row">
-          <FormField label="Estoque" required error={errors.stock?.message}>
-            <Input
-              error={!!errors.stock}
-              placeholder="0"
-              type="number"
-              step="1"
-              min="0"
-              {...register('stock')}
-            />
-          </FormField>
+        <Stack direction="row" spacing={2}>
+          <TextField
+            label="Estoque"
+            required
+            error={!!errors.stock}
+            helperText={errors.stock?.message}
+            placeholder="0"
+            type="number"
+            slotProps={{ htmlInput: { step: '1', min: '0' } }}
+            fullWidth
+            {...register('stock')}
+          />
 
-          <FormField label="Estoque Mínimo">
-            <Input
-              placeholder="0"
-              type="number"
-              step="1"
-              min="0"
-              {...register('minStock')}
-            />
-          </FormField>
-        </div>
-      </div>
+          <TextField
+            label="Estoque Mínimo"
+            placeholder="0"
+            type="number"
+            slotProps={{ htmlInput: { step: '1', min: '0' } }}
+            fullWidth
+            {...register('minStock')}
+          />
+        </Stack>
+      </Stack>
     </Modal>
   );
 }

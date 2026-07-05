@@ -1,6 +1,6 @@
 import { AlertTriangleIcon, CheckIcon } from '@components/Icons';
 import { Modal } from '@components/Modal';
-import './styles.css';
+import { Button, Stack, Typography } from '@mui/material';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -30,31 +30,27 @@ export function ConfirmDialog({
       title={title}
       footer={
         <>
-          <button
-            className="modal-btn modal-btn--cancel"
-            onClick={onCancel}
-            type="button"
-          >
+          <Button onClick={onCancel} color="inherit">
             {cancelLabel}
-          </button>
-          <button
-            className={`modal-btn ${danger ? 'modal-btn--danger' : 'modal-btn--confirm'}`}
+          </Button>
+          <Button
             onClick={onConfirm}
-            type="button"
+            color={danger ? 'error' : 'primary'}
+            variant="contained"
           >
             {confirmLabel}
-          </button>
+          </Button>
         </>
       }
     >
-      <div className="confirm-dialog-body">
-        <span
-          className={`confirm-dialog-icon ${danger ? 'confirm-dialog-icon--danger' : ''}`}
-        >
+      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+        <Stack sx={{ color: danger ? 'error.main' : 'success.main', pt: 0.25 }}>
           {danger ? <AlertTriangleIcon size={20} /> : <CheckIcon size={20} />}
-        </span>
-        <p className="confirm-dialog-message">{children}</p>
-      </div>
+        </Stack>
+        <Typography variant="body2" color="text.secondary">
+          {children}
+        </Typography>
+      </Stack>
     </Modal>
   );
 }

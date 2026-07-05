@@ -1,5 +1,13 @@
 import { AlertTriangleIcon, SearchIcon } from '@components/Icons';
 import type { FilterState } from '@hooks/products/useProducts';
+import {
+  Badge,
+  InputAdornment,
+  MenuItem,
+  Stack,
+  TextField,
+  ToggleButton,
+} from '@mui/material';
 
 interface ProductFiltersProps {
   filters: FilterState;
@@ -15,44 +23,60 @@ export function ProductFilters({
   onChange,
 }: ProductFiltersProps) {
   return (
-    <div className="products-filters">
-      <div className="search-input-wrap">
-        <span className="search-input-icon">
-          <SearchIcon size={16} />
-        </span>
-        <input
-          className="products-filters-search"
-          placeholder="Buscar por nome..."
-          type="text"
-          value={filters.search}
-          onChange={(e) => onChange({ ...filters, search: e.target.value })}
-        />
-      </div>
-      <select
-        className="products-filters-select"
+    <Stack
+      direction="row"
+      spacing={1.5}
+      alignItems="center"
+      flexWrap="wrap"
+      useFlexGap
+    >
+      <TextField
+        size="small"
+        placeholder="Buscar por nome..."
+        value={filters.search}
+        onChange={(e) => onChange({ ...filters, search: e.target.value })}
+        sx={{ minWidth: 220 }}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon size={16} />
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+      <TextField
+        select
+        size="small"
         value={filters.category}
         onChange={(e) => onChange({ ...filters, category: e.target.value })}
+        sx={{ minWidth: 200 }}
       >
-        <option value="">Todas as categorias</option>
+        <MenuItem value="">Todas as categorias</MenuItem>
         {categories.map((cat) => (
-          <option key={cat} value={cat}>
+          <MenuItem key={cat} value={cat}>
             {cat}
-          </option>
+          </MenuItem>
         ))}
-      </select>
+      </TextField>
       {lowStockCount > 0 && (
-        <button
-          className={`products-filters-toggle ${filters.lowStockOnly ? 'products-filters-toggle--active' : ''}`}
-          onClick={() =>
+        <ToggleButton
+          value="lowStockOnly"
+          selected={filters.lowStockOnly}
+          onChange={() =>
             onChange({ ...filters, lowStockOnly: !filters.lowStockOnly })
           }
-          type="button"
+          size="small"
+          color="warning"
         >
           <AlertTriangleIcon size={16} />
-          <span>Estoque baixo</span>
-          <span className="products-filters-toggle-badge">{lowStockCount}</span>
-        </button>
+          <Stack component="span" sx={{ ml: 1, mr: 1.5 }}>
+            Estoque baixo
+          </Stack>
+          <Badge badgeContent={lowStockCount} color="warning" />
+        </ToggleButton>
       )}
-    </div>
+    </Stack>
   );
 }

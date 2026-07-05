@@ -1,8 +1,16 @@
-import { FormField } from '@components/FormField';
-import { Input } from '@components/FormField/Input';
-import { Select } from '@components/FormField/Select';
 import { Modal } from '@components/Modal';
 import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
+import { Close } from '@mui/icons-material';
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import type { Product } from '@shared/types/product';
 
 const formatCurrency = (value: number) =>
@@ -46,138 +54,132 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
       maxWidth="600px"
       footer={
         <>
-          <button
-            className="modal-btn modal-btn--cancel"
-            disabled={isSaving}
-            onClick={close}
-            type="button"
-          >
+          <Button onClick={close} disabled={isSaving} color="inherit">
             Cancelar
-          </button>
-          <button
-            className="modal-btn modal-btn--confirm"
-            disabled={isSaving}
+          </Button>
+          <Button
             onClick={() => onSubmit()}
-            type="button"
+            disabled={isSaving}
+            variant="contained"
           >
             {isSaving
               ? 'Salvando…'
               : isEditing
                 ? 'Salvar Alterações'
                 : 'Criar Pedido'}
-          </button>
+          </Button>
         </>
       }
     >
-      <div className="orders-form">
-        <FormField label="Cliente" required error={errors.customer?.message}>
-          <Input
-            error={!!errors.customer}
-            placeholder="Nome do cliente"
-            type="text"
-            {...register('customer')}
-          />
-        </FormField>
+      <Stack spacing={3}>
+        <TextField
+          label="Cliente"
+          required
+          error={!!errors.customer}
+          helperText={errors.customer?.message}
+          placeholder="Nome do cliente"
+          fullWidth
+          {...register('customer')}
+        />
 
-        <div className="orders-items-section">
-          <div className="orders-items-header">
-            <h3 className="orders-items-title">Itens</h3>
-            <button
-              className="orders-items-add"
-              onClick={addItem}
-              type="button"
-            >
+        <Stack spacing={1.5}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="subtitle1">Itens</Typography>
+            <Button size="small" onClick={addItem}>
               + Adicionar Item
-            </button>
-          </div>
+            </Button>
+          </Stack>
 
           {fields.map((field, index) => {
             const item = items[index];
             const itemErrors = errors.items?.[index];
             return (
-              <div className="orders-item-row" key={field.id}>
-                <div className="orders-item-row-select">
-                  <Select
-                    error={!!itemErrors?.productId}
-                    style={{ width: '100%' }}
-                    value={item?.productId ?? ''}
-                    onChange={(e) => selectProduct(index, e.target.value)}
-                  >
-                    <option value="">Selecionar produto...</option>
-                    {products.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} — {formatCurrency(p.salePrice)}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div className="orders-item-row-input">
-                  <Input
-                    error={!!itemErrors?.quantity}
-                    min="1"
-                    step="1"
-                    type="number"
-                    {...register(`items.${index}.quantity`)}
-                  />
-                </div>
-                <div className="orders-item-row-input">
-                  <Input
-                    error={!!itemErrors?.unitPrice}
-                    min="0"
-                    step="0.01"
-                    type="number"
-                    {...register(`items.${index}.unitPrice`)}
-                  />
-                </div>
-                <span className="orders-item-row-price">
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="flex-start"
+                key={field.id}
+              >
+                <TextField
+                  select
+                  error={!!itemErrors?.productId}
+                  value={item?.productId ?? ''}
+                  onChange={(e) => selectProduct(index, e.target.value)}
+                  sx={{ flex: 2 }}
+                >
+                  <MenuItem value="">Selecionar produto...</MenuItem>
+                  {products.map((p) => (
+                    <MenuItem key={p.id} value={p.id}>
+                      {p.name} — {formatCurrency(p.salePrice)}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  error={!!itemErrors?.quantity}
+                  type="number"
+                  slotProps={{ htmlInput: { min: '1', step: '1' } }}
+                  sx={{ flex: 1 }}
+                  {...register(`items.${index}.quantity`)}
+                />
+                <TextField
+                  error={!!itemErrors?.unitPrice}
+                  type="number"
+                  slotProps={{ htmlInput: { min: '0', step: '0.01' } }}
+                  sx={{ flex: 1 }}
+                  {...register(`items.${index}.unitPrice`)}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{ pt: 1.5, minWidth: 88, textAlign: 'right' }}
+                >
                   {formatCurrency(
                     (Number(item?.quantity) || 0) *
                       (Number(item?.unitPrice) || 0),
                   )}
-                </span>
-                <button
-                  className="orders-item-row-remove"
-                  disabled={fields.length <= 1}
+                </Typography>
+                <IconButton
                   onClick={() => removeItem(index)}
-                  style={{
-                    opacity: fields.length <= 1 ? 0.3 : 1,
-                  }}
-                  type="button"
+                  disabled={fields.length <= 1}
+                  size="small"
+                  sx={{ mt: 0.5 }}
                 >
-                  ×
-                </button>
-              </div>
+                  <Close fontSize="small" />
+                </IconButton>
+              </Stack>
             );
           })}
-        </div>
+        </Stack>
 
-        <div className="orders-total-row">
-          <div className="orders-manual-toggle">
-            <input
-              id="manual-total-toggle"
-              type="checkbox"
-              {...register('manualEnabled')}
-            />
-            <label htmlFor="manual-total-toggle">Valor personalizado</label>
-          </div>
+        <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!manualEnabled}
+                {...register('manualEnabled')}
+              />
+            }
+            label="Valor personalizado"
+          />
 
-          {manualEnabled ? (
-            <Input
-              className="orders-manual-input"
+          {manualEnabled && (
+            <TextField
               error={!!errors.manualTotal}
-              min="0"
-              step="0.01"
               type="number"
+              slotProps={{ htmlInput: { min: '0', step: '0.01' } }}
+              sx={{ maxWidth: 160 }}
               {...register('manualTotal')}
             />
-          ) : null}
+          )}
 
-          <span className="orders-total-label">Total:</span>
-          <span className="orders-total-value">
-            {formatCurrency(displayTotal)}
-          </span>
-        </div>
-      </div>
+          <Typography sx={{ ml: 'auto' }} variant="subtitle1">
+            Total: {formatCurrency(displayTotal)}
+          </Typography>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }

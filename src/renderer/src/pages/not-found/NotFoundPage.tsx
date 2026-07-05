@@ -1,18 +1,25 @@
+import { Button, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes';
-import './styles.css';
 
 export function NotFoundPage() {
   return (
-    <div className="not-found-page">
-      <span className="not-found-code">404</span>
-      <h1 className="not-found-title">Página não encontrada</h1>
-      <p className="not-found-message">
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      spacing={2}
+      sx={{ minHeight: '60vh', textAlign: 'center' }}
+    >
+      <Typography variant="h3" color="text.disabled" fontWeight={700}>
+        404
+      </Typography>
+      <Typography variant="h5">Página não encontrada</Typography>
+      <Typography variant="body2" color="text.secondary">
         O endereço acessado não existe ou foi movido.
-      </p>
-      <Link className="not-found-link" to={ROUTES.DASHBOARD}>
+      </Typography>
+      <Button component={Link} to={ROUTES.DASHBOARD} variant="contained">
         Voltar para o Dashboard
-      </Link>
-    </div>
+      </Button>
+    </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './routes';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
@@ -11,37 +12,50 @@ import { SettingsPage } from './pages/settings/SettingsPage';
 import { Sidebar } from './components/Sidebar';
 import { OrdersProvider } from './contexts/OrdersContext';
 import { ProductsProvider } from './contexts/ProductsContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './contexts/ToastContext';
 
 export function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <ProductsProvider>
-          <OrdersProvider>
-            <div className="app">
-              <Sidebar />
-              <main className="app-main">
-                <Routes>
-                  <Route
-                    path="/"
-                    element={<Navigate replace to={ROUTES.DASHBOARD} />}
-                  />
-                  <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-                  <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-                  <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
-                  <Route path={ROUTES.SALES} element={<SalesPage />} />
-                  <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
-                  <Route path={ROUTES.HELP} element={<HelpPage />} />
-                  <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-              </main>
-            </div>
-          </OrdersProvider>
-        </ProductsProvider>
-      </ToastProvider>
-    </ThemeProvider>
+    <ToastProvider>
+      <ProductsProvider>
+        <OrdersProvider>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100vh',
+              overflow: 'hidden',
+              width: '100%',
+            }}
+          >
+            <Sidebar />
+            <Box
+              component="main"
+              sx={{
+                flex: 1,
+                height: '100vh',
+                minWidth: 0,
+                overflowY: 'auto',
+                p: 3,
+              }}
+            >
+              <Routes>
+                <Route
+                  path="/"
+                  element={<Navigate replace to={ROUTES.DASHBOARD} />}
+                />
+                <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+                <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+                <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
+                <Route path={ROUTES.SALES} element={<SalesPage />} />
+                <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+                <Route path={ROUTES.HELP} element={<HelpPage />} />
+                <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Box>
+          </Box>
+        </OrdersProvider>
+      </ProductsProvider>
+    </ToastProvider>
   );
 }

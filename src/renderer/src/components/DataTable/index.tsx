@@ -1,6 +1,16 @@
 import { Pagination } from '@components/Pagination';
-import { SortIndicator } from '@components/SortIndicator';
-import './styles.css';
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Typography,
+} from '@mui/material';
 
 export interface Column<T> {
   key: (keyof T & string) | (string & {});
@@ -43,61 +53,80 @@ export function DataTable<T>({
   const colSpan = columns.length + (renderActions ? 1 : 0);
 
   return (
-    <div className="data-table-card">
-      <div className="data-table-wrapper">
-        <table className="data-table">
-          <thead>
-            <tr>
+    <Paper variant="outlined">
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
               {columns.map((col) => (
-                <th
+                <TableCell
                   key={col.key}
-                  className={
+                  sortDirection={
                     col.sortable && sort.key === col.key
-                      ? 'data-table-th--sorted'
-                      : ''
+                      ? sort.direction
+                      : false
                   }
-                  onClick={() => col.sortable && onToggleSort?.(col.key)}
                 >
-                  {col.label}
-                  {col.sortable && sort.key === col.key && (
-                    <SortIndicator direction={sort.direction} />
+                  {col.sortable ? (
+                    <TableSortLabel
+                      active={sort.key === col.key}
+                      direction={sort.key === col.key ? sort.direction : 'asc'}
+                      onClick={() => onToggleSort?.(col.key)}
+                    >
+                      {col.label}
+                    </TableSortLabel>
+                  ) : (
+                    col.label
                   )}
-                </th>
+                </TableCell>
               ))}
-              {renderActions && (
-                <th className="data-table-th--actions">Ações</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
+              {renderActions && <TableCell align="right">Ações</TableCell>}
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {totalCount === 0 ? (
-              <tr>
-                <td className="data-table-empty" colSpan={colSpan}>
-                  {emptyMessage ?? `Nenhum registro encontrado.`}
-                </td>
-              </tr>
+              <TableRow>
+                <TableCell colSpan={colSpan} align="center">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ py: 3 }}
+                  >
+                    {emptyMessage ?? 'Nenhum registro encontrado.'}
+                  </Typography>
+                </TableCell>
+              </TableRow>
             ) : (
               items.map((item) => (
-                <tr key={getRowKey(item)}>
+                <TableRow key={getRowKey(item)} hover>
                   {columns.map((col) => (
-                    <td key={col.key}>{col.render(item)}</td>
+                    <TableCell key={col.key}>{col.render(item)}</TableCell>
                   ))}
                   {renderActions && (
-                    <td className="data-table-cell--actions">
-                      {renderActions(item)}
-                    </td>
+                    <TableCell align="right">{renderActions(item)}</TableCell>
                   )}
-                </tr>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
-      <div className="data-table-footer">
-        {totalCount > 0
-          ? `Mostrando ${start + 1}–${start + items.length} de ${totalCount} ${footerLabel}`
-          : `Mostrando 0 de 0 ${footerLabel}`}
-      </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box
+        sx={{
+          px: 2,
+          py: 1.5,
+          borderTop: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          {totalCount > 0
+            ? `Mostrando ${start + 1}–${start + items.length} de ${totalCount} ${footerLabel}`
+            : `Mostrando 0 de 0 ${footerLabel}`}
+        </Typography>
+      </Box>
+
       {pagination && (
         <Pagination
           currentPage={pagination.currentPage}
@@ -105,6 +134,6 @@ export function DataTable<T>({
           onPageChange={pagination.onPageChange}
         />
       )}
-    </div>
+    </Paper>
   );
 }

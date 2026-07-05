@@ -9,13 +9,15 @@
     "dev:renderer": "electron-vite dev --rendererOnly",
     "postinstall": "electron-rebuild -f -w better-sqlite3",
     "format": "prettier . --write",
-    "format:check": "prettier . --check",
-    "lint:css": "stylelint \"src/**/*.css\"",
-    "lint:css:fix": "stylelint \"src/**/*.css\" --fix"
+    "format:check": "prettier . --check"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource/inter": "^5.2.8",
     "@hookform/resolvers": "^5.4.0",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.5.0",
     "better-sqlite3": "^12.11.1",
     "date-fns": "^4.4.0",
     "electron": "^35.0.0",
@@ -37,8 +39,6 @@
     "@vitejs/plugin-react": "^4.4.0",
     "electron-vite": "^5.0.0",
     "prettier": "^3.8.3",
-    "stylelint": "^17.12.0",
-    "stylelint-order": "^8.1.1",
     "typescript": "^5.8.0"
   }
 }

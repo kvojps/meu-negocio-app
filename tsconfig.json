@@ -18,7 +18,8 @@
       "@contexts/*": ["./src/renderer/src/contexts/*"],
       "@pages/*": ["./src/renderer/src/pages/*"],
       "@hooks/*": ["./src/renderer/src/hooks/*"],
-      "@assets/*": ["./src/renderer/src/assets/*"]
+      "@assets/*": ["./src/renderer/src/assets/*"],
+      "@theme/*": ["./src/renderer/src/theme/*"]
     }
   },
   "include": ["src", "electron.vite.config.ts"]

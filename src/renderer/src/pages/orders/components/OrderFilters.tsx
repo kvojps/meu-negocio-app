@@ -1,8 +1,19 @@
 import { SearchIcon } from '@components/Icons';
 import type { OrderFilterState } from '@hooks/orders/useOrders';
+import {
+  InputAdornment,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import type { OrderStatus, PaymentStatus } from '@shared/types/order';
-import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from '@shared/types/order';
+import {
+  ORDER_STATUS_LABELS,
+  PAYMENT_STATUS_LABELS,
+} from '@shared/types/order';
 import { ptBR } from 'date-fns/locale/pt-BR';
+import { forwardRef } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -35,6 +46,28 @@ function toISO(date: Date | null): string {
   return `${y}-${m}-${d}`;
 }
 
+interface DatePickerFieldProps {
+  value?: string;
+  placeholder?: string;
+  onClick?: () => void;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+const DatePickerField = forwardRef<HTMLInputElement, DatePickerFieldProps>(
+  ({ value, placeholder, onClick, onChange }, ref) => (
+    <TextField
+      value={value}
+      placeholder={placeholder}
+      onClick={onClick}
+      onChange={onChange}
+      inputRef={ref}
+      size="small"
+      sx={{ width: 150 }}
+    />
+  ),
+);
+DatePickerField.displayName = 'DatePickerField';
+
 function DatePickerInput({
   value,
   onChange,
@@ -49,8 +82,7 @@ function DatePickerInput({
       placeholderText="dd/mm/aaaa"
       selected={toDate(value)}
       onChange={(date: Date | null) => onChange(toISO(date))}
-      className="orders-filters-date"
-      wrapperClassName="orders-filters-date-wrap"
+      customInput={<DatePickerField />}
     />
   );
 }
@@ -79,64 +111,78 @@ export function OrderFilters({
     : ALL_STATUS_OPTIONS;
 
   return (
-    <div className="orders-filters">
+    <Stack
+      direction="row"
+      spacing={1.5}
+      alignItems="center"
+      flexWrap="wrap"
+      useFlexGap
+    >
       {!hideSearch && (
-        <div className="search-input-wrap">
-          <span className="search-input-icon">
-            <SearchIcon size={16} />
-          </span>
-          <input
-            className="orders-filters-search"
-            placeholder="Buscar cliente..."
-            type="text"
-            value={filters.search}
-            onChange={(e) => onChange({ ...filters, search: e.target.value })}
-          />
-        </div>
+        <TextField
+          size="small"
+          placeholder="Buscar cliente..."
+          value={filters.search}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+          sx={{ minWidth: 220 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon size={16} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
       )}
       {!hideStatusFilter && (
-        <select
-          className="orders-filters-select"
+        <TextField
+          select
+          size="small"
           value={filters.status}
           onChange={(e) => onChange({ ...filters, status: e.target.value })}
+          sx={{ minWidth: 180 }}
         >
-          <option value="">Todos os status</option>
+          <MenuItem value="">Todos os status</MenuItem>
           {statusOptions.map((s) => (
-            <option key={s} value={s}>
+            <MenuItem key={s} value={s}>
               {ORDER_STATUS_LABELS[s]}
-            </option>
+            </MenuItem>
           ))}
-        </select>
+        </TextField>
       )}
       {showPaymentFilter && (
-        <select
-          className="orders-filters-select"
+        <TextField
+          select
+          size="small"
           value={filters.paymentStatus}
           onChange={(e) =>
             onChange({ ...filters, paymentStatus: e.target.value })
           }
+          sx={{ minWidth: 180 }}
         >
-          <option value="">Todos os pagamentos</option>
+          <MenuItem value="">Todos os pagamentos</MenuItem>
           {ALL_PAYMENT_STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>
+            <MenuItem key={s} value={s}>
               {PAYMENT_STATUS_LABELS[s]}
-            </option>
+            </MenuItem>
           ))}
-        </select>
+        </TextField>
       )}
       {showDateFilter && (
-        <>
+        <Stack direction="row" spacing={1} alignItems="center">
           <DatePickerInput
             value={filters.dateFrom}
             onChange={(v) => onChange({ ...filters, dateFrom: v })}
           />
-          <span className="orders-filters-date-separator">—</span>
+          <Typography color="text.secondary">—</Typography>
           <DatePickerInput
             value={filters.dateTo}
             onChange={(v) => onChange({ ...filters, dateTo: v })}
           />
-        </>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import type { ToastItem } from '@contexts/ToastContext';
-import './styles.css';
+import { Alert, Stack } from '@mui/material';
 
 interface ToastViewportProps {
   toasts: ToastItem[];
@@ -10,17 +10,28 @@ export function ToastViewport({ toasts, onDismiss }: ToastViewportProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="toast-viewport" role="status" aria-live="polite">
+    <Stack
+      spacing={1}
+      role="status"
+      aria-live="polite"
+      sx={{
+        position: 'fixed',
+        bottom: 24,
+        right: 24,
+        zIndex: (theme) => theme.zIndex.snackbar,
+      }}
+    >
       {toasts.map((toast) => (
-        <div
+        <Alert
           key={toast.id}
-          className={`toast toast--${toast.variant}`}
+          severity={toast.variant}
           onClick={() => onDismiss(toast.id)}
-          role="presentation"
+          variant="filled"
+          sx={{ cursor: 'pointer', minWidth: 280 }}
         >
           {toast.message}
-        </div>
+        </Alert>
       ))}
-    </div>
+    </Stack>
   );
 }

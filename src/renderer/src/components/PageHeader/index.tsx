@@ -1,4 +1,4 @@
-import './styles.css';
+import { Box, Stack, Typography } from '@mui/material';
 
 interface PageHeaderProps {
   icon: React.ReactNode;
@@ -14,15 +14,24 @@ export function PageHeader({
   actions,
 }: PageHeaderProps) {
   return (
-    <div className="page-header">
-      <div className="page-header-main">
-        <span className="page-header-icon">{icon}</span>
-        <div className="page-header-text">
-          <h1 className="page-header-title">{title}</h1>
-          {subtitle && <p className="page-header-subtitle">{subtitle}</p>}
-        </div>
-      </div>
-      {actions && <div className="page-header-actions">{actions}</div>}
-    </div>
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{ mb: 3 }}
+    >
+      <Stack direction="row" alignItems="center" spacing={1.5}>
+        <Box sx={{ display: 'flex', color: 'primary.main' }}>{icon}</Box>
+        <Box>
+          <Typography variant="h5">{title}</Typography>
+          {subtitle && (
+            <Typography variant="body2" color="text.secondary">
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+      </Stack>
+      {actions && <Box>{actions}</Box>}
+    </Stack>
   );
 }

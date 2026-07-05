@@ -46,6 +46,16 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   cancelled: 'Cancelado',
 };
 
+export const ORDER_STATUS_COLOR: Record<
+  OrderStatus,
+  'success' | 'warning' | 'error' | 'info'
+> = {
+  pending: 'warning',
+  in_progress: 'info',
+  completed: 'success',
+  cancelled: 'error',
+};
+
 export type PaymentStatus = 'paid' | 'partial' | 'unpaid';
 
 export function getOrderPaymentStatus(order: Order): PaymentStatus {
@@ -63,4 +73,13 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
   paid: 'Pago',
   partial: 'Parcial',
   unpaid: 'Não pago',
+};
+
+export const PAYMENT_STATUS_COLOR: Record<
+  PaymentStatus,
+  'success' | 'warning' | 'error'
+> = {
+  paid: 'success',
+  partial: 'warning',
+  unpaid: 'error',
 };

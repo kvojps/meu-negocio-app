@@ -4,12 +4,15 @@ import { DataTable } from '@components/DataTable';
 import type { Column } from '@components/DataTable';
 import { SaleIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
+import { StatusChip } from '@components/StatusChip';
 import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { usePagination } from '@hooks/use-pagination/usePagination';
+import { Stack } from '@mui/material';
 import type { Order } from '@shared/types/order';
 import {
+  PAYMENT_STATUS_COLOR,
   PAYMENT_STATUS_LABELS,
   getOrderPaymentStatus,
   getOrderProfit,
@@ -20,7 +23,6 @@ import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
 import { PaymentModal } from './components/PaymentModal';
 import { SalesCards } from './components/SalesCards';
-import '../orders/styles.css';
 
 export function SalesPage() {
   const {
@@ -90,9 +92,10 @@ export function SalesPage() {
         render: (o: Order) => {
           const paymentStatus = getOrderPaymentStatus(o);
           return (
-            <span className={`status-badge status-badge--${paymentStatus}`}>
-              {PAYMENT_STATUS_LABELS[paymentStatus]}
-            </span>
+            <StatusChip
+              label={PAYMENT_STATUS_LABELS[paymentStatus]}
+              color={PAYMENT_STATUS_COLOR[paymentStatus]}
+            />
           );
         },
       },
@@ -107,7 +110,7 @@ export function SalesPage() {
   );
 
   return (
-    <div className="orders-page">
+    <Stack spacing={2}>
       <PageHeader
         icon={<SaleIcon />}
         title="Vendas"
@@ -171,6 +174,6 @@ export function SalesPage() {
             </ConfirmDialog>
           );
         })()}
-    </div>
+    </Stack>
   );
 }

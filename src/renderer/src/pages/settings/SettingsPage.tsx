@@ -2,9 +2,24 @@ import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DownloadIcon, SettingIcon, UploadIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
 import { useDataTransfer } from '@hooks/settings/useDataTransfer';
-import './styles.css';
+import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 
 const APP_VERSION = '1.0.0';
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <Stack direction="row" spacing={2}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ width: 120, flexShrink: 0 }}
+      >
+        {label}
+      </Typography>
+      <Typography variant="body2">{value}</Typography>
+    </Stack>
+  );
+}
 
 export function SettingsPage() {
   const {
@@ -18,64 +33,60 @@ export function SettingsPage() {
   } = useDataTransfer();
 
   return (
-    <div className="settings">
+    <Stack spacing={2}>
       <PageHeader
         icon={<SettingIcon />}
         title="Configurações"
         subtitle="Informações do aplicativo"
       />
 
-      <div className="settings-section">
-        <h2>Sobre</h2>
+      <Card variant="outlined">
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Sobre
+          </Typography>
+          <Stack spacing={1}>
+            <InfoRow label="Aplicativo" value="Meu Negócio" />
+            <InfoRow label="Versão" value={APP_VERSION} />
+            <InfoRow
+              label="Finalidade"
+              value="Gerenciamento de vendas, produtos e pedidos para pequenos negócios"
+            />
+          </Stack>
+        </CardContent>
+      </Card>
 
-        <div className="settings-about-info">
-          <div className="settings-about-row">
-            <span className="settings-about-label">Aplicativo</span>
-            <span className="settings-about-value">Meu Negócio</span>
-          </div>
-          <div className="settings-about-row">
-            <span className="settings-about-label">Versão</span>
-            <span className="settings-about-value">{APP_VERSION}</span>
-          </div>
-          <div className="settings-about-row">
-            <span className="settings-about-label">Finalidade</span>
-            <span className="settings-about-value">
-              Gerenciamento de vendas, produtos e pedidos para pequenos negócios
-            </span>
-          </div>
-        </div>
-      </div>
+      <Card variant="outlined">
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Exportar e Importar Dados
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Exporte todos os produtos e pedidos para um arquivo de backup, ou
+            importe um arquivo existente para restaurar os dados.
+          </Typography>
 
-      <div className="settings-section">
-        <h2>Exportar e Importar Dados</h2>
+          <Stack direction="row" spacing={1.5}>
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon size={16} />}
+              onClick={handleExport}
+              disabled={exporting}
+            >
+              {exporting ? 'Exportando...' : 'Exportar Dados'}
+            </Button>
 
-        <p className="settings-data-hint">
-          Exporte todos os produtos e pedidos para um arquivo de backup, ou
-          importe um arquivo existente para restaurar os dados.
-        </p>
-
-        <div className="settings-data-actions">
-          <button
-            className="settings-btn settings-btn--primary"
-            onClick={handleExport}
-            disabled={exporting}
-            type="button"
-          >
-            <DownloadIcon size={16} />
-            {exporting ? 'Exportando...' : 'Exportar Dados'}
-          </button>
-
-          <button
-            className="settings-btn settings-btn--secondary"
-            onClick={requestImport}
-            disabled={importing}
-            type="button"
-          >
-            <UploadIcon size={16} />
-            {importing ? 'Importando...' : 'Importar Dados'}
-          </button>
-        </div>
-      </div>
+            <Button
+              variant="outlined"
+              startIcon={<UploadIcon size={16} />}
+              onClick={requestImport}
+              disabled={importing}
+            >
+              {importing ? 'Importando...' : 'Importar Dados'}
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
 
       <ConfirmDialog
         open={confirmOpen}
@@ -88,6 +99,6 @@ export function SettingsPage() {
         Importar um arquivo de backup substituirá todos os produtos e pedidos
         atuais. Essa ação não pode ser desfeita. Deseja continuar?
       </ConfirmDialog>
-    </div>
+    </Stack>
   );
 }

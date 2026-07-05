@@ -1,9 +1,10 @@
-import { FormField } from '@components/FormField';
-import { Input } from '@components/FormField/Input';
 import { Modal } from '@components/Modal';
+import { StatusChip } from '@components/StatusChip';
 import { useToast } from '@contexts/ToastContext';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 import type { Order } from '@shared/types/order';
 import {
+  PAYMENT_STATUS_COLOR,
   PAYMENT_STATUS_LABELS,
   getOrderPaymentStatus,
   getOrderTotal,
@@ -57,73 +58,60 @@ export function PaymentModal({ order, onClose, onSave }: PaymentModalProps) {
       maxWidth="420px"
       footer={
         <>
-          <button
-            className="modal-btn modal-btn--cancel"
-            onClick={onClose}
-            type="button"
-            disabled={isSaving}
-          >
+          <Button onClick={onClose} disabled={isSaving} color="inherit">
             Cancelar
-          </button>
-          <button
-            className="modal-btn modal-btn--confirm"
-            onClick={handleSave}
-            type="button"
-            disabled={isSaving}
-          >
+          </Button>
+          <Button onClick={handleSave} disabled={isSaving} variant="contained">
             Salvar
-          </button>
+          </Button>
         </>
       }
     >
-      <div className="orders-details-info">
-        <span>
-          <strong>Cliente:</strong> {order.customerName}
-        </span>
-        <span>
-          <strong>Total:</strong> {formatCurrency(total)}
-        </span>
-        <span>
-          <strong>Status:</strong>{' '}
-          <span
-            className={`status-badge status-badge--${getOrderPaymentStatus(order)}`}
-          >
-            {PAYMENT_STATUS_LABELS[getOrderPaymentStatus(order)]}
-          </span>
-        </span>
-      </div>
+      <Stack spacing={2}>
+        <Stack spacing={0.5}>
+          <Typography variant="body2">
+            <strong>Cliente:</strong> {order.customerName}
+          </Typography>
+          <Typography variant="body2">
+            <strong>Total:</strong> {formatCurrency(total)}
+          </Typography>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="body2" component="span">
+              <strong>Status:</strong>
+            </Typography>
+            <StatusChip
+              label={PAYMENT_STATUS_LABELS[getOrderPaymentStatus(order)]}
+              color={PAYMENT_STATUS_COLOR[getOrderPaymentStatus(order)]}
+            />
+          </Stack>
+        </Stack>
 
-      <FormField label="Valor pago">
-        <Input
+        <TextField
+          label="Valor pago"
           type="number"
-          min={0}
-          max={total}
-          step="0.01"
+          slotProps={{ htmlInput: { min: 0, max: total, step: '0.01' } }}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          fullWidth
         />
-      </FormField>
 
-      <div className="orders-details-total">
-        Saldo restante: {formatCurrency(balanceDue)}
-      </div>
+        <Typography variant="body2" color="text.secondary">
+          Saldo restante: {formatCurrency(balanceDue)}
+        </Typography>
 
-      <div className="payment-modal-shortcuts">
-        <button
-          className="modal-btn modal-btn--cancel"
-          onClick={() => setAmount(String(total))}
-          type="button"
-        >
-          Marcar como pago total
-        </button>
-        <button
-          className="modal-btn modal-btn--cancel"
-          onClick={() => setAmount('0')}
-          type="button"
-        >
-          Marcar como não pago
-        </button>
-      </div>
+        <Stack direction="row" spacing={1}>
+          <Button
+            size="small"
+            color="inherit"
+            onClick={() => setAmount(String(total))}
+          >
+            Marcar como pago total
+          </Button>
+          <Button size="small" color="inherit" onClick={() => setAmount('0')}>
+            Marcar como não pago
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }

@@ -1,5 +1,11 @@
-import { useEffect } from 'react';
-import './styles.css';
+import { Close } from '@mui/icons-material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from '@mui/material';
 
 interface ModalProps {
   open: boolean;
@@ -18,43 +24,29 @@ export function Modal({
   footer,
   maxWidth = '540px',
 }: ModalProps) {
-  useEffect(() => {
-    if (!open) return;
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
   return (
-    <div className="modal-overlay" onClick={onClose} role="presentation">
-      <div
-        className="modal"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        style={{ maxWidth }}
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={false}
+      fullWidth
+      slotProps={{ paper: { sx: { maxWidth } } }}
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 2,
+        }}
       >
-        <div className="modal-header">
-          <h2 className="modal-title">{title}</h2>
-          <button
-            className="modal-close"
-            onClick={onClose}
-            type="button"
-            aria-label="Fechar"
-          >
-            ×
-          </button>
-        </div>
-
-        <div className="modal-body">{children}</div>
-
-        {footer && <div className="modal-footer">{footer}</div>}
-      </div>
-    </div>
+        {title}
+        <IconButton onClick={onClose} aria-label="Fechar" size="small">
+          <Close fontSize="small" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>{children}</DialogContent>
+      {footer && <DialogActions>{footer}</DialogActions>}
+    </Dialog>
   );
 }

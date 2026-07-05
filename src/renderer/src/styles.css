@@ -1,28 +1,6 @@
-:root {
-  background: var(--color-bg-gradient);
-  color: var(--color-text-primary);
-  color-scheme: light;
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 html,
 body,
 #root {
-  background-color: var(--color-bg-page);
   height: 100%;
   margin: 0;
   width: 100%;
@@ -30,39 +8,4 @@ body,
 
 body {
   min-height: 100vh;
-}
-
-.app {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  width: 100%;
-}
-
-.app-main {
-  container-type: inline-size;
-  flex: 1;
-  height: 100vh;
-  min-width: 0;
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-.search-input-wrap {
-  position: relative;
-}
-
-.search-input-icon {
-  align-items: center;
-  color: var(--color-text-faint);
-  display: flex;
-  left: 0.75rem;
-  pointer-events: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.search-input-wrap input {
-  padding-left: 2.25rem;
 }

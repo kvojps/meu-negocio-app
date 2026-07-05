@@ -2,12 +2,30 @@ import { DashboardIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
 import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
-import { getOrderProfit, getOrderTotal } from '@shared/types/order';
+import {
+  Box,
+  Card,
+  CardContent,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import {
+  ORDER_STATUS_COLOR,
+  ORDER_STATUS_LABELS,
+  getOrderProfit,
+  getOrderTotal,
+} from '@shared/types/order';
+import type { OrderStatus } from '@shared/types/order';
 import { useMemo } from 'react';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { DashboardCards } from './components/DashboardCards';
-import '../orders/styles.css';
-import './styles.css';
 
 function formatBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', {
@@ -26,6 +44,25 @@ function formatShortMonth(dateStr: string): string {
     .replace('.', '');
 }
 
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Card variant="outlined" sx={{ height: '100%' }}>
+      <CardContent>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          {title}
+        </Typography>
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
+
 export function DashboardPage() {
   const { products } = useProducts();
   const { filtered: orders, filters, setFilters } = useOrders();
@@ -37,7 +74,6 @@ export function DashboardPage() {
     () => orders.filter((o) => o.status === 'completed'),
     [orders],
   );
-
   const pendingOrders = useMemo(
     () => orders.filter((o) => o.status === 'pending'),
     [orders],
@@ -113,7 +149,7 @@ export function DashboardPage() {
     topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.qty)) : 1;
 
   const orderStatusData = useMemo(() => {
-    const counts: Record<string, number> = {
+    const counts: Record<OrderStatus, number> = {
       pending: 0,
       in_progress: 0,
       completed: 0,
@@ -122,32 +158,12 @@ export function DashboardPage() {
     for (const order of orders) {
       counts[order.status]++;
     }
-    return [
-      {
-        status: 'pending',
-        label: 'Pendentes',
-        count: counts.pending,
-        color: '#f59e0b',
-      },
-      {
-        status: 'in_progress',
-        label: 'Em Andamento',
-        count: counts.in_progress,
-        color: '#3b82f6',
-      },
-      {
-        status: 'completed',
-        label: 'Concluídos',
-        count: counts.completed,
-        color: '#2cba7a',
-      },
-      {
-        status: 'cancelled',
-        label: 'Cancelados',
-        count: counts.cancelled,
-        color: '#ef4444',
-      },
-    ];
+    return (Object.keys(counts) as OrderStatus[]).map((status) => ({
+      status,
+      label: ORDER_STATUS_LABELS[status],
+      count: counts[status],
+      color: ORDER_STATUS_COLOR[status],
+    }));
   }, [orders]);
 
   const maxStatusCount = Math.max(...orderStatusData.map((d) => d.count), 1);
@@ -169,7 +185,7 @@ export function DashboardPage() {
   );
 
   return (
-    <div className="dashboard">
+    <Stack spacing={2}>
       <PageHeader
         icon={<DashboardIcon />}
         title="Dashboard"
@@ -193,162 +209,263 @@ export function DashboardPage() {
         lowStockCount={lowStockCount}
       />
 
-      <div className="dashboard-grid">
-        <section className="dashboard-section">
-          <div className="dashboard-section-header">
-            <h2>Faturamento e Lucro por Mês</h2>
-            <div className="revenue-chart-legend">
-              <span className="revenue-chart-legend-item">
-                <span className="revenue-chart-legend-dot revenue-chart-legend-dot--revenue" />
-                Faturamento
-              </span>
-              <span className="revenue-chart-legend-item">
-                <span className="revenue-chart-legend-dot revenue-chart-legend-dot--profit" />
-                Lucro
-              </span>
-            </div>
-          </div>
-          <div className="revenue-chart">
-            {monthlyRevenue.map(({ month, total, profit, pct, profitPct }) => (
-              <div key={month} className="revenue-chart-col">
-                <div className="revenue-chart-bars">
-                  <div
-                    className="revenue-chart-bar"
-                    style={{ height: `${Math.max(pct, 2)}%` }}
-                  >
-                    <span className="revenue-chart-tooltip">
-                      {formatBRL(total)}
-                    </span>
-                  </div>
-                  <div
-                    className="revenue-chart-bar revenue-chart-bar--profit"
-                    style={{ height: `${Math.max(profitPct, 2)}%` }}
-                  >
-                    <span className="revenue-chart-tooltip">
-                      {formatBRL(profit)}
-                    </span>
-                  </div>
-                </div>
-                <span className="revenue-chart-label">
-                  {formatShortMonth(month + '-01')}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+      <SectionCard title="Faturamento e Lucro por Mês">
+        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Box
+              sx={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                bgcolor: 'primary.main',
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              Faturamento
+            </Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Box
+              sx={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                bgcolor: 'success.main',
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              Lucro
+            </Typography>
+          </Stack>
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="flex-end"
+          sx={{ height: 180 }}
+        >
+          {monthlyRevenue.map(({ month, total, profit, pct, profitPct }) => (
+            <Stack
+              key={month}
+              alignItems="center"
+              spacing={1}
+              sx={{ flex: 1, height: '100%' }}
+            >
+              <Stack
+                direction="row"
+                spacing={0.5}
+                alignItems="flex-end"
+                sx={{ flex: 1, width: '100%' }}
+              >
+                <Tooltip title={formatBRL(total)}>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      height: `${Math.max(pct, 2)}%`,
+                      bgcolor: 'primary.main',
+                      borderRadius: '4px 4px 0 0',
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title={formatBRL(profit)}>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      height: `${Math.max(profitPct, 2)}%`,
+                      bgcolor: 'success.main',
+                      borderRadius: '4px 4px 0 0',
+                    }}
+                  />
+                </Tooltip>
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                {formatShortMonth(month + '-01')}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+      </SectionCard>
 
-        <div className="dashboard-cols">
-          <section className="dashboard-section">
-            <h2>Produtos Mais Vendidos</h2>
-            {topProducts.length === 0 ? (
-              <p className="dashboard-empty">Nenhuma venda realizada</p>
-            ) : (
-              <div className="top-products">
-                {topProducts.map((p) => (
-                  <div key={p.name} className="top-product-row">
-                    <span className="top-product-rank">{p.rank}</span>
-                    <div className="top-product-info">
-                      <span className="top-product-name">{p.name}</span>
-                      <div className="top-product-bar-bg">
-                        <div
-                          className="top-product-bar"
-                          style={{
-                            width: `${(p.qty / topMaxQty) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <span className="top-product-qty">{p.qty} un</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="dashboard-section">
-            <h2>Pedidos por Status</h2>
-            <div className="status-distribution">
-              {orderStatusData.map((d) => (
-                <div key={d.status} className="status-row">
-                  <div className="status-label">
-                    <span
-                      className="status-dot"
-                      style={{ backgroundColor: d.color }}
-                    />
-                    <span>{d.label}</span>
-                  </div>
-                  <div className="status-bar-bg">
-                    <div
-                      className="status-bar"
-                      style={{
-                        width: `${(d.count / maxStatusCount) * 100}%`,
-                        backgroundColor: d.color,
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+        }}
+      >
+        <SectionCard title="Produtos Mais Vendidos">
+          {topProducts.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              Nenhuma venda realizada
+            </Typography>
+          ) : (
+            <Stack spacing={1.5}>
+              {topProducts.map((p) => (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1.5}
+                  key={p.name}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ width: 16 }}
+                  >
+                    {p.rank}
+                  </Typography>
+                  <Stack sx={{ flex: 1 }} spacing={0.5}>
+                    <Typography variant="body2" noWrap>
+                      {p.name}
+                    </Typography>
+                    <Box
+                      sx={{
+                        height: 6,
+                        borderRadius: 3,
+                        bgcolor: 'action.hover',
                       }}
-                    />
-                  </div>
-                  <span className="status-count">{d.count}</span>
-                </div>
+                    >
+                      <Box
+                        sx={{
+                          height: '100%',
+                          borderRadius: 3,
+                          width: `${(p.qty / topMaxQty) * 100}%`,
+                          bgcolor: 'primary.main',
+                        }}
+                      />
+                    </Box>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    {p.qty} un
+                  </Typography>
+                </Stack>
               ))}
-            </div>
-          </section>
-        </div>
+            </Stack>
+          )}
+        </SectionCard>
 
-        <div className="dashboard-cols">
-          <section className="dashboard-section">
-            <h2>Estoque Crítico</h2>
-            {lowStockProducts.length === 0 ? (
-              <p className="dashboard-empty">
-                Nenhum produto com estoque baixo
-              </p>
-            ) : (
-              <table className="dashboard-table">
-                <thead>
-                  <tr>
-                    <th>Produto</th>
-                    <th>Estoque</th>
-                    <th>Mínimo</th>
-                  </tr>
-                </thead>
-                <tbody>
+        <SectionCard title="Pedidos por Status">
+          <Stack spacing={1.5}>
+            {orderStatusData.map((d) => (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1.5}
+                key={d.status}
+              >
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ width: 140 }}
+                >
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      bgcolor: `${d.color}.main`,
+                    }}
+                  />
+                  <Typography variant="body2">{d.label}</Typography>
+                </Stack>
+                <Box
+                  sx={{
+                    flex: 1,
+                    height: 6,
+                    borderRadius: 3,
+                    bgcolor: 'action.hover',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      height: '100%',
+                      borderRadius: 3,
+                      width: `${(d.count / maxStatusCount) * 100}%`,
+                      bgcolor: `${d.color}.main`,
+                    }}
+                  />
+                </Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ width: 24, textAlign: 'right' }}
+                >
+                  {d.count}
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        </SectionCard>
+      </Box>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+        }}
+      >
+        <SectionCard title="Estoque Crítico">
+          {lowStockProducts.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              Nenhum produto com estoque baixo
+            </Typography>
+          ) : (
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Produto</TableCell>
+                    <TableCell>Estoque</TableCell>
+                    <TableCell>Mínimo</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {lowStockProducts.map((p) => (
-                    <tr key={p.id} className="low-stock-row">
-                      <td>{p.name}</td>
-                      <td className="low-stock-value">{p.stock}</td>
-                      <td>{p.minStock}</td>
-                    </tr>
+                    <TableRow key={p.id}>
+                      <TableCell>{p.name}</TableCell>
+                      <TableCell sx={{ color: 'error.main', fontWeight: 600 }}>
+                        {p.stock}
+                      </TableCell>
+                      <TableCell>{p.minStock}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </SectionCard>
 
-          <section className="dashboard-section">
-            <h2>Últimas Vendas</h2>
-            {recentSales.length === 0 ? (
-              <p className="dashboard-empty">Nenhuma venda realizada</p>
-            ) : (
-              <table className="dashboard-table">
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                  </tr>
-                </thead>
-                <tbody>
+        <SectionCard title="Últimas Vendas">
+          {recentSales.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              Nenhuma venda realizada
+            </Typography>
+          ) : (
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Cliente</TableCell>
+                    <TableCell>Valor</TableCell>
+                    <TableCell>Data</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {recentSales.map((o) => (
-                    <tr key={o.id}>
-                      <td>{o.customerName}</td>
-                      <td>{formatBRL(getOrderTotal(o))}</td>
-                      <td>{formatDate(o.createdAt)}</td>
-                    </tr>
+                    <TableRow key={o.id}>
+                      <TableCell>{o.customerName}</TableCell>
+                      <TableCell>{formatBRL(getOrderTotal(o))}</TableCell>
+                      <TableCell>{formatDate(o.createdAt)}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            )}
-          </section>
-        </div>
-      </div>
-    </div>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </SectionCard>
+      </Box>
+    </Stack>
   );
 }

@@ -1,35 +1,36 @@
-import { LogoutIcon } from '@components/Icons';
 import { ConfirmDialog } from '@components/ConfirmDialog';
+import { LogoutIcon } from '@components/Icons';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes';
-import './styles.css';
 
 export function LogoutPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="logout-page">
-      <span className="logout-page-icon">
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      spacing={2}
+      sx={{ minHeight: '60vh', textAlign: 'center' }}
+    >
+      <Box sx={{ color: 'primary.main' }}>
         <LogoutIcon size={32} />
-      </span>
-      <h1 className="logout-page-title">Até logo!</h1>
-      <p className="logout-page-message">
+      </Box>
+      <Typography variant="h5">Até logo!</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 420 }}>
         O Meu Negócio é um aplicativo local — seus dados continuam salvos neste
         computador. Você pode voltar para o painel quando quiser.
-      </p>
-      <div className="logout-page-actions">
-        <Link className="logout-page-link" to={ROUTES.DASHBOARD}>
+      </Typography>
+      <Stack direction="row" spacing={1.5}>
+        <Button component={Link} to={ROUTES.DASHBOARD} variant="contained">
           Voltar ao Dashboard
-        </Link>
-        <button
-          className="logout-page-close-btn"
-          onClick={() => setConfirmOpen(true)}
-          type="button"
-        >
+        </Button>
+        <Button color="error" onClick={() => setConfirmOpen(true)}>
           Fechar aplicativo
-        </button>
-      </div>
+        </Button>
+      </Stack>
       <ConfirmDialog
         open={confirmOpen}
         title="Fechar aplicativo"
@@ -38,9 +39,9 @@ export function LogoutPage() {
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => window.api.app.quit()}
       >
-        Tem certeza que deseja fechar o Meu Negócio? Seus dados continuam
-        salvos neste computador.
+        Tem certeza que deseja fechar o Meu Negócio? Seus dados continuam salvos
+        neste computador.
       </ConfirmDialog>
-    </div>
+    </Stack>
   );
 }

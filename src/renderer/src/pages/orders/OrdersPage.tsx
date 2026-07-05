@@ -4,19 +4,24 @@ import { DataTable } from '@components/DataTable';
 import type { Column } from '@components/DataTable';
 import { OrderIcon, PlusIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
+import { StatusChip } from '@components/StatusChip';
 import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import { useOrderForm } from '@hooks/orders/useOrderForm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
 import { usePagination } from '@hooks/use-pagination/usePagination';
+import { Button, MenuItem, Select, Stack } from '@mui/material';
 import type { Order, OrderStatus } from '@shared/types/order';
-import { ORDER_STATUS_LABELS, getOrderTotal } from '@shared/types/order';
+import {
+  ORDER_STATUS_COLOR,
+  ORDER_STATUS_LABELS,
+  getOrderTotal,
+} from '@shared/types/order';
 import { useMemo, useState } from 'react';
 import { OrderFilters } from './components/OrderFilters';
 import { OrderFormModal } from './components/OrderFormModal';
 import { OrderViewModal } from './components/OrderViewModal';
-import './styles.css';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -79,19 +84,25 @@ export function OrdersPage() {
         label: 'Status',
         sortable: true,
         render: (o: Order) => (
-          <select
-            className={`status-badge status-badge--${o.status} status-select`}
+          <Select
+            size="small"
             value={o.status}
             onChange={(e) =>
               handleStatusChange(o, e.target.value as OrderStatus)
             }
+            renderValue={(value) => (
+              <StatusChip
+                label={ORDER_STATUS_LABELS[value as OrderStatus]}
+                color={ORDER_STATUS_COLOR[value as OrderStatus]}
+              />
+            )}
           >
             {ORDER_STATUS_OPTIONS.map(([value, label]) => (
-              <option key={value} value={value}>
+              <MenuItem key={value} value={value}>
                 {label}
-              </option>
+              </MenuItem>
             ))}
-          </select>
+          </Select>
         ),
       },
       {
@@ -117,20 +128,19 @@ export function OrdersPage() {
   );
 
   return (
-    <div className="orders-page">
+    <Stack spacing={2}>
       <PageHeader
         icon={<OrderIcon />}
         title="Pedidos"
         subtitle="Registro e acompanhamento de pedidos"
         actions={
-          <button
-            className="orders-header-button"
+          <Button
+            variant="contained"
+            startIcon={<PlusIcon size={16} />}
             onClick={form.open}
-            type="button"
           >
-            <PlusIcon size={16} />
             Novo Pedido
-          </button>
+          </Button>
         }
       />
 
@@ -191,6 +201,6 @@ export function OrdersPage() {
             </ConfirmDialog>
           );
         })()}
-    </div>
+    </Stack>
   );
 }

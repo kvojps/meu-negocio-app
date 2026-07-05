@@ -10,11 +10,11 @@ import { useProductForm } from '@hooks/products/useProductForm';
 import type { SortKey } from '@hooks/products/useProducts';
 import { useProducts } from '@hooks/products/useProducts';
 import { usePagination } from '@hooks/use-pagination/usePagination';
+import { Button, Stack, Typography } from '@mui/material';
 import type { Product } from '@shared/types/product';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ProductFilters } from './components/ProductFilters';
 import { ProductFormModal } from './components/ProductFormModal';
-import './styles.css';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -84,15 +84,15 @@ export function ProductsPage() {
         label: 'Estoque',
         sortable: true,
         render: (p: Product) => (
-          <>
-            <span
-              style={{ marginRight: 8 }}
-              className={p.stock <= p.minStock ? 'stock-number--low' : ''}
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography
+              variant="body2"
+              color={p.stock <= p.minStock ? 'error.main' : 'text.primary'}
             >
               {p.stock}
-            </span>
+            </Typography>
             <StockBadge stock={p.stock} minStock={p.minStock} />
-          </>
+          </Stack>
         ),
       },
     ],
@@ -100,20 +100,19 @@ export function ProductsPage() {
   );
 
   return (
-    <div className="products-page">
+    <Stack spacing={2}>
       <PageHeader
         icon={<ProductIcon />}
         title="Produtos"
         subtitle="Cadastro e controle de estoque do seu catálogo"
         actions={
-          <button
-            className="products-header-button"
+          <Button
+            variant="contained"
+            startIcon={<PlusIcon size={16} />}
             onClick={form.openNew}
-            type="button"
           >
-            <PlusIcon size={16} />
             Novo Produto
-          </button>
+          </Button>
         }
       />
 
@@ -161,6 +160,6 @@ export function ProductsPage() {
             </ConfirmDialog>
           );
         })()}
-    </div>
+    </Stack>
   );
 }
