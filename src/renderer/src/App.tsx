@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './routes';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
@@ -9,7 +8,7 @@ import { OrdersPage } from './pages/orders/OrdersPage';
 import { ProductsPage } from './pages/products/ProductsPage';
 import { SalesPage } from './pages/sales/SalesPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
-import { Sidebar } from './components/Sidebar';
+import { Layout } from './components/Layout';
 import { OrdersProvider } from './contexts/OrdersContext';
 import { ProductsProvider } from './contexts/ProductsContext';
 import { ToastProvider } from './contexts/ToastContext';
@@ -19,41 +18,22 @@ export function App() {
     <ToastProvider>
       <ProductsProvider>
         <OrdersProvider>
-          <Box
-            sx={{
-              display: 'flex',
-              height: '100vh',
-              overflow: 'hidden',
-              width: '100%',
-            }}
-          >
-            <Sidebar />
-            <Box
-              component="main"
-              sx={{
-                flex: 1,
-                height: '100vh',
-                minWidth: 0,
-                overflowY: 'auto',
-                p: 3,
-              }}
-            >
-              <Routes>
-                <Route
-                  path="/"
-                  element={<Navigate replace to={ROUTES.DASHBOARD} />}
-                />
-                <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-                <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-                <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
-                <Route path={ROUTES.SALES} element={<SalesPage />} />
-                <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
-                <Route path={ROUTES.HELP} element={<HelpPage />} />
-                <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Box>
-          </Box>
+          <Layout>
+            <Routes>
+              <Route
+                path="/"
+                element={<Navigate replace to={ROUTES.DASHBOARD} />}
+              />
+              <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+              <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+              <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
+              <Route path={ROUTES.SALES} element={<SalesPage />} />
+              <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+              <Route path={ROUTES.HELP} element={<HelpPage />} />
+              <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Layout>
         </OrdersProvider>
       </ProductsProvider>
     </ToastProvider>
