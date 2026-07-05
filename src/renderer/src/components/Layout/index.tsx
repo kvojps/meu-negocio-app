@@ -1,8 +1,6 @@
 import logo32x32 from '@assets/logo-32x32.svg';
 import {
   DashboardIcon,
-  HelpIcon,
-  LogoutIcon,
   OrderIcon,
   ProductIcon,
   SaleIcon,
@@ -51,8 +49,6 @@ const NAV_ITEMS = [
     path: ROUTES.SETTINGS,
     icon: <SettingIcon size={18} />,
   },
-  { label: 'Ajuda', path: ROUTES.HELP, icon: <HelpIcon size={18} /> },
-  { label: 'Sair', path: ROUTES.LOGOUT, icon: <LogoutIcon size={18} /> },
 ];
 
 export function Layout({ children }: LayoutProps) {

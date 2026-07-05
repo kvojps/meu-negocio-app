@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './routes';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
-import { HelpPage } from './pages/help/HelpPage';
-import { LogoutPage } from './pages/logout/LogoutPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 import { OrdersPage } from './pages/orders/OrdersPage';
 import { ProductsPage } from './pages/products/ProductsPage';
@@ -29,8 +27,6 @@ export function App() {
               <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
               <Route path={ROUTES.SALES} element={<SalesPage />} />
               <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
-              <Route path={ROUTES.HELP} element={<HelpPage />} />
-              <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Layout>
