@@ -9,12 +9,18 @@ function createWindow() {
     height: 800,
     minWidth: 960,
     minHeight: 640,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
     },
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.maximize();
+    mainWindow.show();
   });
 
   if (process.env.VITE_DEV_SERVER_URL) {
