@@ -111,7 +111,6 @@ export function Layout({ children }: LayoutProps) {
                     key={item.path}
                     onClick={() => go(item.path)}
                     startIcon={item.icon}
-                    size="small"
                     color={active ? 'primary' : 'inherit'}
                     sx={{
                       fontWeight: active ? 700 : 500,
