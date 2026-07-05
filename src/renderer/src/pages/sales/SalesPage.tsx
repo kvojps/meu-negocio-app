@@ -138,6 +138,7 @@ export function SalesPage() {
           <ActionsMenu
             onView={() => setViewTarget(order)}
             onPayment={() => setPaymentTarget(order)}
+            onDelete={() => confirm.setConfirmTarget({ type: 'delete', order })}
           />
         )}
         getRowKey={(order) => order.id}
