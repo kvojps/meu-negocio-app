@@ -63,7 +63,7 @@ export function useOrderFilters(orders: Order[]) {
     if (sort.key) {
       const key = sort.key;
       result.sort((a, b) => {
-        let cmp = 0;
+        let cmp: number;
 
         if (key === 'total') {
           cmp = getOrderTotal(a) - getOrderTotal(b);

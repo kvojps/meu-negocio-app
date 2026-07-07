@@ -40,7 +40,6 @@ const ORDER_STATUS_OPTIONS = Object.entries(ORDER_STATUS_LABELS) as [
 export function OrdersPage() {
   const { products } = useProducts();
   const {
-    orders,
     filtered,
     filters,
     sort,
