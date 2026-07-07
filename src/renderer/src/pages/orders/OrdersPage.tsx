@@ -10,7 +10,7 @@ import { useOrderForm } from '@hooks/orders/useOrderForm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { useProducts } from '@hooks/products/useProducts';
-import { usePagination } from '@hooks/use-pagination/usePagination';
+import { usePagination } from '@hooks/usePagination';
 import { Button, MenuItem, Select, Stack } from '@mui/material';
 import type { Order, OrderStatus } from '@shared/types/order';
 import {

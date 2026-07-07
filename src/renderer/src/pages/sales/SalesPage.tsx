@@ -8,7 +8,7 @@ import { StatusChip } from '@components/StatusChip';
 import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
-import { usePagination } from '@hooks/use-pagination/usePagination';
+import { usePagination } from '@hooks/usePagination';
 import { Stack } from '@mui/material';
 import type { Order } from '@shared/types/order';
 import {

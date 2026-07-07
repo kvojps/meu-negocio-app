@@ -9,7 +9,7 @@ import { useProductConfirm } from '@hooks/products/useProductConfirm';
 import { useProductForm } from '@hooks/products/useProductForm';
 import type { SortKey } from '@hooks/products/useProducts';
 import { useProducts } from '@hooks/products/useProducts';
-import { usePagination } from '@hooks/use-pagination/usePagination';
+import { usePagination } from '@hooks/usePagination';
 import { Button, Stack, Typography } from '@mui/material';
 import type { Product } from '@shared/types/product';
 import { useMemo } from 'react';
