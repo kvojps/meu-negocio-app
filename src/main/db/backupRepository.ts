@@ -1,5 +1,5 @@
-import type { BackupData } from '@shared/types/backup';
 import type Database from 'better-sqlite3';
+import type { BackupData } from '@shared/types/backup';
 import { getAllOrders } from './ordersRepository';
 import { getAllProducts } from './productsRepository';
 import { getSettings } from './settingsRepository';

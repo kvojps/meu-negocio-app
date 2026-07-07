@@ -5,10 +5,7 @@ const requiredPositiveNumber = (label: string) =>
     .string()
     .trim()
     .min(1, `${label} é obrigatório`)
-    .refine(
-      (v) => !Number.isNaN(Number(v)) && Number(v) >= 0,
-      `${label} inválido`,
-    );
+    .refine((v) => !Number.isNaN(Number(v)) && Number(v) >= 0, `${label} inválido`);
 
 export const productFormSchema = z.object({
   name: z.string().trim().min(1, 'Nome é obrigatório'),
@@ -22,10 +19,7 @@ export const productFormSchema = z.object({
     .trim()
     .min(1, 'Estoque é obrigatório')
     .refine(
-      (v) =>
-        !Number.isNaN(Number(v)) &&
-        Number.isInteger(Number(v)) &&
-        Number(v) >= 0,
+      (v) => !Number.isNaN(Number(v)) && Number.isInteger(Number(v)) && Number(v) >= 0,
       'Estoque inválido',
     ),
   minStock: z.string().trim(),

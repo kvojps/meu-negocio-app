@@ -1,5 +1,5 @@
-import type { ToastItem } from '@contexts/ToastContext';
 import { Alert, Stack } from '@mui/material';
+import type { ToastItem } from '@contexts/ToastContext';
 
 interface ToastViewportProps {
   toasts: ToastItem[];

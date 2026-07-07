@@ -7,9 +7,7 @@ export type { BackupData };
 
 export interface ProductsApi {
   getAll: () => Promise<Product[]>;
-  add: (
-    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Promise<Product>;
+  add: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Product>;
   update: (id: string, data: Partial<Product>) => Promise<Product>;
   delete: (id: string) => Promise<void>;
 }
@@ -26,10 +24,7 @@ export interface OrdersApi {
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
   ) => Promise<Order>;
-  setStatus: (
-    id: string,
-    newStatus: OrderStatus,
-  ) => Promise<SetOrderStatusResult>;
+  setStatus: (id: string, newStatus: OrderStatus) => Promise<SetOrderStatusResult>;
   setPaymentAmount: (id: string, amountPaid: number) => Promise<Order>;
   delete: (id: string) => Promise<void>;
 }

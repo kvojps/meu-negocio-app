@@ -1,18 +1,6 @@
-import {
-  CheckIcon,
-  DeleteIcon,
-  EditIcon,
-  OptionsIcon,
-  ViewIcon,
-} from '@components/Icons';
-import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
+import { CheckIcon, DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '@components/Icons';
 
 interface ActionsMenuProps {
   onView?: () => void;
@@ -21,12 +9,7 @@ interface ActionsMenuProps {
   onDelete?: () => void;
 }
 
-export function ActionsMenu({
-  onView,
-  onEdit,
-  onPayment,
-  onDelete,
-}: ActionsMenuProps) {
+export function ActionsMenu({ onView, onEdit, onPayment, onDelete }: ActionsMenuProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -41,11 +24,7 @@ export function ActionsMenu({
 
   return (
     <>
-      <IconButton
-        size="small"
-        aria-label="Ações"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-      >
+      <IconButton size="small" aria-label="Ações" onClick={(e) => setAnchorEl(e.currentTarget)}>
         <OptionsIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={close}>
@@ -74,10 +53,7 @@ export function ActionsMenu({
           </MenuItem>
         )}
         {onDelete && (
-          <MenuItem
-            onClick={() => handle(onDelete)}
-            sx={{ color: 'error.main' }}
-          >
+          <MenuItem onClick={() => handle(onDelete)} sx={{ color: 'error.main' }}>
             <ListItemIcon sx={{ color: 'error.main' }}>
               <DeleteIcon size={16} />
             </ListItemIcon>

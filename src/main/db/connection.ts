@@ -68,25 +68,17 @@ export function initDb(): Database.Database {
 
 function migrate(db: Database.Database): void {
   const hasUnitCost = db
-    .prepare(
-      "SELECT 1 FROM pragma_table_info('order_items') WHERE name = 'unit_cost'",
-    )
+    .prepare("SELECT 1 FROM pragma_table_info('order_items') WHERE name = 'unit_cost'")
     .get();
   if (!hasUnitCost) {
-    db.exec(
-      'ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0',
-    );
+    db.exec('ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0');
   }
 
   const hasAmountPaid = db
-    .prepare(
-      "SELECT 1 FROM pragma_table_info('orders') WHERE name = 'amount_paid'",
-    )
+    .prepare("SELECT 1 FROM pragma_table_info('orders') WHERE name = 'amount_paid'")
     .get();
   if (!hasAmountPaid) {
-    db.exec(
-      'ALTER TABLE orders ADD COLUMN amount_paid REAL NOT NULL DEFAULT 0',
-    );
+    db.exec('ALTER TABLE orders ADD COLUMN amount_paid REAL NOT NULL DEFAULT 0');
     backfillAmountPaidForCompletedOrders(db);
   }
 }
@@ -107,9 +99,7 @@ function backfillAmountPaidForCompletedOrders(db: Database.Database): void {
     items_total: number;
   }[];
 
-  const updateAmountPaid = db.prepare(
-    'UPDATE orders SET amount_paid = @amountPaid WHERE id = @id',
-  );
+  const updateAmountPaid = db.prepare('UPDATE orders SET amount_paid = @amountPaid WHERE id = @id');
   const backfillTransaction = db.transaction(() => {
     for (const row of completedOrders) {
       const total = row.manual_total ?? row.items_total;

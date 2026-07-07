@@ -1,6 +1,6 @@
+import { Button, Stack, Typography } from '@mui/material';
 import { AlertTriangleIcon, CheckIcon } from '@components/Icons';
 import { Modal } from '@components/Modal';
-import { Button, Stack, Typography } from '@mui/material';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -33,11 +33,7 @@ export function ConfirmDialog({
           <Button onClick={onCancel} color="inherit">
             {cancelLabel}
           </Button>
-          <Button
-            onClick={onConfirm}
-            color={danger ? 'error' : 'primary'}
-            variant="contained"
-          >
+          <Button onClick={onConfirm} color={danger ? 'error' : 'primary'} variant="contained">
             {confirmLabel}
           </Button>
         </>

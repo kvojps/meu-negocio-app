@@ -1,5 +1,3 @@
-import { Modal } from '@components/Modal';
-import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
 import { Close } from '@mui/icons-material';
 import {
   Button,
@@ -12,6 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import type { Product } from '@shared/types/product';
+import { Modal } from '@components/Modal';
+import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -57,16 +57,8 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
           <Button onClick={close} disabled={isSaving} color="inherit">
             Cancelar
           </Button>
-          <Button
-            onClick={() => onSubmit()}
-            disabled={isSaving}
-            variant="contained"
-          >
-            {isSaving
-              ? 'Salvando…'
-              : isEditing
-                ? 'Salvar Alterações'
-                : 'Criar Pedido'}
+          <Button onClick={() => onSubmit()} disabled={isSaving} variant="contained">
+            {isSaving ? 'Salvando…' : isEditing ? 'Salvar Alterações' : 'Criar Pedido'}
           </Button>
         </>
       }
@@ -83,11 +75,7 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
         />
 
         <Stack spacing={1.5}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="subtitle1">Itens</Typography>
             <Button size="small" onClick={addItem}>
               + Adicionar Item
@@ -98,12 +86,7 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
             const item = items[index];
             const itemErrors = errors.items?.[index];
             return (
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="flex-start"
-                key={field.id}
-              >
+              <Stack direction="row" spacing={1} alignItems="flex-start" key={field.id}>
                 <TextField
                   select
                   error={!!itemErrors?.productId}
@@ -132,14 +115,8 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
                   sx={{ flex: 1 }}
                   {...register(`items.${index}.unitPrice`)}
                 />
-                <Typography
-                  variant="body2"
-                  sx={{ pt: 1.5, minWidth: 88, textAlign: 'right' }}
-                >
-                  {formatCurrency(
-                    (Number(item?.quantity) || 0) *
-                      (Number(item?.unitPrice) || 0),
-                  )}
+                <Typography variant="body2" sx={{ pt: 1.5, minWidth: 88, textAlign: 'right' }}>
+                  {formatCurrency((Number(item?.quantity) || 0) * (Number(item?.unitPrice) || 0))}
                 </Typography>
                 <IconButton
                   onClick={() => removeItem(index)}
@@ -156,12 +133,7 @@ export function OrderFormModal({ formState, products }: OrderFormModalProps) {
 
         <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap">
           <FormControlLabel
-            control={
-              <Checkbox
-                checked={!!manualEnabled}
-                {...register('manualEnabled')}
-              />
-            }
+            control={<Checkbox checked={!!manualEnabled} {...register('manualEnabled')} />}
             label="Valor personalizado"
           />
 

@@ -1,7 +1,7 @@
+import { useCallback, useEffect, useState } from 'react';
+import type { CompanySettings } from '@shared/types/settings';
 import { call } from '@api/client';
 import { useToast } from '@contexts/ToastContext';
-import type { CompanySettings } from '@shared/types/settings';
-import { useCallback, useEffect, useState } from 'react';
 
 export type { CompanySettings };
 

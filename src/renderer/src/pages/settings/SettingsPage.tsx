@@ -1,19 +1,15 @@
+import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DownloadIcon, SettingIcon, UploadIcon } from '@components/Icons';
 import { PageHeader } from '@components/PageHeader';
 import { useDataTransfer } from '@hooks/settings/useDataTransfer';
-import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 
 const APP_VERSION = '1.0.0';
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <Stack direction="row" spacing={2}>
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ width: 120, flexShrink: 0 }}
-      >
+      <Typography variant="body2" color="text.secondary" sx={{ width: 120, flexShrink: 0 }}>
         {label}
       </Typography>
       <Typography variant="body2">{value}</Typography>
@@ -62,8 +58,8 @@ export function SettingsPage() {
             Exportar e Importar Dados
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Exporte todos os produtos e pedidos para um arquivo de backup, ou
-            importe um arquivo existente para restaurar os dados.
+            Exporte todos os produtos e pedidos para um arquivo de backup, ou importe um arquivo
+            existente para restaurar os dados.
           </Typography>
 
           <Stack direction="row" spacing={1.5}>
@@ -96,8 +92,8 @@ export function SettingsPage() {
         confirmLabel="Importar"
         danger
       >
-        Importar um arquivo de backup substituirá todos os produtos e pedidos
-        atuais. Essa ação não pode ser desfeita. Deseja continuar?
+        Importar um arquivo de backup substituirá todos os produtos e pedidos atuais. Essa ação não
+        pode ser desfeita. Deseja continuar?
       </ConfirmDialog>
     </Stack>
   );

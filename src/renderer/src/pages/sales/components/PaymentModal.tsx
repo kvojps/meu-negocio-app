@@ -1,8 +1,5 @@
-import { getErrorMessage } from '@api/client';
-import { Modal } from '@components/Modal';
-import { StatusChip } from '@components/StatusChip';
-import { useToast } from '@contexts/ToastContext';
 import { Button, Stack, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import type { Order } from '@shared/types/order';
 import {
   PAYMENT_STATUS_COLOR,
@@ -10,7 +7,10 @@ import {
   getOrderPaymentStatus,
   getOrderTotal,
 } from '@shared/types/order';
-import { useEffect, useState } from 'react';
+import { getErrorMessage } from '@api/client';
+import { Modal } from '@components/Modal';
+import { StatusChip } from '@components/StatusChip';
+import { useToast } from '@contexts/ToastContext';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -47,10 +47,7 @@ export function PaymentModal({ order, onClose, onSave }: PaymentModalProps) {
       showToast('Pagamento atualizado.');
       onClose();
     } catch (err) {
-      showToast(
-        getErrorMessage(err, 'Erro ao registrar o pagamento.'),
-        'error',
-      );
+      showToast(getErrorMessage(err, 'Erro ao registrar o pagamento.'), 'error');
     } finally {
       setIsSaving(false);
     }
@@ -106,11 +103,7 @@ export function PaymentModal({ order, onClose, onSave }: PaymentModalProps) {
         </Typography>
 
         <Stack direction="row" spacing={1}>
-          <Button
-            size="small"
-            color="inherit"
-            onClick={() => setAmount(String(total))}
-          >
+          <Button size="small" color="inherit" onClick={() => setAmount(String(total))}>
             Marcar como pago total
           </Button>
           <Button size="small" color="inherit" onClick={() => setAmount('0')}>

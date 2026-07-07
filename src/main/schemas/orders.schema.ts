@@ -1,11 +1,6 @@
 import { z } from 'zod';
 
-export const orderStatusSchema = z.enum([
-  'pending',
-  'in_progress',
-  'completed',
-  'cancelled',
-]);
+export const orderStatusSchema = z.enum(['pending', 'in_progress', 'completed', 'cancelled']);
 
 const orderItemSchema = z.object({
   id: z.string().min(1, 'Identificador do item é obrigatório'),
@@ -23,15 +18,10 @@ export const createOrderSchema = z.object({
   customerName: z.string().trim().min(1, 'Nome do cliente é obrigatório'),
   status: orderStatusSchema,
   items: z.array(orderItemSchema),
-  manualTotal: z
-    .number()
-    .nonnegative('Total manual não pode ser negativo')
-    .optional(),
+  manualTotal: z.number().nonnegative('Total manual não pode ser negativo').optional(),
   amountPaid: z.number().nonnegative('Valor pago não pode ser negativo'),
 });
 
 export const updateOrderSchema = createOrderSchema.omit({ status: true });
 
-export const paymentAmountSchema = z
-  .number()
-  .nonnegative('Valor pago não pode ser negativo');
+export const paymentAmountSchema = z.number().nonnegative('Valor pago não pode ser negativo');

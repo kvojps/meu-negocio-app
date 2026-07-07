@@ -1,3 +1,13 @@
+import { Stack } from '@mui/material';
+import { useMemo, useState } from 'react';
+import type { Order } from '@shared/types/order';
+import {
+  PAYMENT_STATUS_COLOR,
+  PAYMENT_STATUS_LABELS,
+  getOrderPaymentStatus,
+  getOrderProfit,
+  getOrderTotal,
+} from '@shared/types/order';
 import { ActionsMenu } from '@components/ActionsMenu';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DataTable } from '@components/DataTable';
@@ -9,16 +19,6 @@ import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
 import type { OrderSortKey } from '@hooks/orders/useOrders';
 import { useOrders } from '@hooks/orders/useOrders';
 import { usePagination } from '@hooks/usePagination';
-import { Stack } from '@mui/material';
-import type { Order } from '@shared/types/order';
-import {
-  PAYMENT_STATUS_COLOR,
-  PAYMENT_STATUS_LABELS,
-  getOrderPaymentStatus,
-  getOrderProfit,
-  getOrderTotal,
-} from '@shared/types/order';
-import { useMemo, useState } from 'react';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
 import { PaymentModal } from './components/PaymentModal';
@@ -45,10 +45,7 @@ export function SalesPage() {
     [filtered],
   );
 
-  const { page, setPage, totalPages, paginatedItems, start } = usePagination(
-    completedOrders,
-    10,
-  );
+  const { page, setPage, totalPages, paginatedItems, start } = usePagination(completedOrders, 10);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', {

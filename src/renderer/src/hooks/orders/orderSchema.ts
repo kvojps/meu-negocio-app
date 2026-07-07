@@ -7,18 +7,12 @@ export const orderItemSchema = z.object({
     .string()
     .trim()
     .min(1, 'Quantidade inválida')
-    .refine(
-      (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
-      'Quantidade inválida',
-    ),
+    .refine((v) => !Number.isNaN(Number(v)) && Number(v) > 0, 'Quantidade inválida'),
   unitPrice: z
     .string()
     .trim()
     .min(1, 'Preço inválido')
-    .refine(
-      (v) => !Number.isNaN(Number(v)) && Number(v) >= 0,
-      'Preço inválido',
-    ),
+    .refine((v) => !Number.isNaN(Number(v)) && Number(v) >= 0, 'Preço inválido'),
   unitCost: z.string().trim(),
 });
 

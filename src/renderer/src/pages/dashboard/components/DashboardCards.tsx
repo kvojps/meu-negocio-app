@@ -25,13 +25,7 @@ function formatBRL(value: number): string {
   }).format(value);
 }
 
-type CardColor =
-  | 'primary'
-  | 'success'
-  | 'info'
-  | 'secondary'
-  | 'warning'
-  | 'error';
+type CardColor = 'primary' | 'success' | 'info' | 'secondary' | 'warning' | 'error';
 
 interface StatCard {
   label: string;
@@ -91,10 +85,7 @@ export function DashboardCards({
     {
       label: 'Estoque Baixo',
       value: String(lowStockCount),
-      sub:
-        lowStockCount === 1
-          ? 'produto abaixo do mínimo'
-          : 'produtos abaixo do mínimo',
+      sub: lowStockCount === 1 ? 'produto abaixo do mínimo' : 'produtos abaixo do mínimo',
       color: 'error',
       icon: WarningAmber,
     },

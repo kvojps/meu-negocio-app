@@ -1,36 +1,18 @@
-import { SearchIcon } from '@components/Icons';
-import type { OrderFilterState } from '@hooks/orders/useOrders';
-import {
-  InputAdornment,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import type { OrderStatus, PaymentStatus } from '@shared/types/order';
-import {
-  ORDER_STATUS_LABELS,
-  PAYMENT_STATUS_LABELS,
-} from '@shared/types/order';
+import { InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { forwardRef } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
+import type { OrderStatus, PaymentStatus } from '@shared/types/order';
+import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from '@shared/types/order';
+import { SearchIcon } from '@components/Icons';
+import type { OrderFilterState } from '@hooks/orders/useOrders';
 import 'react-datepicker/dist/react-datepicker.css';
 
 registerLocale('pt-BR', ptBR);
 
-const ALL_STATUS_OPTIONS: OrderStatus[] = [
-  'pending',
-  'in_progress',
-  'completed',
-  'cancelled',
-];
+const ALL_STATUS_OPTIONS: OrderStatus[] = ['pending', 'in_progress', 'completed', 'cancelled'];
 
-const ALL_PAYMENT_STATUS_OPTIONS: PaymentStatus[] = [
-  'paid',
-  'partial',
-  'unpaid',
-];
+const ALL_PAYMENT_STATUS_OPTIONS: PaymentStatus[] = ['paid', 'partial', 'unpaid'];
 
 function toDate(iso: string): Date | null {
   if (!iso) return null;
@@ -68,13 +50,7 @@ const DatePickerField = forwardRef<HTMLInputElement, DatePickerFieldProps>(
 );
 DatePickerField.displayName = 'DatePickerField';
 
-function DatePickerInput({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
+function DatePickerInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <DatePicker
       locale="pt-BR"
@@ -111,13 +87,7 @@ export function OrderFilters({
     : ALL_STATUS_OPTIONS;
 
   return (
-    <Stack
-      direction="row"
-      spacing={1.5}
-      alignItems="center"
-      flexWrap="wrap"
-      useFlexGap
-    >
+    <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
       {!hideSearch && (
         <TextField
           size="small"
@@ -157,9 +127,7 @@ export function OrderFilters({
           select
           size="small"
           value={filters.paymentStatus}
-          onChange={(e) =>
-            onChange({ ...filters, paymentStatus: e.target.value })
-          }
+          onChange={(e) => onChange({ ...filters, paymentStatus: e.target.value })}
           sx={{ minWidth: 180 }}
         >
           <MenuItem value="">Todos os pagamentos</MenuItem>

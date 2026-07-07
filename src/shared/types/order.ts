@@ -22,17 +22,11 @@ export interface Order {
 
 export function getOrderTotal(order: Order): number {
   if (order.manualTotal !== undefined) return order.manualTotal;
-  return order.items.reduce(
-    (sum, item) => sum + item.quantity * item.unitPrice,
-    0,
-  );
+  return order.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
 }
 
 export function getOrderCost(order: Order): number {
-  return order.items.reduce(
-    (sum, item) => sum + item.quantity * item.unitCost,
-    0,
-  );
+  return order.items.reduce((sum, item) => sum + item.quantity * item.unitCost, 0);
 }
 
 export function getOrderProfit(order: Order): number {
@@ -46,10 +40,7 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   cancelled: 'Cancelado',
 };
 
-export const ORDER_STATUS_COLOR: Record<
-  OrderStatus,
-  'success' | 'warning' | 'error' | 'info'
-> = {
+export const ORDER_STATUS_COLOR: Record<OrderStatus, 'success' | 'warning' | 'error' | 'info'> = {
   pending: 'warning',
   in_progress: 'info',
   completed: 'success',
@@ -75,10 +66,7 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
   unpaid: 'Não pago',
 };
 
-export const PAYMENT_STATUS_COLOR: Record<
-  PaymentStatus,
-  'success' | 'warning' | 'error'
-> = {
+export const PAYMENT_STATUS_COLOR: Record<PaymentStatus, 'success' | 'warning' | 'error'> = {
   paid: 'success',
   partial: 'warning',
   unpaid: 'error',

@@ -10,8 +10,8 @@
     "dev:renderer": "electron-vite dev --rendererOnly",
     "postinstall": "electron-rebuild -f -w better-sqlite3",
     "lint": "eslint .",
-    "format": "prettier . --write",
-    "format:check": "prettier . --check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "dist:win": "electron-vite build && electron-builder --win"
   },
   "build": {

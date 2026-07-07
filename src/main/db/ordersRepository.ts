@@ -1,7 +1,7 @@
-import type { Order, OrderItem, OrderStatus } from '@shared/types/order';
-import type { Product } from '@shared/types/product';
 import type Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
+import type { Order, OrderItem, OrderStatus } from '@shared/types/order';
+import type { Product } from '@shared/types/product';
 import { adjustProductStock } from './productsRepository';
 
 interface OrderRow {
@@ -56,12 +56,8 @@ function getItemsForOrder(db: Database.Database, orderId: string): OrderItem[] {
 }
 
 export function getAllOrders(db: Database.Database): Order[] {
-  const orderRows = db
-    .prepare('SELECT * FROM orders ORDER BY created_at ASC')
-    .all() as OrderRow[];
-  const itemRows = db
-    .prepare('SELECT * FROM order_items')
-    .all() as OrderItemRow[];
+  const orderRows = db.prepare('SELECT * FROM orders ORDER BY created_at ASC').all() as OrderRow[];
+  const itemRows = db.prepare('SELECT * FROM order_items').all() as OrderItemRow[];
 
   const itemsByOrder = new Map<string, OrderItem[]>();
   for (const row of itemRows) {
@@ -70,24 +66,16 @@ export function getAllOrders(db: Database.Database): Order[] {
     itemsByOrder.set(row.order_id, items);
   }
 
-  return orderRows.map((row) =>
-    buildOrder(row, itemsByOrder.get(row.id) ?? []),
-  );
+  return orderRows.map((row) => buildOrder(row, itemsByOrder.get(row.id) ?? []));
 }
 
 function getOrderById(db: Database.Database, id: string): Order | undefined {
-  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(id) as
-    | OrderRow
-    | undefined;
+  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(id) as OrderRow | undefined;
   if (!row) return undefined;
   return buildOrder(row, getItemsForOrder(db, id));
 }
 
-function insertItems(
-  db: Database.Database,
-  orderId: string,
-  items: OrderItem[],
-): void {
+function insertItems(db: Database.Database, orderId: string, items: OrderItem[]): void {
   const insertItem = db.prepare(
     `INSERT INTO order_items (id, order_id, product_id, product_name, quantity, unit_price, unit_cost)
      VALUES (@id, @orderId, @productId, @productName, @quantity, @unitPrice, @unitCost)`,
@@ -204,9 +192,11 @@ export function setOrderStatus(
     }
 
     const updatedAt = new Date().toISOString();
-    db.prepare(
-      'UPDATE orders SET status = @status, updated_at = @updatedAt WHERE id = @id',
-    ).run({ id, status: newStatus, updatedAt });
+    db.prepare('UPDATE orders SET status = @status, updated_at = @updatedAt WHERE id = @id').run({
+      id,
+      status: newStatus,
+      updatedAt,
+    });
   });
   statusTransaction();
 

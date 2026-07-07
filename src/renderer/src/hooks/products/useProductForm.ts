@@ -1,19 +1,13 @@
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Product } from '@shared/types/product';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  type ProductFormValues,
-  emptyProductFormValues,
-  productFormSchema,
-} from './productSchema';
+import type { Product } from '@shared/types/product';
+import { getErrorMessage } from '@api/client';
+import { useToast } from '@contexts/ToastContext';
+import { type ProductFormValues, emptyProductFormValues, productFormSchema } from './productSchema';
 
 export function useProductForm(
-  addProduct: (
-    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Promise<Product>,
+  addProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Product>,
   updateProduct: (id: string, data: Partial<Product>) => Promise<void>,
 ) {
   const [isOpen, setIsOpen] = useState(false);

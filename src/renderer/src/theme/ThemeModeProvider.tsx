@@ -8,9 +8,7 @@ const STORAGE_KEY = 'meu-negocio-theme-mode';
 function getInitialMode(): PaletteMode {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export function ThemeModeProvider({ children }: { children: ReactNode }) {

@@ -1,14 +1,9 @@
-import {
-  Receipt,
-  Savings,
-  ShoppingCart,
-  TrendingUp,
-} from '@mui/icons-material';
+import { Receipt, Savings, ShoppingCart, TrendingUp } from '@mui/icons-material';
 import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
-import type { Order } from '@shared/types/order';
-import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 import type { ComponentType } from 'react';
 import { useMemo } from 'react';
+import type { Order } from '@shared/types/order';
+import { getOrderProfit, getOrderTotal } from '@shared/types/order';
 
 interface SalesCardsProps {
   completedOrders: Order[];
@@ -33,14 +28,8 @@ interface StatCard {
 
 export function SalesCards({ completedOrders }: SalesCardsProps) {
   const cards: StatCard[] = useMemo(() => {
-    const totalRevenue = completedOrders.reduce(
-      (sum, o) => sum + getOrderTotal(o),
-      0,
-    );
-    const totalProfit = completedOrders.reduce(
-      (sum, o) => sum + getOrderProfit(o),
-      0,
-    );
+    const totalRevenue = completedOrders.reduce((sum, o) => sum + getOrderTotal(o), 0);
+    const totalProfit = completedOrders.reduce((sum, o) => sum + getOrderProfit(o), 0);
     const totalSales = completedOrders.length;
     const avgTicket = totalSales > 0 ? totalRevenue / totalSales : 0;
 

@@ -1,5 +1,5 @@
-import { useToast } from '@contexts/ToastContext';
 import { useCallback, useState } from 'react';
+import { useToast } from '@contexts/ToastContext';
 
 export function useDataTransfer() {
   const { showToast } = useToast();
@@ -35,10 +35,7 @@ export function useDataTransfer() {
         return;
       }
       if (result.error !== 'canceled') {
-        showToast(
-          'Não foi possível importar o arquivo. Verifique se é um backup válido.',
-          'error',
-        );
+        showToast('Não foi possível importar o arquivo. Verifique se é um backup válido.', 'error');
       }
     } catch {
       showToast('Erro ao importar dados.', 'error');

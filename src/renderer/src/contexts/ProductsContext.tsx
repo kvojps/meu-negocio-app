@@ -1,14 +1,12 @@
-import { call } from '@api/client';
-import type { Product } from '@shared/types/product';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import type { Product } from '@shared/types/product';
+import { call } from '@api/client';
 import { useToast } from './ToastContext';
 
 export interface ProductsContextValue {
   products: Product[];
   isLoading: boolean;
-  addProduct: (
-    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Promise<Product>;
+  addProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Product>;
   updateProduct: (id: string, data: Partial<Product>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Product | undefined;
@@ -34,9 +32,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function addProduct(
-    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
-  ) {
+  async function addProduct(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) {
     const product = await call(() => window.api.products.add(data));
     setProducts((prev) => [...prev, product]);
     return product;
@@ -69,19 +65,13 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     [products, isLoading],
   );
 
-  return (
-    <ProductsContext.Provider value={value}>
-      {children}
-    </ProductsContext.Provider>
-  );
+  return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>;
 }
 
 export function useProductsContext(): ProductsContextValue {
   const ctx = useContext(ProductsContext);
   if (!ctx) {
-    throw new Error(
-      'useProductsContext must be used within a ProductsProvider',
-    );
+    throw new Error('useProductsContext must be used within a ProductsProvider');
   }
   return ctx;
 }

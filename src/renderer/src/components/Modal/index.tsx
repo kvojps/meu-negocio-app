@@ -1,11 +1,5 @@
 import { Close } from '@mui/icons-material';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 
 interface ModalProps {
   open: boolean;
@@ -16,14 +10,7 @@ interface ModalProps {
   maxWidth?: string;
 }
 
-export function Modal({
-  open,
-  onClose,
-  title,
-  children,
-  footer,
-  maxWidth = '540px',
-}: ModalProps) {
+export function Modal({ open, onClose, title, children, footer, maxWidth = '540px' }: ModalProps) {
   return (
     <Dialog
       open={open}

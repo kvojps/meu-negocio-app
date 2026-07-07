@@ -1,17 +1,4 @@
-import logo32x32 from '@assets/logo-32x32.svg';
-import {
-  DashboardIcon,
-  OrderIcon,
-  ProductIcon,
-  SaleIcon,
-  SettingIcon,
-} from '@components/Icons';
-import { useThemeMode } from '@hooks/useThemeMode';
-import {
-  Brightness4,
-  Brightness7,
-  Menu as MenuIcon,
-} from '@mui/icons-material';
+import { Brightness4, Brightness7, Menu as MenuIcon } from '@mui/icons-material';
 import {
   AppBar,
   Box,
@@ -29,6 +16,9 @@ import {
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import logo32x32 from '@assets/logo-32x32.svg';
+import { DashboardIcon, OrderIcon, ProductIcon, SaleIcon, SettingIcon } from '@components/Icons';
+import { useThemeMode } from '@hooks/useThemeMode';
 import { ROUTES } from '../../routes';
 
 interface LayoutProps {
@@ -66,11 +56,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar
-        position="sticky"
-        color="default"
-        sx={{ bgcolor: 'background.paper' }}
-      >
+      <AppBar position="sticky" color="default" sx={{ bgcolor: 'background.paper' }}>
         <Toolbar sx={{ gap: 1 }}>
           <Box
             sx={{
@@ -96,10 +82,7 @@ export function Layout({ children }: LayoutProps) {
           </Box>
 
           {isMobile ? (
-            <IconButton
-              onClick={() => setDrawerOpen(true)}
-              aria-label="Abrir menu"
-            >
+            <IconButton onClick={() => setDrawerOpen(true)} aria-label="Abrir menu">
               <MenuIcon />
             </IconButton>
           ) : (
@@ -124,25 +107,13 @@ export function Layout({ children }: LayoutProps) {
             </Box>
           )}
 
-          <IconButton
-            onClick={toggleMode}
-            aria-label="Alternar tema"
-            color="inherit"
-          >
-            {mode === 'dark' ? (
-              <Brightness7 fontSize="small" />
-            ) : (
-              <Brightness4 fontSize="small" />
-            )}
+          <IconButton onClick={toggleMode} aria-label="Alternar tema" color="inherit">
+            {mode === 'dark' ? <Brightness7 fontSize="small" /> : <Brightness4 fontSize="small" />}
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 240 }} role="presentation">
           <List>
             {NAV_ITEMS.map((item) => (

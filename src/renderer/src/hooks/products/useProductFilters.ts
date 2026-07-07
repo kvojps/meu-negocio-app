@@ -1,5 +1,5 @@
-import type { Product } from '@shared/types/product';
 import { useMemo, useState } from 'react';
+import type { Product } from '@shared/types/product';
 
 export type SortKey = 'name' | 'category' | 'supplier' | 'salePrice' | 'stock';
 

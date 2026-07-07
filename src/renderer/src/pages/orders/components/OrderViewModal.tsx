@@ -1,5 +1,3 @@
-import { Modal } from '@components/Modal';
-import { StatusChip } from '@components/StatusChip';
 import {
   Button,
   Stack,
@@ -21,6 +19,8 @@ import {
   getOrderPaymentStatus,
   getOrderTotal,
 } from '@shared/types/order';
+import { Modal } from '@components/Modal';
+import { StatusChip } from '@components/StatusChip';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -28,8 +28,7 @@ const formatCurrency = (value: number) =>
     currency: 'BRL',
   }).format(value);
 
-const formatDate = (dateStr: string) =>
-  new Intl.DateTimeFormat('pt-BR').format(new Date(dateStr));
+const formatDate = (dateStr: string) => new Intl.DateTimeFormat('pt-BR').format(new Date(dateStr));
 
 interface OrderViewModalProps {
   viewTarget: Order | null;
@@ -83,10 +82,8 @@ export function OrderViewModal({
             </Stack>
             {getOrderPaymentStatus(viewTarget) !== 'paid' && (
               <Typography variant="body2">
-                <strong>Valor pago:</strong>{' '}
-                {formatCurrency(viewTarget.amountPaid)} ·{' '}
-                <strong>Saldo restante:</strong>{' '}
-                {formatCurrency(getOrderBalanceDue(viewTarget))}
+                <strong>Valor pago:</strong> {formatCurrency(viewTarget.amountPaid)} ·{' '}
+                <strong>Saldo restante:</strong> {formatCurrency(getOrderBalanceDue(viewTarget))}
               </Typography>
             )}
           </Stack>
@@ -107,9 +104,7 @@ export function OrderViewModal({
                     <TableCell>{item.productName}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{formatCurrency(item.unitPrice)}</TableCell>
-                    <TableCell>
-                      {formatCurrency(item.quantity * item.unitPrice)}
-                    </TableCell>
+                    <TableCell>{formatCurrency(item.quantity * item.unitPrice)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -118,12 +113,7 @@ export function OrderViewModal({
 
           <Typography variant="subtitle1" sx={{ textAlign: 'right' }}>
             {viewTarget.manualTotal !== undefined && (
-              <Typography
-                component="span"
-                variant="caption"
-                color="text.secondary"
-                sx={{ mr: 1 }}
-              >
+              <Typography component="span" variant="caption" color="text.secondary" sx={{ mr: 1 }}>
                 (valor personalizado)
               </Typography>
             )}

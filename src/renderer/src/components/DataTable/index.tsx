@@ -1,4 +1,3 @@
-import { Pagination } from '@components/Pagination';
 import {
   Box,
   Paper,
@@ -11,6 +10,7 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
+import { Pagination } from '@components/Pagination';
 
 export interface Column<T> {
   key: (keyof T & string) | (string & {});
@@ -61,11 +61,7 @@ export function DataTable<T>({
               {columns.map((col) => (
                 <TableCell
                   key={col.key}
-                  sortDirection={
-                    col.sortable && sort.key === col.key
-                      ? sort.direction
-                      : false
-                  }
+                  sortDirection={col.sortable && sort.key === col.key ? sort.direction : false}
                 >
                   {col.sortable ? (
                     <TableSortLabel
@@ -87,11 +83,7 @@ export function DataTable<T>({
             {totalCount === 0 ? (
               <TableRow>
                 <TableCell colSpan={colSpan} align="center">
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ py: 3 }}
-                  >
+                  <Typography variant="body2" color="text.secondary" sx={{ py: 3 }}>
                     {emptyMessage ?? 'Nenhum registro encontrado.'}
                   </Typography>
                 </TableCell>
@@ -102,9 +94,7 @@ export function DataTable<T>({
                   {columns.map((col) => (
                     <TableCell key={col.key}>{col.render(item)}</TableCell>
                   ))}
-                  {renderActions && (
-                    <TableCell align="right">{renderActions(item)}</TableCell>
-                  )}
+                  {renderActions && <TableCell align="right">{renderActions(item)}</TableCell>}
                 </TableRow>
               ))
             )}

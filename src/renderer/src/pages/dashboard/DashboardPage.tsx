@@ -1,7 +1,3 @@
-import { DashboardIcon } from '@components/Icons';
-import { PageHeader } from '@components/PageHeader';
-import { useOrders } from '@hooks/orders/useOrders';
-import { useProducts } from '@hooks/products/useProducts';
 import {
   Box,
   Card,
@@ -16,6 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useMemo } from 'react';
 import {
   ORDER_STATUS_COLOR,
   ORDER_STATUS_LABELS,
@@ -23,7 +20,10 @@ import {
   getOrderTotal,
 } from '@shared/types/order';
 import type { OrderStatus } from '@shared/types/order';
-import { useMemo } from 'react';
+import { DashboardIcon } from '@components/Icons';
+import { PageHeader } from '@components/PageHeader';
+import { useOrders } from '@hooks/orders/useOrders';
+import { useProducts } from '@hooks/products/useProducts';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { DashboardCards } from './components/DashboardCards';
 
@@ -39,18 +39,10 @@ function formatDate(dateStr: string): string {
 }
 
 function formatShortMonth(dateStr: string): string {
-  return new Date(dateStr)
-    .toLocaleDateString('pt-BR', { month: 'short' })
-    .replace('.', '');
+  return new Date(dateStr).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
 }
 
-function SectionCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Card variant="outlined" sx={{ height: '100%' }}>
       <CardContent>
@@ -70,14 +62,8 @@ export function DashboardPage() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const completedOrders = useMemo(
-    () => orders.filter((o) => o.status === 'completed'),
-    [orders],
-  );
-  const pendingOrders = useMemo(
-    () => orders.filter((o) => o.status === 'pending'),
-    [orders],
-  );
+  const completedOrders = useMemo(() => orders.filter((o) => o.status === 'completed'), [orders]);
+  const pendingOrders = useMemo(() => orders.filter((o) => o.status === 'pending'), [orders]);
 
   const totalRevenue = useMemo(
     () => completedOrders.reduce((s, o) => s + getOrderTotal(o), 0),
@@ -94,8 +80,7 @@ export function DashboardPage() {
     [completedOrders],
   );
 
-  const avgTicket =
-    completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
+  const avgTicket = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
 
   const lowStockCount = useMemo(
     () => products.filter((p) => p.stock <= p.minStock).length,
@@ -133,10 +118,7 @@ export function DashboardPage() {
     const map = new Map<string, number>();
     for (const order of completedOrders) {
       for (const item of order.items) {
-        map.set(
-          item.productName,
-          (map.get(item.productName) ?? 0) + item.quantity,
-        );
+        map.set(item.productName, (map.get(item.productName) ?? 0) + item.quantity);
       }
     }
     return Array.from(map.entries())
@@ -145,8 +127,7 @@ export function DashboardPage() {
       .map(([name, qty], i) => ({ rank: i + 1, name, qty }));
   }, [completedOrders]);
 
-  const topMaxQty =
-    topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.qty)) : 1;
+  const topMaxQty = topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.qty)) : 1;
 
   const orderStatusData = useMemo(() => {
     const counts: Record<OrderStatus, number> = {
@@ -176,10 +157,7 @@ export function DashboardPage() {
   const recentSales = useMemo(
     () =>
       [...completedOrders]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 5),
     [completedOrders],
   );
@@ -238,19 +216,9 @@ export function DashboardPage() {
             </Typography>
           </Stack>
         </Stack>
-        <Stack
-          direction="row"
-          spacing={2}
-          alignItems="flex-end"
-          sx={{ height: 180 }}
-        >
+        <Stack direction="row" spacing={2} alignItems="flex-end" sx={{ height: 180 }}>
           {monthlyRevenue.map(({ month, total, profit, pct, profitPct }) => (
-            <Stack
-              key={month}
-              alignItems="center"
-              spacing={1}
-              sx={{ flex: 1, height: '100%' }}
-            >
+            <Stack key={month} alignItems="center" spacing={1} sx={{ flex: 1, height: '100%' }}>
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -301,17 +269,8 @@ export function DashboardPage() {
           ) : (
             <Stack spacing={1.5}>
               {topProducts.map((p) => (
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={1.5}
-                  key={p.name}
-                >
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ width: 16 }}
-                  >
+                <Stack direction="row" alignItems="center" spacing={1.5} key={p.name}>
+                  <Typography variant="body2" color="text.secondary" sx={{ width: 16 }}>
                     {p.rank}
                   </Typography>
                   <Stack sx={{ flex: 1 }} spacing={0.5}>
@@ -347,18 +306,8 @@ export function DashboardPage() {
         <SectionCard title="Pedidos por Status">
           <Stack spacing={1.5}>
             {orderStatusData.map((d) => (
-              <Stack
-                direction="row"
-                alignItems="center"
-                spacing={1.5}
-                key={d.status}
-              >
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={1}
-                  sx={{ width: 140 }}
-                >
+              <Stack direction="row" alignItems="center" spacing={1.5} key={d.status}>
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: 140 }}>
                   <Box
                     sx={{
                       width: 8,
@@ -425,9 +374,7 @@ export function DashboardPage() {
                   {lowStockProducts.map((p) => (
                     <TableRow key={p.id}>
                       <TableCell>{p.name}</TableCell>
-                      <TableCell sx={{ color: 'error.main', fontWeight: 600 }}>
-                        {p.stock}
-                      </TableCell>
+                      <TableCell sx={{ color: 'error.main', fontWeight: 600 }}>{p.stock}</TableCell>
                       <TableCell>{p.minStock}</TableCell>
                     </TableRow>
                   ))}

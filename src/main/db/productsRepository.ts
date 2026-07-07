@@ -1,6 +1,6 @@
-import type { Product } from '@shared/types/product';
 import type Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
+import type { Product } from '@shared/types/product';
 
 interface ProductRow {
   id: string;
@@ -33,19 +33,12 @@ function rowToProduct(row: ProductRow): Product {
 }
 
 export function getAllProducts(db: Database.Database): Product[] {
-  const rows = db
-    .prepare('SELECT * FROM products ORDER BY created_at ASC')
-    .all() as ProductRow[];
+  const rows = db.prepare('SELECT * FROM products ORDER BY created_at ASC').all() as ProductRow[];
   return rows.map(rowToProduct);
 }
 
-export function getProductById(
-  db: Database.Database,
-  id: string,
-): Product | undefined {
-  const row = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as
-    | ProductRow
-    | undefined;
+export function getProductById(db: Database.Database, id: string): Product | undefined {
+  const row = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as ProductRow | undefined;
   return row ? rowToProduct(row) : undefined;
 }
 
@@ -69,11 +62,7 @@ export function addProduct(
   return product;
 }
 
-export function updateProduct(
-  db: Database.Database,
-  id: string,
-  data: Partial<Product>,
-): Product {
+export function updateProduct(db: Database.Database, id: string, data: Partial<Product>): Product {
   const existing = getProductById(db, id);
   if (!existing) {
     throw new Error(`Product not found: ${id}`);
@@ -113,9 +102,9 @@ export function adjustProductStock(
     updatedAt: new Date().toISOString(),
   };
 
-  db.prepare(
-    'UPDATE products SET stock = @stock, updated_at = @updatedAt WHERE id = @id',
-  ).run(updated);
+  db.prepare('UPDATE products SET stock = @stock, updated_at = @updatedAt WHERE id = @id').run(
+    updated,
+  );
 
   return updated;
 }

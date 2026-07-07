@@ -1,13 +1,6 @@
+import { Badge, InputAdornment, MenuItem, Stack, TextField, ToggleButton } from '@mui/material';
 import { AlertTriangleIcon, SearchIcon } from '@components/Icons';
 import type { FilterState } from '@hooks/products/useProducts';
-import {
-  Badge,
-  InputAdornment,
-  MenuItem,
-  Stack,
-  TextField,
-  ToggleButton,
-} from '@mui/material';
 
 interface ProductFiltersProps {
   filters: FilterState;
@@ -23,13 +16,7 @@ export function ProductFilters({
   onChange,
 }: ProductFiltersProps) {
   return (
-    <Stack
-      direction="row"
-      spacing={1.5}
-      alignItems="center"
-      flexWrap="wrap"
-      useFlexGap
-    >
+    <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
       <TextField
         size="small"
         placeholder="Buscar por nome..."
@@ -64,9 +51,7 @@ export function ProductFilters({
         <ToggleButton
           value="lowStockOnly"
           selected={filters.lowStockOnly}
-          onChange={() =>
-            onChange({ ...filters, lowStockOnly: !filters.lowStockOnly })
-          }
+          onChange={() => onChange({ ...filters, lowStockOnly: !filters.lowStockOnly })}
           size="small"
           color="warning"
         >

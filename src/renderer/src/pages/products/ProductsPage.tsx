@@ -1,3 +1,6 @@
+import { Button, Stack, Typography } from '@mui/material';
+import { useMemo } from 'react';
+import type { Product } from '@shared/types/product';
 import { ActionsMenu } from '@components/ActionsMenu';
 import { ConfirmDialog } from '@components/ConfirmDialog';
 import { DataTable } from '@components/DataTable';
@@ -10,9 +13,6 @@ import { useProductForm } from '@hooks/products/useProductForm';
 import type { SortKey } from '@hooks/products/useProducts';
 import { useProducts } from '@hooks/products/useProducts';
 import { usePagination } from '@hooks/usePagination';
-import { Button, Stack, Typography } from '@mui/material';
-import type { Product } from '@shared/types/product';
-import { useMemo } from 'react';
 import { ProductFilters } from './components/ProductFilters';
 import { ProductFormModal } from './components/ProductFormModal';
 
@@ -38,10 +38,7 @@ export function ProductsPage() {
   const form = useProductForm(addProduct, updateProduct);
   const confirm = useProductConfirm(deleteProduct);
 
-  const { page, setPage, totalPages, paginatedItems, start } = usePagination(
-    filtered,
-    10,
-  );
+  const { page, setPage, totalPages, paginatedItems, start } = usePagination(filtered, 10);
 
   const categories = useMemo(() => {
     const unique = new Set(products.map((p) => p.category));
@@ -106,11 +103,7 @@ export function ProductsPage() {
         title="Produtos"
         subtitle="Cadastro e controle de estoque do seu catálogo"
         actions={
-          <Button
-            variant="contained"
-            startIcon={<PlusIcon size={16} />}
-            onClick={form.openNew}
-          >
+          <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={form.openNew}>
             Novo Produto
           </Button>
         }

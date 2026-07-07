@@ -18,10 +18,7 @@ export function App() {
         <OrdersProvider>
           <Layout>
             <Routes>
-              <Route
-                path="/"
-                element={<Navigate replace to={ROUTES.DASHBOARD} />}
-              />
+              <Route path="/" element={<Navigate replace to={ROUTES.DASHBOARD} />} />
               <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
               <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
               <Route path={ROUTES.ORDERS} element={<OrdersPage />} />

@@ -1,15 +1,13 @@
-import { call } from '@api/client';
-import type { Order, OrderStatus } from '@shared/types/order';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import type { Order, OrderStatus } from '@shared/types/order';
+import { call } from '@api/client';
 import { useProductsContext } from './ProductsContext';
 import { useToast } from './ToastContext';
 
 export interface OrdersContextValue {
   orders: Order[];
   isLoading: boolean;
-  addOrder: (
-    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Promise<Order>;
+  addOrder: (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Order>;
   updateOrder: (
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
@@ -42,9 +40,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function setOrderStatus(id: string, newStatus: OrderStatus) {
-    const { order, updatedProducts } = await call(() =>
-      window.api.orders.setStatus(id, newStatus),
-    );
+    const { order, updatedProducts } = await call(() => window.api.orders.setStatus(id, newStatus));
     setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
     if (updatedProducts.length > 0) {
       await refreshProducts();
@@ -52,9 +48,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function setOrderPaymentAmount(id: string, amountPaid: number) {
-    const order = await call(() =>
-      window.api.orders.setPaymentAmount(id, amountPaid),
-    );
+    const order = await call(() => window.api.orders.setPaymentAmount(id, amountPaid));
     setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
   }
 
@@ -84,9 +78,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     [orders, isLoading],
   );
 
-  return (
-    <OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>
-  );
+  return <OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>;
 }
 
 export function useOrdersContext(): OrdersContextValue {

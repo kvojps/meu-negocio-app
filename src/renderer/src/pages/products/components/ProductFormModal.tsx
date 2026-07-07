@@ -1,6 +1,6 @@
+import { Button, Stack, TextField } from '@mui/material';
 import { Modal } from '@components/Modal';
 import type { UseProductFormReturn } from '@hooks/products/useProductForm';
-import { Button, Stack, TextField } from '@mui/material';
 
 interface ProductFormModalProps {
   formState: UseProductFormReturn;
@@ -23,11 +23,7 @@ export function ProductFormModal({ formState }: ProductFormModalProps) {
           <Button onClick={close} disabled={isSaving} color="inherit">
             Cancelar
           </Button>
-          <Button
-            onClick={() => onSubmit()}
-            disabled={isSaving}
-            variant="contained"
-          >
+          <Button onClick={() => onSubmit()} disabled={isSaving} variant="contained">
             {isSaving ? 'Salvando…' : editingId ? 'Salvar' : 'Criar'}
           </Button>
         </>

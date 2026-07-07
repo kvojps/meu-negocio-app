@@ -1,7 +1,7 @@
-import { ThemeModeProvider } from '@theme/ThemeModeProvider';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
+import { ThemeModeProvider } from '@theme/ThemeModeProvider';
 import './styles.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';

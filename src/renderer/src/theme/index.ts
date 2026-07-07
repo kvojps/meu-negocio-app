@@ -42,8 +42,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          scrollbarColor:
-            mode === 'light' ? '#c1c1c1 #f4f6fb' : '#3a3f4d #10131c',
+          scrollbarColor: mode === 'light' ? '#c1c1c1 #f4f6fb' : '#3a3f4d #10131c',
         },
       },
     },
@@ -60,9 +59,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         root: {
           border: `1px solid ${mode === 'light' ? '#E4E8F1' : '#2A2F3D'}`,
           boxShadow:
-            mode === 'light'
-              ? '0 1px 2px rgba(16, 24, 40, 0.04)'
-              : '0 1px 2px rgba(0, 0, 0, 0.2)',
+            mode === 'light' ? '0 1px 2px rgba(16, 24, 40, 0.04)' : '0 1px 2px rgba(0, 0, 0, 0.2)',
         },
       },
     },
@@ -91,5 +88,4 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   },
 });
 
-export const getAppTheme = (mode: PaletteMode) =>
-  createTheme(getDesignTokens(mode));
+export const getAppTheme = (mode: PaletteMode) => createTheme(getDesignTokens(mode));

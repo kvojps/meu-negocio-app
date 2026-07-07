@@ -1,6 +1,6 @@
+import { useMemo, useState } from 'react';
 import type { Order } from '@shared/types/order';
 import { getOrderPaymentStatus, getOrderTotal } from '@shared/types/order';
-import { useMemo, useState } from 'react';
 
 export type OrderSortKey = 'customerName' | 'status' | 'total' | 'createdAt';
 
@@ -43,9 +43,7 @@ export function useOrderFilters(orders: Order[]) {
     }
 
     if (filters.paymentStatus) {
-      result = result.filter(
-        (o) => getOrderPaymentStatus(o) === filters.paymentStatus,
-      );
+      result = result.filter((o) => getOrderPaymentStatus(o) === filters.paymentStatus);
     }
 
     if (filters.dateFrom) {
@@ -68,8 +66,7 @@ export function useOrderFilters(orders: Order[]) {
         if (key === 'total') {
           cmp = getOrderTotal(a) - getOrderTotal(b);
         } else if (key === 'createdAt') {
-          cmp =
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         } else {
           const aVal = a[key] ?? '';
           const bVal = b[key] ?? '';

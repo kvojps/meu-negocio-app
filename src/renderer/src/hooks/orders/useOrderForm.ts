@@ -1,10 +1,10 @@
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Order } from '@shared/types/order';
-import type { Product } from '@shared/types/product';
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import type { Order } from '@shared/types/order';
+import type { Product } from '@shared/types/product';
+import { getErrorMessage } from '@api/client';
+import { useToast } from '@contexts/ToastContext';
 import {
   type OrderFormValues,
   emptyOrderFormValues,
@@ -14,9 +14,7 @@ import {
 
 export function useOrderForm(
   products: Product[],
-  addOrder: (
-    data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => Promise<Order>,
+  addOrder: (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Order>,
   updateOrder?: (
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
@@ -39,13 +37,10 @@ export function useOrderForm(
   const manualTotal = form.watch('manualTotal');
 
   const calculatedTotal = items.reduce(
-    (sum, item) =>
-      sum + (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0),
+    (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0),
     0,
   );
-  const displayTotal = manualEnabled
-    ? Number(manualTotal) || 0
-    : calculatedTotal;
+  const displayTotal = manualEnabled ? Number(manualTotal) || 0 : calculatedTotal;
 
   function open() {
     form.reset(emptyOrderFormValues);
@@ -64,8 +59,7 @@ export function useOrderForm(
         unitCost: String(item.unitCost),
       })),
       manualEnabled: order.manualTotal !== undefined,
-      manualTotal:
-        order.manualTotal !== undefined ? String(order.manualTotal) : '',
+      manualTotal: order.manualTotal !== undefined ? String(order.manualTotal) : '',
     });
     setEditTarget(order);
     setIsOpen(true);
@@ -81,14 +75,8 @@ export function useOrderForm(
     const product = products.find((p) => p.id === productId);
     form.setValue(`items.${index}.productId`, productId);
     form.setValue(`items.${index}.productName`, product ? product.name : '');
-    form.setValue(
-      `items.${index}.unitPrice`,
-      product ? String(product.salePrice) : '',
-    );
-    form.setValue(
-      `items.${index}.unitCost`,
-      product ? String(product.costPrice) : '',
-    );
+    form.setValue(`items.${index}.unitPrice`, product ? String(product.salePrice) : '');
+    form.setValue(`items.${index}.unitCost`, product ? String(product.costPrice) : '');
   }
 
   function addItem() {
@@ -112,9 +100,7 @@ export function useOrderForm(
           unitPrice: Number(item.unitPrice),
           unitCost: Number(item.unitCost) || 0,
         })),
-        manualTotal: values.manualEnabled
-          ? Number(values.manualTotal)
-          : undefined,
+        manualTotal: values.manualEnabled ? Number(values.manualTotal) : undefined,
       };
 
       if (editTarget && updateOrder) {

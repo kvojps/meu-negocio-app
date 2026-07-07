@@ -130,20 +130,8 @@ export function SearchIcon({ size = 16 }: IconProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle
-        cx="11"
-        cy="11"
-        r="7"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 20L16.5 16.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M20 20L16.5 16.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -157,12 +145,7 @@ export function PlusIcon({ size = 16 }: IconProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M12 5V19M5 12H19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -313,20 +296,8 @@ export function OrderIcon({ size = 24 }: IconProps) {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <circle
-          cx="10.5"
-          cy="20.5"
-          r="1.5"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
-        <circle
-          cx="17.5"
-          cy="20.5"
-          r="1.5"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
+        <circle cx="10.5" cy="20.5" r="1.5" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="17.5" cy="20.5" r="1.5" stroke="currentColor" strokeWidth="1.8" />
       </g>
     </svg>
   );
@@ -351,18 +322,8 @@ export function SaleIcon({ size = 24 }: IconProps) {
           d="M12 10.9562C11.0574 10.9562 10.5892 10.8047 10.3757 10.6617C10.2393 10.5704 10.15 10.4522 10.15 10.1278H8.35C8.35 10.9171 8.63574 11.663 9.37432 12.1575C10.0358 12.6003 10.9426 12.7562 12 12.7562V10.9562ZM10.15 10.1278C10.15 9.9266 10.2593 9.66846 10.5876 9.42773C10.9154 9.18738 11.4118 9.01133 12 9.01133V7.21133C11.0694 7.21133 10.1908 7.48667 9.52326 7.97615C8.85627 8.46522 8.35 9.21532 8.35 10.1278H10.15ZM12 9.01133C12.5882 9.01133 13.0846 9.18738 13.4124 9.42773C13.7407 9.66846 13.85 9.9266 13.85 10.1278H15.65C15.65 9.21532 15.1437 8.46522 14.4767 7.97615C13.8092 7.48667 12.9306 7.21133 12 7.21133V9.01133ZM14.1 13.8726C14.1 14.2515 13.9525 14.4736 13.66 14.6482C13.3129 14.8554 12.7473 14.9891 12 14.9891V16.7891C12.9095 16.7891 13.8439 16.6347 14.5826 16.1938C15.3759 15.7202 15.9 14.9341 15.9 13.8726H14.1ZM12 14.9891C11.326 14.9891 10.7561 14.8039 10.3807 14.5516C9.99972 14.2954 9.9 14.0384 9.9 13.8726H8.1C8.1 14.8206 8.67185 15.5717 9.37662 16.0454C10.087 16.5229 11.0172 16.7891 12 16.7891V14.9891ZM12 12.7562C12.9498 12.7562 13.4835 12.9 13.7605 13.0795C13.9556 13.206 14.1 13.3943 14.1 13.8726H15.9C15.9 12.9107 15.5444 12.0907 14.7395 11.5691C14.0165 11.1004 13.0502 10.9562 12 10.9562V12.7562Z"
           fill="currentColor"
         />
-        <path
-          d="M12 7L12 8.11133"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M12 15.8891V17"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
+        <path d="M12 7L12 8.11133" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M12 15.8891V17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </g>
     </svg>
   );

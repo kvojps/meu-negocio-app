@@ -1,9 +1,9 @@
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
+import { useState } from 'react';
 import type { OrderStatus } from '@shared/types/order';
 import { ORDER_STATUS_LABELS } from '@shared/types/order';
 import type { Order } from '@shared/types/order';
-import { useState } from 'react';
+import { getErrorMessage } from '@api/client';
+import { useToast } from '@contexts/ToastContext';
 
 interface ConfirmTarget {
   type: 'advance' | 'cancel' | 'reopen' | 'delete' | 'status_change';
@@ -29,9 +29,7 @@ export function useOrderConfirm(
   setOrderStatus: (id: string, status: OrderStatus) => Promise<void>,
   deleteOrder: (id: string) => Promise<void>,
 ): UseOrderConfirmReturn {
-  const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(
-    null,
-  );
+  const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(null);
   const { showToast } = useToast();
 
   function buildProps(): ConfirmProps {
@@ -88,10 +86,8 @@ export function useOrderConfirm(
     try {
       switch (type) {
         case 'advance':
-          if (order.status === 'pending')
-            await setOrderStatus(order.id, 'in_progress');
-          else if (order.status === 'in_progress')
-            await setOrderStatus(order.id, 'completed');
+          if (order.status === 'pending') await setOrderStatus(order.id, 'in_progress');
+          else if (order.status === 'in_progress') await setOrderStatus(order.id, 'completed');
           showToast('Status do pedido atualizado.');
           break;
         case 'cancel':
