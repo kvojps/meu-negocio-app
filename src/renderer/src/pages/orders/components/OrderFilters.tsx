@@ -4,8 +4,8 @@ import { forwardRef } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import type { OrderStatus, PaymentStatus } from '@shared/types/order';
 import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from '@shared/types/order';
-import { SearchIcon } from '@components/Icons';
-import type { OrderFilterState } from '@hooks/orders/useOrders';
+import { SearchIcon } from '@/components/Icons';
+import type { OrderFilterState } from '@/hooks/orders/useOrders';
 import 'react-datepicker/dist/react-datepicker.css';
 
 registerLocale('pt-BR', ptBR);

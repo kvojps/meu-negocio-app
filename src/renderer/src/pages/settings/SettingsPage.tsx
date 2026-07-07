@@ -1,8 +1,8 @@
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
-import { ConfirmDialog } from '@components/ConfirmDialog';
-import { DownloadIcon, SettingIcon, UploadIcon } from '@components/Icons';
-import { PageHeader } from '@components/PageHeader';
-import { useDataTransfer } from '@hooks/settings/useDataTransfer';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { DownloadIcon, SettingIcon, UploadIcon } from '@/components/Icons';
+import { PageHeader } from '@/components/PageHeader';
+import { useDataTransfer } from '@/hooks/settings/useDataTransfer';
 
 const APP_VERSION = '1.0.0';
 

@@ -1,6 +1,6 @@
 import { Button, Stack, TextField } from '@mui/material';
-import { Modal } from '@components/Modal';
-import type { UseProductFormReturn } from '@hooks/products/useProductForm';
+import { Modal } from '@/components/Modal';
+import type { UseProductFormReturn } from '@/hooks/products/useProductForm';
 
 interface ProductFormModalProps {
   formState: UseProductFormReturn;

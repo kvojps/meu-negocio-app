@@ -19,8 +19,8 @@ import {
   getOrderPaymentStatus,
   getOrderTotal,
 } from '@shared/types/order';
-import { Modal } from '@components/Modal';
-import { StatusChip } from '@components/StatusChip';
+import { Modal } from '@/components/Modal';
+import { StatusChip } from '@/components/StatusChip';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

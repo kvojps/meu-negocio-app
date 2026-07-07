@@ -1,4 +1,4 @@
-import { useOrdersContext } from '@contexts/OrdersContext';
+import { useOrdersContext } from '@/contexts/OrdersContext';
 import { useOrderFilters } from './useOrderFilters';
 
 export type { OrderFilterState, OrderSortKey, OrderSortState } from './useOrderFilters';

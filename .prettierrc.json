@@ -6,7 +6,7 @@
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^@shared/(.*)$",
-    "^@(/|api/|components/|contexts/|pages/|hooks/|assets/|theme/)(.*)$",
+    "^@/(.*)$",
     "^\\.\\.?/.*routes",
     "^\\.\\.?/.*pages",
     "^\\.\\.?/.*components",

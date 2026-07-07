@@ -16,9 +16,9 @@ import {
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo32x32 from '@assets/logo-32x32.svg';
-import { DashboardIcon, OrderIcon, ProductIcon, SaleIcon, SettingIcon } from '@components/Icons';
-import { useThemeMode } from '@hooks/useThemeMode';
+import logo32x32 from '@/assets/logo-32x32.svg';
+import { DashboardIcon, OrderIcon, ProductIcon, SaleIcon, SettingIcon } from '@/components/Icons';
+import { useThemeMode } from '@/hooks/useThemeMode';
 import { ROUTES } from '../../routes';
 
 interface LayoutProps {

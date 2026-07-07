@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Product } from '@shared/types/product';
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
+import { getErrorMessage } from '@/api/client';
+import { useToast } from '@/contexts/ToastContext';
 
 export function useProductConfirm(deleteProduct: (id: string) => Promise<void>) {
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);

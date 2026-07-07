@@ -8,17 +8,17 @@ import {
   getOrderProfit,
   getOrderTotal,
 } from '@shared/types/order';
-import { ActionsMenu } from '@components/ActionsMenu';
-import { ConfirmDialog } from '@components/ConfirmDialog';
-import { DataTable } from '@components/DataTable';
-import type { Column } from '@components/DataTable';
-import { SaleIcon } from '@components/Icons';
-import { PageHeader } from '@components/PageHeader';
-import { StatusChip } from '@components/StatusChip';
-import { useOrderConfirm } from '@hooks/orders/useOrderConfirm';
-import type { OrderSortKey } from '@hooks/orders/useOrders';
-import { useOrders } from '@hooks/orders/useOrders';
-import { usePagination } from '@hooks/usePagination';
+import { ActionsMenu } from '@/components/ActionsMenu';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { DataTable } from '@/components/DataTable';
+import type { Column } from '@/components/DataTable';
+import { SaleIcon } from '@/components/Icons';
+import { PageHeader } from '@/components/PageHeader';
+import { StatusChip } from '@/components/StatusChip';
+import { useOrderConfirm } from '@/hooks/orders/useOrderConfirm';
+import type { OrderSortKey } from '@/hooks/orders/useOrders';
+import { useOrders } from '@/hooks/orders/useOrders';
+import { usePagination } from '@/hooks/usePagination';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
 import { PaymentModal } from './components/PaymentModal';

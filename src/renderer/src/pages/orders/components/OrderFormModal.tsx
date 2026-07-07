@@ -10,8 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import type { Product } from '@shared/types/product';
-import { Modal } from '@components/Modal';
-import type { UseOrderFormReturn } from '@hooks/orders/useOrderForm';
+import { Modal } from '@/components/Modal';
+import type { UseOrderFormReturn } from '@/hooks/orders/useOrderForm';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

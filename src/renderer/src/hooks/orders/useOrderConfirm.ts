@@ -2,8 +2,8 @@ import { useState } from 'react';
 import type { OrderStatus } from '@shared/types/order';
 import { ORDER_STATUS_LABELS } from '@shared/types/order';
 import type { Order } from '@shared/types/order';
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
+import { getErrorMessage } from '@/api/client';
+import { useToast } from '@/contexts/ToastContext';
 
 interface ConfirmTarget {
   type: 'advance' | 'cancel' | 'reopen' | 'delete' | 'status_change';

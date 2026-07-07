@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Product } from '@shared/types/product';
-import { call } from '@api/client';
+import { call } from '@/api/client';
 import { useToast } from './ToastContext';
 
 export interface ProductsContextValue {

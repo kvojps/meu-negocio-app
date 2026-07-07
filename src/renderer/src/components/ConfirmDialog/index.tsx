@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { AlertTriangleIcon, CheckIcon } from '@components/Icons';
-import { Modal } from '@components/Modal';
+import { AlertTriangleIcon, CheckIcon } from '@/components/Icons';
+import { Modal } from '@/components/Modal';
 
 interface ConfirmDialogProps {
   open: boolean;

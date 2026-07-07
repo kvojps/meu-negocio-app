@@ -1,6 +1,6 @@
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
-import { CheckIcon, DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '@components/Icons';
+import { CheckIcon, DeleteIcon, EditIcon, OptionsIcon, ViewIcon } from '@/components/Icons';
 
 interface ActionsMenuProps {
   onView?: () => void;

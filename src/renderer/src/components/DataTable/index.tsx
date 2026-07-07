@@ -10,7 +10,7 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import { Pagination } from '@components/Pagination';
+import { Pagination } from '@/components/Pagination';
 
 export interface Column<T> {
   key: (keyof T & string) | (string & {});

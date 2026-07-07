@@ -20,10 +20,10 @@ import {
   getOrderTotal,
 } from '@shared/types/order';
 import type { OrderStatus } from '@shared/types/order';
-import { DashboardIcon } from '@components/Icons';
-import { PageHeader } from '@components/PageHeader';
-import { useOrders } from '@hooks/orders/useOrders';
-import { useProducts } from '@hooks/products/useProducts';
+import { DashboardIcon } from '@/components/Icons';
+import { PageHeader } from '@/components/PageHeader';
+import { useOrders } from '@/hooks/orders/useOrders';
+import { useProducts } from '@/hooks/products/useProducts';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { DashboardCards } from './components/DashboardCards';
 

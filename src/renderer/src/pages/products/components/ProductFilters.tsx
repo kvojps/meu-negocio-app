@@ -1,6 +1,6 @@
 import { Badge, InputAdornment, MenuItem, Stack, TextField, ToggleButton } from '@mui/material';
-import { AlertTriangleIcon, SearchIcon } from '@components/Icons';
-import type { FilterState } from '@hooks/products/useProducts';
+import { AlertTriangleIcon, SearchIcon } from '@/components/Icons';
+import type { FilterState } from '@/hooks/products/useProducts';
 
 interface ProductFiltersProps {
   filters: FilterState;

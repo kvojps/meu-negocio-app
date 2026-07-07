@@ -7,10 +7,10 @@ import {
   getOrderPaymentStatus,
   getOrderTotal,
 } from '@shared/types/order';
-import { getErrorMessage } from '@api/client';
-import { Modal } from '@components/Modal';
-import { StatusChip } from '@components/StatusChip';
-import { useToast } from '@contexts/ToastContext';
+import { getErrorMessage } from '@/api/client';
+import { Modal } from '@/components/Modal';
+import { StatusChip } from '@/components/StatusChip';
+import { useToast } from '@/contexts/ToastContext';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {

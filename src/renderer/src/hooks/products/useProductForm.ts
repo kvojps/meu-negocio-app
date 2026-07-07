@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Product } from '@shared/types/product';
-import { getErrorMessage } from '@api/client';
-import { useToast } from '@contexts/ToastContext';
+import { getErrorMessage } from '@/api/client';
+import { useToast } from '@/contexts/ToastContext';
 import { type ProductFormValues, emptyProductFormValues, productFormSchema } from './productSchema';
 
 export function useProductForm(

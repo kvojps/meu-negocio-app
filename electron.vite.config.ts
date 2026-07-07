@@ -4,31 +4,17 @@ import path from 'path';
 
 export default defineConfig({
   main: {
-    resolve: {
-      alias: {
-        '@shared': path.resolve(__dirname, 'src/shared'),
-      },
-    },
+    resolve: { alias: { '@shared': path.resolve(__dirname, 'src/shared') } },
   },
   preload: {
-    resolve: {
-      alias: {
-        '@shared': path.resolve(__dirname, 'src/shared'),
-      },
-    },
+    resolve: { alias: { '@shared': path.resolve(__dirname, 'src/shared') } },
   },
   renderer: {
     plugins: [react()],
     resolve: {
       alias: {
         '@shared': path.resolve(__dirname, 'src/shared'),
-        '@api': path.resolve(__dirname, 'src/renderer/src/api'),
-        '@components': path.resolve(__dirname, 'src/renderer/src/components'),
-        '@contexts': path.resolve(__dirname, 'src/renderer/src/contexts'),
-        '@pages': path.resolve(__dirname, 'src/renderer/src/pages'),
-        '@hooks': path.resolve(__dirname, 'src/renderer/src/hooks'),
-        '@assets': path.resolve(__dirname, 'src/renderer/src/assets'),
-        '@theme': path.resolve(__dirname, 'src/renderer/src/theme'),
+        '@': path.resolve(__dirname, 'src/renderer/src'),
       },
     },
   },

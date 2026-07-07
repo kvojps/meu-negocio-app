@@ -1,4 +1,4 @@
-import { useProductsContext } from '@contexts/ProductsContext';
+import { useProductsContext } from '@/contexts/ProductsContext';
 import { useProductFilters } from './useProductFilters';
 
 export type { FilterState, SortKey, SortState } from './useProductFilters';

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Order, OrderStatus } from '@shared/types/order';
-import { call } from '@api/client';
+import { call } from '@/api/client';
 import { useProductsContext } from './ProductsContext';
 import { useToast } from './ToastContext';
 
