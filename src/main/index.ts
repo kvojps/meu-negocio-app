@@ -4,6 +4,10 @@ import icon from '../../resources/icon.png?asset';
 import { initDb } from './db/connection';
 import { registerIpcHandlers } from './ipc/registerIpc';
 
+// Fixa a pasta userData existente (%APPDATA%/meu-negocio-app);
+// mudar este nome deixa o banco de dados dos usuários órfão.
+app.setName('meu-negocio-app');
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1280,

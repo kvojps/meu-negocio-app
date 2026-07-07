@@ -5,11 +5,6 @@ import type { Order, OrderStatus } from '@shared/types/order';
 import type { Product } from '@shared/types/product';
 import type { CompanySettings } from '@shared/types/settings';
 
-contextBridge.exposeInMainWorld('appInfo', {
-  electronVersion: process.versions.electron,
-  chromeVersion: process.versions.chrome,
-});
-
 const api: ElectronApi = {
   products: {
     getAll: () => ipcRenderer.invoke(IPC_CHANNELS.productsGetAll),
