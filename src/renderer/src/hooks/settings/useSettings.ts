@@ -1,3 +1,5 @@
+import { call } from '@api/client';
+import { useToast } from '@contexts/ToastContext';
 import type { CompanySettings } from '@shared/types/settings';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -11,28 +13,35 @@ const DEFAULT_SETTINGS: CompanySettings = {
 };
 
 export function useSettings() {
+  const { showToast } = useToast();
   const [settings, setSettings] = useState<CompanySettings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    window.api.settings.get().then(setSettings);
-  }, []);
+    call(() => window.api.settings.get())
+      .then(setSettings)
+      .catch(() => showToast('Erro ao carregar as configurações.', 'error'));
+  }, [showToast]);
 
   const updateField = useCallback(
     <K extends keyof CompanySettings>(field: K, value: CompanySettings[K]) => {
       setSettings((prev) => {
         const next = { ...prev, [field]: value };
-        window.api.settings.update(next);
+        call(() => window.api.settings.update(next)).catch(() =>
+          showToast('Erro ao salvar as configurações.', 'error'),
+        );
         return next;
       });
       setSaved(false);
     },
-    [],
+    [showToast],
   );
 
   const persist = useCallback(() => {
-    window.api.settings.update(settings).then(() => setSaved(true));
-  }, [settings]);
+    call(() => window.api.settings.update(settings))
+      .then(() => setSaved(true))
+      .catch(() => showToast('Erro ao salvar as configurações.', 'error'));
+  }, [settings, showToast]);
 
   return { settings, updateField, persist, saved };
 }

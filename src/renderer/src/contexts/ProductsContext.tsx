@@ -1,5 +1,7 @@
+import { call } from '@api/client';
 import type { Product } from '@shared/types/product';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useToast } from './ToastContext';
 
 export interface ProductsContextValue {
   products: Product[];
@@ -16,33 +18,37 @@ export interface ProductsContextValue {
 const ProductsContext = createContext<ProductsContextValue | null>(null);
 
 export function ProductsProvider({ children }: { children: React.ReactNode }) {
+  const { showToast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   async function refreshProducts() {
-    const all = await window.api.products.getAll();
+    const all = await call(() => window.api.products.getAll());
     setProducts(all);
   }
 
   useEffect(() => {
-    refreshProducts().finally(() => setIsLoading(false));
+    refreshProducts()
+      .catch(() => showToast('Erro ao carregar os produtos.', 'error'))
+      .finally(() => setIsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function addProduct(
     data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
   ) {
-    const product = await window.api.products.add(data);
+    const product = await call(() => window.api.products.add(data));
     setProducts((prev) => [...prev, product]);
     return product;
   }
 
   async function updateProduct(id: string, data: Partial<Product>) {
-    const updated = await window.api.products.update(id, data);
+    const updated = await call(() => window.api.products.update(id, data));
     setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
   }
 
   async function deleteProduct(id: string) {
-    await window.api.products.delete(id);
+    await call(() => window.api.products.delete(id));
     setProducts((prev) => prev.filter((p) => p.id !== id));
   }
 

@@ -14,6 +14,7 @@
     "types": ["node"],
     "paths": {
       "@shared/*": ["./src/shared/*"],
+      "@api/*": ["./src/renderer/src/api/*"],
       "@components/*": ["./src/renderer/src/components/*"],
       "@contexts/*": ["./src/renderer/src/contexts/*"],
       "@pages/*": ["./src/renderer/src/pages/*"],

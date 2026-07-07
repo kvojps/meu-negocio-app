@@ -22,6 +22,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@shared': path.resolve(__dirname, 'src/shared'),
+        '@api': path.resolve(__dirname, 'src/renderer/src/api'),
         '@components': path.resolve(__dirname, 'src/renderer/src/components'),
         '@contexts': path.resolve(__dirname, 'src/renderer/src/contexts'),
         '@pages': path.resolve(__dirname, 'src/renderer/src/pages'),

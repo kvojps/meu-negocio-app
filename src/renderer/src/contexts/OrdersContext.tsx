@@ -1,6 +1,8 @@
+import { call } from '@api/client';
 import type { Order, OrderStatus } from '@shared/types/order';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useProductsContext } from './ProductsContext';
+import { useToast } from './ToastContext';
 
 export interface OrdersContextValue {
   orders: Order[];
@@ -21,26 +23,27 @@ const OrdersContext = createContext<OrdersContextValue | null>(null);
 
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
   const { refreshProducts } = useProductsContext();
+  const { showToast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    window.api.orders
-      .getAll()
+    call(() => window.api.orders.getAll())
       .then(setOrders)
+      .catch(() => showToast('Erro ao carregar os pedidos.', 'error'))
       .finally(() => setIsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function addOrder(data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) {
-    const order = await window.api.orders.add(data);
+    const order = await call(() => window.api.orders.add(data));
     setOrders((prev) => [...prev, order]);
     return order;
   }
 
   async function setOrderStatus(id: string, newStatus: OrderStatus) {
-    const { order, updatedProducts } = await window.api.orders.setStatus(
-      id,
-      newStatus,
+    const { order, updatedProducts } = await call(() =>
+      window.api.orders.setStatus(id, newStatus),
     );
     setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
     if (updatedProducts.length > 0) {
@@ -49,7 +52,9 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function setOrderPaymentAmount(id: string, amountPaid: number) {
-    const order = await window.api.orders.setPaymentAmount(id, amountPaid);
+    const order = await call(() =>
+      window.api.orders.setPaymentAmount(id, amountPaid),
+    );
     setOrders((prev) => prev.map((o) => (o.id === id ? order : o)));
   }
 
@@ -57,12 +62,12 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     id: string,
     data: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
   ) {
-    const updated = await window.api.orders.update(id, data);
+    const updated = await call(() => window.api.orders.update(id, data));
     setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 
   async function deleteOrder(id: string) {
-    await window.api.orders.delete(id);
+    await call(() => window.api.orders.delete(id));
     setOrders((prev) => prev.filter((o) => o.id !== id));
   }
 

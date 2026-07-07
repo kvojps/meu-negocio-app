@@ -8,56 +8,8 @@ import {
   ipcMain,
 } from 'electron';
 import fs from 'node:fs/promises';
-import { z } from 'zod';
-import { BACKUP_VERSION, exportData, importData } from '../db/backupRepository';
-
-const orderItemSchema = z.object({
-  id: z.string(),
-  productId: z.string(),
-  productName: z.string(),
-  quantity: z.number(),
-  unitPrice: z.number(),
-  unitCost: z.number().optional().default(0),
-});
-
-const orderSchema = z.object({
-  id: z.string(),
-  customerName: z.string(),
-  status: z.enum(['pending', 'in_progress', 'completed', 'cancelled']),
-  items: z.array(orderItemSchema),
-  manualTotal: z.number().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
-
-const productSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  category: z.string(),
-  supplier: z.string(),
-  costPrice: z.number(),
-  salePrice: z.number(),
-  stock: z.number(),
-  minStock: z.number(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
-
-const settingsSchema = z.object({
-  name: z.string(),
-  cnpj: z.string(),
-  phone: z.string(),
-  address: z.string(),
-});
-
-const backupSchema = z.object({
-  version: z.literal(BACKUP_VERSION),
-  exportedAt: z.string(),
-  products: z.array(productSchema),
-  orders: z.array(orderSchema),
-  settings: settingsSchema,
-});
+import { exportData, importData } from '../db/backupRepository';
+import { backupSchema } from '../schemas/backup.schema';
 
 function windowFor(event: IpcMainInvokeEvent): BrowserWindow {
   const window = BrowserWindow.fromWebContents(event.sender);

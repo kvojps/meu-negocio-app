@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@api/client';
 import { useToast } from '@contexts/ToastContext';
 import type { Product } from '@shared/types/product';
 import { useState } from 'react';
@@ -18,10 +19,13 @@ export function useProductConfirm(
   }
 
   async function handleAction() {
-    if (deleteTarget) {
+    if (!deleteTarget) return;
+    try {
       await deleteProduct(deleteTarget.id);
       showToast(`Produto "${deleteTarget.name}" excluído.`, 'info');
       setDeleteTarget(null);
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Erro ao excluir o produto.'), 'error');
     }
   }
 

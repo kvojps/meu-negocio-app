@@ -394,7 +394,6 @@ export function SettingIcon({ size = 24 }: IconProps) {
   );
 }
 
-
 export function DownloadIcon({ size = 16 }: IconProps) {
   return (
     <svg

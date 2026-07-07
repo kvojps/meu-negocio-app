@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@api/client';
 import { useToast } from '@contexts/ToastContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Product } from '@shared/types/product';
@@ -75,6 +76,8 @@ export function useProductForm(
       }
 
       close();
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Erro ao salvar o produto.'), 'error');
     } finally {
       setIsSaving(false);
     }

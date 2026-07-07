@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@api/client';
 import { Modal } from '@components/Modal';
 import { StatusChip } from '@components/StatusChip';
 import { useToast } from '@contexts/ToastContext';
@@ -45,6 +46,11 @@ export function PaymentModal({ order, onClose, onSave }: PaymentModalProps) {
       await onSave(order.id, parsedAmount);
       showToast('Pagamento atualizado.');
       onClose();
+    } catch (err) {
+      showToast(
+        getErrorMessage(err, 'Erro ao registrar o pagamento.'),
+        'error',
+      );
     } finally {
       setIsSaving(false);
     }

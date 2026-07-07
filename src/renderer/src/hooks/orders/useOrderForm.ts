@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@api/client';
 import { useToast } from '@contexts/ToastContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Order } from '@shared/types/order';
@@ -128,6 +129,8 @@ export function useOrderForm(
       }
 
       close();
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Erro ao salvar o pedido.'), 'error');
     } finally {
       setIsSaving(false);
     }

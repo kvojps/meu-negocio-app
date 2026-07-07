@@ -73,7 +73,9 @@ function migrate(db: Database.Database): void {
     )
     .get();
   if (!hasUnitCost) {
-    db.exec('ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0');
+    db.exec(
+      'ALTER TABLE order_items ADD COLUMN unit_cost REAL NOT NULL DEFAULT 0',
+    );
   }
 
   const hasAmountPaid = db
@@ -82,7 +84,9 @@ function migrate(db: Database.Database): void {
     )
     .get();
   if (!hasAmountPaid) {
-    db.exec('ALTER TABLE orders ADD COLUMN amount_paid REAL NOT NULL DEFAULT 0');
+    db.exec(
+      'ALTER TABLE orders ADD COLUMN amount_paid REAL NOT NULL DEFAULT 0',
+    );
     backfillAmountPaidForCompletedOrders(db);
   }
 }
@@ -97,7 +101,11 @@ function backfillAmountPaidForCompletedOrders(db: Database.Database): void {
        WHERE o.status = 'completed'
        GROUP BY o.id`,
     )
-    .all() as { id: string; manual_total: number | null; items_total: number }[];
+    .all() as {
+    id: string;
+    manual_total: number | null;
+    items_total: number;
+  }[];
 
   const updateAmountPaid = db.prepare(
     'UPDATE orders SET amount_paid = @amountPaid WHERE id = @id',

@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@api/client';
 import { useToast } from '@contexts/ToastContext';
 import type { OrderStatus } from '@shared/types/order';
 import { ORDER_STATUS_LABELS } from '@shared/types/order';
@@ -84,33 +85,37 @@ export function useOrderConfirm(
 
     const { type, order } = confirmTarget;
 
-    switch (type) {
-      case 'advance':
-        if (order.status === 'pending')
+    try {
+      switch (type) {
+        case 'advance':
+          if (order.status === 'pending')
+            await setOrderStatus(order.id, 'in_progress');
+          else if (order.status === 'in_progress')
+            await setOrderStatus(order.id, 'completed');
+          showToast('Status do pedido atualizado.');
+          break;
+        case 'cancel':
+          await setOrderStatus(order.id, 'cancelled');
+          showToast('Pedido cancelado.', 'info');
+          break;
+        case 'reopen':
           await setOrderStatus(order.id, 'in_progress');
-        else if (order.status === 'in_progress')
-          await setOrderStatus(order.id, 'completed');
-        showToast('Status do pedido atualizado.');
-        break;
-      case 'cancel':
-        await setOrderStatus(order.id, 'cancelled');
-        showToast('Pedido cancelado.', 'info');
-        break;
-      case 'reopen':
-        await setOrderStatus(order.id, 'in_progress');
-        showToast('Pedido reaberto.');
-        break;
-      case 'delete':
-        await deleteOrder(order.id);
-        showToast('Pedido excluído.', 'info');
-        break;
-      case 'status_change':
-        await setOrderStatus(order.id, confirmTarget.newStatus!);
-        showToast('Status do pedido atualizado.');
-        break;
-    }
+          showToast('Pedido reaberto.');
+          break;
+        case 'delete':
+          await deleteOrder(order.id);
+          showToast('Pedido excluído.', 'info');
+          break;
+        case 'status_change':
+          await setOrderStatus(order.id, confirmTarget.newStatus!);
+          showToast('Status do pedido atualizado.');
+          break;
+      }
 
-    setConfirmTarget(null);
+      setConfirmTarget(null);
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Erro ao atualizar o pedido.'), 'error');
+    }
   }
 
   return {
