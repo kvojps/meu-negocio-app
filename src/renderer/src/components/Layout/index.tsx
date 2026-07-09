@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo32x32 from '@/assets/logo-32x32.svg';
+import logo from '@/assets/logo-128x128.png';
 import { DashboardIcon, OrderIcon, ProductIcon, SaleIcon, SettingIcon } from '@/components/Icons';
 import { useThemeMode } from '@/hooks/useThemeMode';
 import { ROUTES } from '../../routes';
@@ -70,7 +70,7 @@ export function Layout({ children }: LayoutProps) {
           >
             <Box
               component="img"
-              src={logo32x32}
+              src={logo}
               alt=""
               width={24}
               height={24}
