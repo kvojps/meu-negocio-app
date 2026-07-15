@@ -1,4 +1,6 @@
 import {
+  ArrowDownward,
+  ArrowUpward,
   PendingActions,
   Receipt,
   Savings,
@@ -16,6 +18,9 @@ interface DashboardCardsProps {
   avgTicket: number;
   pendingOrders: number;
   lowStockCount: number;
+  revenueTrend?: number;
+  profitTrend?: number;
+  avgTicketTrend?: number;
 }
 
 function formatBRL(value: number): string {
@@ -33,6 +38,24 @@ interface StatCard {
   sub: string;
   color: CardColor;
   icon: ComponentType<{ sx?: object }>;
+  trend?: number;
+}
+
+function TrendBadge({ pct }: { pct: number }) {
+  const isPositive = pct >= 0;
+  const Icon = isPositive ? ArrowUpward : ArrowDownward;
+  const trendColor = isPositive ? 'success.main' : 'error.main';
+  return (
+    <Stack direction="row" alignItems="center" spacing={0.5}>
+      <Icon sx={{ fontSize: 14, color: trendColor }} />
+      <Typography variant="caption" sx={{ color: trendColor, fontWeight: 600 }}>
+        {Math.abs(pct).toFixed(0)}%
+      </Typography>
+      <Typography variant="caption" color="text.disabled">
+        vs mês anterior
+      </Typography>
+    </Stack>
+  );
 }
 
 export function DashboardCards({
@@ -42,6 +65,9 @@ export function DashboardCards({
   avgTicket,
   pendingOrders,
   lowStockCount,
+  revenueTrend,
+  profitTrend,
+  avgTicketTrend,
 }: DashboardCardsProps) {
   const cards: StatCard[] = [
     {
@@ -50,6 +76,7 @@ export function DashboardCards({
       sub: `${currentMonthSales} venda${currentMonthSales !== 1 ? 's' : ''} no mês`,
       color: 'primary',
       icon: TrendingUp,
+      trend: revenueTrend,
     },
     {
       label: 'Lucro Total',
@@ -60,6 +87,7 @@ export function DashboardCards({
           : 'sem vendas',
       color: 'success',
       icon: Savings,
+      trend: profitTrend,
     },
     {
       label: 'Vendas no Mês',
@@ -74,6 +102,7 @@ export function DashboardCards({
       sub: 'por venda',
       color: 'secondary',
       icon: Receipt,
+      trend: avgTicketTrend,
     },
     {
       label: 'Pedidos Pendentes',
@@ -105,7 +134,10 @@ export function DashboardCards({
           <Card key={card.label} variant="outlined">
             <CardContent>
               <Stack spacing={1}>
-                <Icon sx={{ color: `${card.color}.main`, fontSize: 24 }} />
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Icon sx={{ color: `${card.color}.main`, fontSize: 24 }} />
+                  {card.trend !== undefined && <TrendBadge pct={card.trend} />}
+                </Stack>
                 <Typography variant="h5">{card.value}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   {card.label}
