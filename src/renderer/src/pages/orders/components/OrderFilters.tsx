@@ -1,4 +1,4 @@
-import { InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { InputAdornment, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { forwardRef } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
@@ -87,70 +87,85 @@ export function OrderFilters({
     : ALL_STATUS_OPTIONS;
 
   return (
-    <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
-      {!hideSearch && (
-        <TextField
-          size="small"
-          placeholder="Buscar cliente..."
-          value={filters.search}
-          onChange={(e) => onChange({ ...filters, search: e.target.value })}
-          sx={{ minWidth: 220 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon size={16} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-      )}
-      {!hideStatusFilter && (
-        <TextField
-          select
-          size="small"
-          value={filters.status}
-          onChange={(e) => onChange({ ...filters, status: e.target.value })}
-          sx={{ minWidth: 180 }}
-        >
-          <MenuItem value="">Todos os status</MenuItem>
-          {statusOptions.map((s) => (
-            <MenuItem key={s} value={s}>
-              {ORDER_STATUS_LABELS[s]}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {showPaymentFilter && (
-        <TextField
-          select
-          size="small"
-          value={filters.paymentStatus}
-          onChange={(e) => onChange({ ...filters, paymentStatus: e.target.value })}
-          sx={{ minWidth: 180 }}
-        >
-          <MenuItem value="">Todos os pagamentos</MenuItem>
-          {ALL_PAYMENT_STATUS_OPTIONS.map((s) => (
-            <MenuItem key={s} value={s}>
-              {PAYMENT_STATUS_LABELS[s]}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {showDateFilter && (
-        <Stack direction="row" spacing={1} alignItems="center">
-          <DatePickerInput
-            value={filters.dateFrom}
-            onChange={(v) => onChange({ ...filters, dateFrom: v })}
+    <Paper sx={{ p: 2 }}>
+      <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
+        {!hideSearch && (
+          <TextField
+            size="small"
+            placeholder="Buscar cliente..."
+            value={filters.search}
+            onChange={(e) => onChange({ ...filters, search: e.target.value })}
+            sx={{ minWidth: 220, '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon size={16} />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
-          <Typography color="text.secondary">—</Typography>
-          <DatePickerInput
-            value={filters.dateTo}
-            onChange={(v) => onChange({ ...filters, dateTo: v })}
-          />
-        </Stack>
-      )}
-    </Stack>
+        )}
+        {!hideStatusFilter && (
+          <TextField
+            select
+            size="small"
+            value={filters.status}
+            onChange={(e) => onChange({ ...filters, status: e.target.value })}
+            sx={{ minWidth: 180, '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+            slotProps={{
+              select: {
+                displayEmpty: true,
+                renderValue: (value) =>
+                  value ? (
+                    ORDER_STATUS_LABELS[value as OrderStatus]
+                  ) : (
+                    <Typography component="span" variant="body2" color="text.secondary">
+                      Todos os status
+                    </Typography>
+                  ),
+              },
+            }}
+          >
+            <MenuItem value="">Todos os status</MenuItem>
+            {statusOptions.map((s) => (
+              <MenuItem key={s} value={s}>
+                {ORDER_STATUS_LABELS[s]}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+        {showPaymentFilter && (
+          <TextField
+            select
+            size="small"
+            value={filters.paymentStatus}
+            onChange={(e) => onChange({ ...filters, paymentStatus: e.target.value })}
+            sx={{ minWidth: 180, '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+          >
+            <MenuItem value="">Todos os pagamentos</MenuItem>
+            {ALL_PAYMENT_STATUS_OPTIONS.map((s) => (
+              <MenuItem key={s} value={s}>
+                {PAYMENT_STATUS_LABELS[s]}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+        {showDateFilter && (
+          <Stack direction="row" spacing={1} alignItems="center">
+            <DatePickerInput
+              value={filters.dateFrom}
+              onChange={(v) => onChange({ ...filters, dateFrom: v })}
+            />
+            <Typography color="text.secondary">—</Typography>
+            <DatePickerInput
+              value={filters.dateTo}
+              onChange={(v) => onChange({ ...filters, dateTo: v })}
+            />
+          </Stack>
+        )}
+      </Stack>
+    </Paper>
   );
 }
