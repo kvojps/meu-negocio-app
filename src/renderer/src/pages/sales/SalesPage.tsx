@@ -19,6 +19,7 @@ import { useOrderConfirm } from '@/hooks/orders/useOrderConfirm';
 import type { OrderSortKey } from '@/hooks/orders/useOrders';
 import { useOrders } from '@/hooks/orders/useOrders';
 import { usePagination } from '@/hooks/usePagination';
+import { MonthRangeFilter } from '../dashboard/components/MonthRangeFilter';
 import { OrderFilters } from '../orders/components/OrderFilters';
 import { OrderViewModal } from '../orders/components/OrderViewModal';
 import { PaymentModal } from './components/PaymentModal';
@@ -26,6 +27,7 @@ import { SalesCards } from './components/SalesCards';
 
 export function SalesPage() {
   const {
+    orders,
     filtered,
     filters,
     sort,
@@ -114,13 +116,9 @@ export function SalesPage() {
         subtitle="Indicadores e histórico de pedidos concluídos"
       />
 
-      <OrderFilters
-        filters={filters}
-        onChange={setFilters}
-        hideStatusFilter
-        showDateFilter
-        showPaymentFilter
-      />
+      <OrderFilters filters={filters} onChange={setFilters} hideStatusFilter showPaymentFilter>
+        <MonthRangeFilter orders={orders} filters={filters} onChange={setFilters} embedded />
+      </OrderFilters>
 
       <SalesCards completedOrders={completedOrders} />
 

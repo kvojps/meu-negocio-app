@@ -43,9 +43,10 @@ interface MonthRangeFilterProps {
   orders: Order[];
   filters: OrderFilterState;
   onChange: (filters: OrderFilterState) => void;
+  embedded?: boolean;
 }
 
-export function MonthRangeFilter({ orders, filters, onChange }: MonthRangeFilterProps) {
+export function MonthRangeFilter({ orders, filters, onChange, embedded }: MonthRangeFilterProps) {
   const [fromOverride, setFromOverride] = useState('');
   const [toOverride, setToOverride] = useState('');
   const [defaultYearApplied, setDefaultYearApplied] = useState(false);
@@ -130,62 +131,72 @@ export function MonthRangeFilter({ orders, filters, onChange }: MonthRangeFilter
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthOptions, defaultYearApplied]);
 
-  return (
-    <Paper sx={{ p: 2 }}>
-      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+  const content = (
+    <>
+      {!embedded && (
         <Typography variant="subtitle1" sx={{ minWidth: 80 }}>
           Exibir meses:
         </Typography>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel>De</InputLabel>
-          <Select value={fromValue} label="De" onChange={(e) => handleFromChange(e.target.value)}>
-            {monthOptions.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel>Até</InputLabel>
-          <Select value={toValue} label="Até" onChange={(e) => handleToChange(e.target.value)}>
-            {monthOptions.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      )}
+      <FormControl size="small" sx={{ minWidth: 180 }}>
+        <InputLabel>De</InputLabel>
+        <Select value={fromValue} label="De" onChange={(e) => handleFromChange(e.target.value)}>
+          {monthOptions.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl size="small" sx={{ minWidth: 180 }}>
+        <InputLabel>Até</InputLabel>
+        <Select value={toValue} label="Até" onChange={(e) => handleToChange(e.target.value)}>
+          {monthOptions.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-          <Chip
-            label="Últimos 3 meses"
-            size="small"
-            variant={isLast3Active ? 'filled' : 'outlined'}
-            color={isLast3Active ? 'primary' : 'default'}
-            onClick={handleQuickLast3}
-          />
-          <Chip
-            label="Este ano"
-            size="small"
-            variant={isThisYearActive ? 'filled' : 'outlined'}
-            color={isThisYearActive ? 'primary' : 'default'}
-            onClick={handleQuickThisYear}
-          />
-          <Chip
-            label="Tudo"
-            size="small"
-            variant={isAllActive ? 'filled' : 'outlined'}
-            color={isAllActive ? 'primary' : 'default'}
-            onClick={handleClearRange}
-          />
-        </Stack>
+      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Chip
+          label="Últimos 3 meses"
+          size="small"
+          variant={isLast3Active ? 'filled' : 'outlined'}
+          color={isLast3Active ? 'primary' : 'default'}
+          onClick={handleQuickLast3}
+        />
+        <Chip
+          label="Este ano"
+          size="small"
+          variant={isThisYearActive ? 'filled' : 'outlined'}
+          color={isThisYearActive ? 'primary' : 'default'}
+          onClick={handleQuickThisYear}
+        />
+        <Chip
+          label="Tudo"
+          size="small"
+          variant={isAllActive ? 'filled' : 'outlined'}
+          color={isAllActive ? 'primary' : 'default'}
+          onClick={handleClearRange}
+        />
+      </Stack>
 
-        {isFiltered && (
-          <Button size="small" onClick={handleClearRange} sx={{ ml: 'auto' }}>
-            Limpar filtro
-          </Button>
-        )}
+      {isFiltered && (
+        <Button size="small" onClick={handleClearRange} sx={embedded ? undefined : { ml: 'auto' }}>
+          Limpar filtro
+        </Button>
+      )}
+    </>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <Paper sx={{ p: 2 }}>
+      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+        {content}
       </Stack>
     </Paper>
   );
