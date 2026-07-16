@@ -4,19 +4,6 @@ import { DownloadIcon, SettingIcon, UploadIcon } from '@/components/Icons';
 import { PageHeader } from '@/components/PageHeader';
 import { useDataTransfer } from '@/hooks/settings/useDataTransfer';
 
-const APP_VERSION = '1.0.0';
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <Stack direction="row" spacing={2}>
-      <Typography variant="body2" color="text.secondary" sx={{ width: 120, flexShrink: 0 }}>
-        {label}
-      </Typography>
-      <Typography variant="body2">{value}</Typography>
-    </Stack>
-  );
-}
-
 export function SettingsPage() {
   const {
     exporting,
@@ -35,22 +22,6 @@ export function SettingsPage() {
         title="Configurações"
         subtitle="Informações do aplicativo"
       />
-
-      <Card variant="outlined">
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Sobre
-          </Typography>
-          <Stack spacing={1}>
-            <InfoRow label="Aplicativo" value="Meu Negócio" />
-            <InfoRow label="Versão" value={APP_VERSION} />
-            <InfoRow
-              label="Finalidade"
-              value="Gerenciamento de vendas, produtos e pedidos para pequenos negócios"
-            />
-          </Stack>
-        </CardContent>
-      </Card>
 
       <Card variant="outlined">
         <CardContent>
